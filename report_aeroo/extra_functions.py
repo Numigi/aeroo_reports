@@ -5,7 +5,7 @@
 
 import base64
 import logging
-import openerp.osv as osv
+import odoo.osv as osv
 import StringIO
 import time
 from aeroolib.plugins.opendocument import _filter
@@ -13,10 +13,10 @@ from barcode import barcode
 from ctt_objects import supported_language
 from PIL import Image
 
-from openerp import registry, models
-from openerp.osv.orm import browse_record_list
-from openerp.tools import translate
-from openerp.tools.safe_eval import safe_eval as eval
+from odoo import registry, models
+from odoo.osv.orm import browse_record_list
+from odoo.tools import translate
+from odoo.tools.safe_eval import safe_eval as eval
 
 logger = logging.getLogger('report_aeroo')
 

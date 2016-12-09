@@ -1,6 +1,7 @@
 ##############################################################################
 #
-# Copyright (c) 2008-2011 Alistek Ltd (http://www.alistek.com) All Rights Reserved.
+# Copyright (c) 2008-2011 Alistek Ltd (http://www.alistek.com) All Rights
+# Reserved.
 #                    General contacts <info@alistek.com>
 #
 # WARNING: This program as such is intended to be used by professional
@@ -30,22 +31,22 @@
 ##############################################################################
 
 import logging
-logger = logging.getLogger('report_aeroo')
-
-from openerp.report import report_sxw
-from openerp.report.report_sxw import rml_parse
+from odoo.report.report_sxw import rml_parse
 import lorem
 import random
 
+logger = logging.getLogger('report_aeroo')
+
+
 class Parser(rml_parse):
+
     def __init__(self, cr, uid, name, context):
         super(self.__class__, self).__init__(cr, uid, name, context)
         self.localcontext.update({
-            'lorem':lorem.do_lorem,
-            'random':random,
-            'hello_world':self.hello_world,
+            'lorem': lorem.do_lorem,
+            'random': random,
+            'hello_world': self.hello_world,
         })
 
     def hello_world(self, name):
         return "Hello, %s!" % name
-

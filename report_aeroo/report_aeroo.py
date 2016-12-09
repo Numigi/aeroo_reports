@@ -12,12 +12,12 @@ import threading
 from aeroolib.plugins.opendocument import Template, OOSerializer
 from cStringIO import StringIO
 from genshi.template.eval import StrictLookup
-from openerp import api, models, registry
-from openerp.osv import osv
-from openerp.report.report_sxw import report_sxw
-from openerp.tools.translate import _
-from openerp.tools import safe_eval
-from openerp.exceptions import ValidationError
+from odoo import api, models, registry
+from odoo.osv import osv
+from odoo.report.report_sxw import report_sxw
+from odoo.tools.translate import _
+from odoo.tools import safe_eval
+from odoo.exceptions import ValidationError
 from tempfile import NamedTemporaryFile
 
 from .extra_functions import ExtraFunctions

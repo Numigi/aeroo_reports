@@ -2,7 +2,7 @@
 # © 2016 Savoir-faire Linux
 # License GPL-3.0 or later (http://www.gnu.org/licenses/gpl).
 
-from openerp import fields, models
+from odoo import fields, models
 
 
 class IrActionsReportLine(models.Model):

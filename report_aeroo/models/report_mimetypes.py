@@ -5,7 +5,7 @@
 
 import logging
 
-from openerp import fields, models
+from odoo import fields, models
 
 
 logger = logging.getLogger('report_aeroo')

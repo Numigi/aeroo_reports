@@ -9,11 +9,11 @@ import logging
 import os
 import sys
 
-from openerp import models, fields, api, tools, _
-from openerp.exceptions import ValidationError
-from openerp.report import interface
-from openerp.report.report_sxw import rml_parse
-from openerp.tools.config import config
+from odoo import models, fields, api, tools, _
+from odoo.exceptions import ValidationError
+from odoo.report import interface
+from odoo.report.report_sxw import rml_parse
+from odoo.tools.config import config
 
 from ..report_aeroo import AerooReport
 

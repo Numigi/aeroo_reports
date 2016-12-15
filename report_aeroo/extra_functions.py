@@ -13,7 +13,8 @@ from barcode import barcode
 from ctt_objects import supported_language
 from PIL import Image
 
-from odoo import registry, models
+from odoo import models
+from odoo.api import Environment
 from odoo.osv.orm import browse_record_list
 from odoo.tools import translate
 from odoo.tools.safe_eval import safe_eval as eval
@@ -48,9 +49,7 @@ class ExtraFunctions(object):
     """
 
     def __init__(self, cr, uid, report_id, context):
-        self.cr = cr
-        self.uid = uid
-        self.registry = registry(self.cr.dbname)
+        self.env = Environment(cr, uid, context)
         self.report_id = report_id
         self.context = context
         self.functions = {
@@ -82,13 +81,12 @@ class ExtraFunctions(object):
             'chunks': self._chunks,
             'browse': self._browse,
             'search': self._search,
-            'search_ids': self._search_ids,
             'field_size': self._field_size,
             'field_accuracy': self._field_accuracy,
             'bool_as_icon': self._bool_as_icon,
             'time': time,
             'report_xml': self._get_report_xml(),
-            'get_log': self._perm_read(self.cr, self.uid),
+            'get_log': self._perm_read,
             'get_selection_items': self._get_selection_items(),
             'itemize': self._itemize,
             'html_escape': self._html_escape,
@@ -106,7 +104,7 @@ class ExtraFunctions(object):
             return val.with_context(lang=self._get_lang()).name_get()[0][1]
         return _filter(val)
 
-    def _perm_read(self, cr, uid):
+    def _perm_read(self):
         def get_log(obj, field=None):
             if field:
                 return obj.perm_read()[0][field]
@@ -115,10 +113,7 @@ class ExtraFunctions(object):
         return get_log
 
     def _get_report_xml(self):
-        return self.registry['ir.actions.report.xml'].browse(
-            self.cr,
-            self.uid,
-            self.report_id)
+        return self.env['ir.actions.report.xml'].browse(self.report_id)
 
     def _get_lang(self, source='current'):
         if source == 'current':
@@ -193,27 +188,23 @@ class ExtraFunctions(object):
         return c_to_text
 
     def _translate_text(self, source):
-        trans_obj = self.registry['ir.translation']
-        trans = trans_obj.search(self.cr, self.uid, [
+        trans = self.env['ir.translation'].search([
             ('res_id', '=', self.report_id),
             ('type', '=', 'report'),
             ('src', '=', source),
             ('lang', '=', self.context['lang'] or self.context['user_lang'])
         ])
         if not trans:
-            trans_obj.create(self.cr,
-                             self.uid,
-                             {'src': source,
-                              'type': 'report',
-                              'lang': self._get_lang(),
-                                 'res_id': self.report_id,
-                                 'name': 'ir.actions.report.xml'})
+            self.env['ir.translation'].create({
+                'src': source,
+                'type': 'report',
+                'lang': self._get_lang(),
+                'res_id': self.report_id,
+                'name': 'ir.actions.report.xml',
+            })
         return translate(
-            self.cr,
-            'ir.actions.report.xml',
-            'report',
-            self._get_lang(),
-            source) or source
+            'ir.actions.report.xml', 'report', self._get_lang(), source
+        ) or source
 
     def _countif(self, attr, domain):
         statement = domain2statement(domain)
@@ -292,11 +283,7 @@ class ExtraFunctions(object):
             else:
                 model = obj._name
             if isinstance(obj, (str, unicode)) or hasattr(obj, field):
-                labels = self.registry[model].fields_get(
-                    self.cr,
-                    self.uid,
-                    allfields=[field],
-                    context=self.context)
+                labels = self.env[model].fields_get(allfields=[field])
                 return labels[field]['string']
         except Exception as e:
             raise e
@@ -310,7 +297,7 @@ class ExtraFunctions(object):
             else:
                 model = obj._name
             if isinstance(obj, (str, unicode)) or hasattr(obj, field):
-                size = self.registry[model]._columns[field].size
+                size = self.env[model]._columns[field].size
                 return size
         except Exception:
             return ''
@@ -324,7 +311,7 @@ class ExtraFunctions(object):
             else:
                 model = obj._name
             if isinstance(obj, (str, unicode)) or hasattr(obj, field):
-                digits = self.registry[model]._columns[field].digits
+                digits = self.env[model]._columns[field].digits
                 return digits or [16, 2]
         except Exception:
             return []
@@ -343,35 +330,24 @@ class ExtraFunctions(object):
                 if kind == 'item':
                     if field_val:
                         return dict(
-                            self.registry[model].fields_get(
-                                self.cr,
-                                self.uid,
-                                allfields=[field],
-                                context=self.context
+                            self.env[model].fields_get(
+                                allfields=[field]
                             )[field]['selection'])[field_val]
                 elif kind == 'items':
-                    return self.registry[model].fields_get(
-                        self.cr,
-                        self.uid,
-                        allfields=[field],
-                        context=self.context)[field]['selection']
+                    return self.env[model].fields_get(
+                        allfields=[field])[field]['selection']
                 return ''
             except Exception:
                 return ''
         return get_selection_item
 
     def _get_attachments(self, o, index=None, raw=False):
-        attach_obj = self.registry['ir.attachment']
+        attach_obj = self.env['ir.attachment']
         srch_param = [('res_model', '=', o._name), ('res_id', '=', o.id)]
         if isinstance(index, str):
             srch_param.append(('name', '=', index))
-        attachments = attach_obj.search(self.cr, self.uid, srch_param)
-        res = [
-            x['datas'] for x in attach_obj.read(
-                self.cr,
-                self.uid,
-                attachments,
-                ['datas']) if x['datas']]
+        attachments = attach_obj.search(srch_param, limit=1)
+        res = [x.datas for x in attachments]
         convert = raw and base64.decodestring or (lambda a: a)
         if isinstance(index, int):
             return convert(res[index])
@@ -488,14 +464,8 @@ class ExtraFunctions(object):
         for i in xrange(0, len(l), n):
             yield l[i:i + n]
 
-    def _search_ids(self, model, domain):
-        obj = self.registry[model]
-        return obj.search(self.cr, self.uid, domain)
-
     def _search(self, model, domain):
-        obj = self.registry[model]
-        ids = obj.search(self.cr, self.uid, domain)
-        return obj.browse(self.cr, self.uid, ids, {'lang': self._get_lang()})
+        return self.env[model].search(domain)
 
     def _browse(self, *args):
         if not args or (args and not args[0]):
@@ -507,7 +477,7 @@ class ExtraFunctions(object):
             model, id = args
         else:
             raise None
-        return self.registry[model].browse(self.cr, self.uid, id)
+        return self.env[model].browse(id)
 
     def _get_safe(self, expression, obj):
         try:

@@ -3,7 +3,6 @@
 # © 2016 Savoir-faire Linux
 # License GPL-3.0 or later (http://www.gnu.org/licenses/gpl).
 
-import base64
 import logging
 import os
 import subprocess
@@ -12,7 +11,8 @@ import threading
 from aeroolib.plugins.opendocument import Template, OOSerializer
 from cStringIO import StringIO
 from genshi.template.eval import StrictLookup
-from odoo import api, models, registry
+from odoo import api, models
+from odoo.api import Environment
 from odoo.osv import osv
 from odoo.report.report_sxw import report_sxw
 from odoo.tools.translate import _
@@ -71,12 +71,8 @@ class AerooReport(report_sxw):
                   'You must select one record at a time.'))
 
         context = context.copy()
-        if self.name == 'report.printscreen.list':
-            context['model'] = data['model']
-            context['ids'] = ids
-
         assert report_xml.out_format.code in (
-            'oo-odt', 'oo-ods', 'oo-doc', 'oo-xls', 'oo-csv', 'oo-dbf',
+            'oo-odt', 'oo-ods', 'oo-doc', 'oo-xls', 'oo-csv', 'oo-pdf',
         )
         assert report_xml.in_format in ('oo-odt', 'oo-ods')
 
@@ -85,8 +81,9 @@ class AerooReport(report_sxw):
 
         oo_parser = self.parser(cr, uid, self.name2, context=context)
 
-        table_obj = registry(cr.dbname).get(self.table)
-        objects = table_obj.browse(cr, uid, ids, context=context) or []
+        env = Environment(cr, uid, context)
+        objects = env[self.table].browse(ids)
+
         oo_parser.localcontext.update(context)
         oo_parser.set_context(objects, data, ids, report_xml.report_type)
 
@@ -105,7 +102,6 @@ class AerooReport(report_sxw):
             template = report_xml.report_sxw_content
             if not template:
                 raise osv.except_osv(_('Error!'), _('No template found!'))
-            template = base64.decodestring(template)
 
         template_io = StringIO()
         template_io.write(template)

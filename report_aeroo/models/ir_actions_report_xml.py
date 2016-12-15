@@ -68,7 +68,6 @@ class ReportXml(models.Model):
         if not lang:
             lang = 'en_US'
 
-        print(lang, self.report_line_ids)
         line = next(
             (l for l in self.report_line_ids if l.lang_id.code == lang), None)
 
@@ -126,34 +125,33 @@ class ReportXml(models.Model):
 
         raise ValidationError(_('Parser not found at: %s') % path)
 
-    @api.cr
-    def _lookup_report(self, cr, name):
+    def _lookup_report(self, name):
         if 'report.' + name in interface.report_int._reports:
             new_report = interface.report_int._reports['report.' + name]
         else:
-            env = api.Environment(cr, 1, {})
-            action = env['ir.actions.report.xml'].search(
+            action = self.env['ir.actions.report.xml'].search(
                 [('report_name', '=', name)], limit=1)
             if action.report_type == 'aeroo':
                 if action.active is True:
                     parser = rml_parse
                     if action.parser_loc:
                         parser = self.load_from_file(
-                            cr, 1, action.parser_loc, action.id)
+                            action.parser_loc, action.id)
                     new_report = self.register_report(
-                        cr, 1, name, action.model, action.report_rml,
+                        name, action.model, action.report_rml,
                         parser)
                 else:
                     new_report = False
             else:
-                new_report = super(ReportXml, self)._lookup_report(cr, name)
+                new_report = super(ReportXml, self)._lookup_report(name)
         return new_report
 
     @api.multi
     def _compute_extras(recs):
         result = []
-        recs.env.cr.execute("SELECT id, state FROM ir_module_module WHERE \
-                             name='deferred_processing'")
+        recs.env.cr.execute(
+            "SELECT id, state FROM ir_module_module "
+            "WHERE name='deferred_processing'")
         deferred_proc_module = recs.env.cr.dictfetchone()
         if deferred_proc_module and deferred_proc_module['state'] in (
                 'installed',

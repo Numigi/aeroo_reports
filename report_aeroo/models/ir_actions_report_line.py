@@ -2,7 +2,8 @@
 # © 2016 Savoir-faire Linux
 # License GPL-3.0 or later (http://www.gnu.org/licenses/gpl).
 
-from odoo import fields, models
+import base64
+from odoo import api, fields, models, tools
 
 
 class IrActionsReportLine(models.Model):
@@ -22,3 +23,14 @@ class IrActionsReportLine(models.Model):
     template_data = fields.Binary('Template')
     template_filename = fields.Binary('File Name')
     template_location = fields.Char('File Location')
+
+    @api.multi
+    def get_aeroo_report_template(self, record):
+        self.ensure_one()
+        if self.template_source == 'file':
+            fp = tools.file_open(self.template_location, mode='r')
+            data = fp.read()
+            fp.close()
+        else:
+            data = base64.decodestring(self.template_data)
+        return data

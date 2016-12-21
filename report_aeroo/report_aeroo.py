@@ -3,7 +3,6 @@
 # © 2016 Savoir-faire Linux
 # License GPL-3.0 or later (http://www.gnu.org/licenses/gpl).
 
-import base64
 import logging
 import os
 import subprocess
@@ -17,7 +16,7 @@ from odoo.api import Environment
 from odoo.osv import osv
 from odoo.report.report_sxw import report_sxw
 from odoo.tools.translate import _
-from odoo.tools import safe_eval
+from odoo.tools.safe_eval import safe_eval
 from odoo.exceptions import ValidationError
 from tempfile import NamedTemporaryFile
 
@@ -95,14 +94,7 @@ class AerooReport(report_sxw):
         xfunc = ExtraFunctions(cr, uid, report_xml.id, oo_parser.localcontext)
         oo_parser.localcontext.update(xfunc.functions)
 
-        if report_xml.tml_source == 'lang':
-            lang = safe_eval(report_xml.lang_eval, {'o': objects[0]})
-            template = report_xml.template_from_lang(lang)
-
-        else:
-            if not report_xml.report_sxw_content:
-                raise osv.except_osv(_('Error!'), _('No template found!'))
-            template = base64.decodestring(report_xml.report_sxw_content)
+        template = report_xml.get_aeroo_report_template(objects[0])
 
         template_io = StringIO()
         template_io.write(template)

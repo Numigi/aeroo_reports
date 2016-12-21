@@ -13,6 +13,7 @@ from odoo import models, fields, api, tools, _
 from odoo.exceptions import ValidationError
 from odoo.report import interface
 from odoo.report.report_sxw import rml_parse
+from openerp.tools.safe_eval import safe_eval
 from odoo.tools.config import config
 
 from ..report_aeroo import AerooReport
@@ -62,7 +63,7 @@ class ReportXml(models.Model):
         default="o.partner_id.lang")
 
     @api.multi
-    def template_from_lang(self, lang):
+    def get_template_from_lang(self, record, lang):
         self.ensure_one()
 
         if not lang:
@@ -76,14 +77,7 @@ class ReportXml(models.Model):
                 _('Could not render report %s in lang %s.') %
                 (self.name, lang))
 
-        if line.template_source == 'file':
-            fp = tools.file_open(line.template_location, mode='r')
-            data = fp.read()
-            fp.close()
-        else:
-            data = base64.decodestring(line.template_data)
-
-        return data
+        return line.get_aeroo_report_template(record)
 
     @api.model
     def register_report(self, name, model, tmpl_path, parser):
@@ -168,3 +162,20 @@ class ReportXml(models.Model):
             ('filter_name', '=', False)]
         res = mime_obj.search(domain).read(['code', 'name'])
         return [(r['code'], r['name']) for r in res]
+
+    @api.multi
+    def get_aeroo_report_template(self, record):
+        self.ensure_one()
+        self = self.sudo()
+
+        if self.tml_source == 'lang':
+            lang = safe_eval(self.lang_eval, {'o': record})
+            template = self.get_template_from_lang(record, lang)
+        else:
+            template = self.report_sxw_content
+            if not template:
+                raise ValidationError(
+                    _('No template found for report %s' % self.report_name))
+            template = base64.decodestring(template)
+
+        return template

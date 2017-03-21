@@ -2,7 +2,7 @@
 
 Aeroo Reports for Odoo v10.0
 
-# Installation
+## Installation
 
  - Install the python library aerolib available at https://github.com/aeroo/aeroolib.git
     - git clone https://github.com/aeroo/aeroolib.git
@@ -16,7 +16,7 @@ Aeroo Reports for Odoo v10.0
     - apt-get install libreoffice, libreoffice-writer, openjdk-7-jre
 
 
-# Translations
+## Translations
 
 The main difference between this fork of Aeroo reports and other similar reporting
 engines for Odoo is the way it handles translations.
@@ -48,7 +48,7 @@ The language used for printing the template must be parametrized in the field 'L
 (by default: o.partner_id.lang).
 
 
-# Importing a Template from a DMS
+## Importing a Template from a DMS
 
 This feature has been tested with Alfresco, but it should work with any DMS compliant with the
 CMIS protocol. The idea is to store and maintain the template(s) of a report in the DMS and
@@ -58,14 +58,14 @@ If the DMS can not be reached when the user clicks for generating the report, th
 available version of the template is used. A message is logged in the dicsussion thread of the object
 to track what report/version was generated.
 
-## Configure the DMS connector
+### Configure the DMS connector
 
 * Go to: Connectors -> Aeroo Reports / DMS
 * Create a new backend
 * Select the url / username / password that will be used to connect to the DMS
 * Click on 'Update Repository List'
 
-## Configure the report
+### Configure the report
 
 * Go to: Settings -> Technical -> Reports -> Aeroo Reports
 * Select your report
@@ -76,7 +76,7 @@ to track what report/version was generated.
 Note: in Alfresco Share, it is not an easy task to find the absolute path to a document.
 I suggest to find it by trial and error until you figure a patern that works.
 
-## Different template per language + Import from DMS
+### Different template per language + Import from DMS
 
 You may also import distinct templates per language from the DMS:
 
@@ -87,9 +87,9 @@ You may also import distinct templates per language from the DMS:
     - In the field 'File Location', enter the absolute path to the template inside the DMS.
 
 
-# Creating a Template
+## Creating a Template
 
-## Spreadsheets
+### Spreadsheets
 
 In a spreadsheet, you must insert hyperlinks in order to display data dynamically.
 

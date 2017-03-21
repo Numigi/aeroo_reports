@@ -1,6 +1,5 @@
-==========
-Aeroo CMIS
-==========
+# Aeroo CMIS
+
 Allow generating a report from a template stored in a cmis server.
 
 When generating the report, the system will fetch the last version of the template.

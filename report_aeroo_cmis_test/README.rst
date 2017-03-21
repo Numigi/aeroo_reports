@@ -1,6 +1,5 @@
-===============
-Aeroo CMIS Test
-===============
+# Aeroo CMIS Test
+
 A module for testing the module report_aeroo_cmis.
 Because a running instance of Alfresco at localhost:8080 is required to run the tests,
 the tests are implemented in a seperate module. This will prevent the CI server from

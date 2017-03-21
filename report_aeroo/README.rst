@@ -1,6 +1,5 @@
-=============
-Aeroo Reports
-=============
+# Aeroo Reports
+
 Aeroo Reports is a module for generating reports based on OpenOffice documents.
 
 This version of the module is very different from the original version from Alistek.

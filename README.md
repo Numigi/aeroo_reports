@@ -1,7 +1,8 @@
-=============
-Aeroo Reports
-=============
-Aeroo Reports for Odoo v9.0
+# Aeroo Reports
+
+Aeroo Reports for Odoo v10.0
+
+See the branch 8.0 for a more complete doc.
 
 Installation
 ------------

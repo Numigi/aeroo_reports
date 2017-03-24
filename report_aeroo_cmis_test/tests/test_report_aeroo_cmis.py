@@ -52,8 +52,26 @@ class TestReportAerooCmis(common.SavepointCase):
             'name': 'My Partner',
         })
 
+        cls.user = cls.env['res.users'].create({
+            'name': 'My User',
+            'login': 'test_aeroo_cmis',
+            'groups_id': [(6, 0, [cls.env.ref('base.group_user').id])],
+            'email': 'root@localhost',
+        })
+
+        cls.env['ir.model.access'].create({
+            'model_id': cls.env.ref('base.model_res_partner').id,
+            'group_id': cls.env.ref('base.group_user').id,
+            'name': 'Access Modify Partners',
+            'perm_read': 1,
+            'perm_write': 1,
+        })
+
+    def print_report(self):
+        self.partner.sudo(self.user).print_report('sample_report', {})
+
     def test_01_generate_report(self):
-        self.partner.print_report('sample_report', {})
+        self.print_report()
 
     def prepare_report_by_lang(self):
         self.report.write({
@@ -68,17 +86,17 @@ class TestReportAerooCmis(common.SavepointCase):
 
     def test_02_generate_report_by_lang(self):
         self.prepare_report_by_lang()
-        self.partner.print_report('sample_report', {})
+        self.print_report()
 
     def test_03_generate_report_exception(self):
         # Generate the report a first time in order to store the template
         # in the Odoo database
-        self.partner.print_report('sample_report', {})
+        self.print_report()
         self.backend.password = 'wrong_password'
-        self.partner.print_report('sample_report', {})
+        self.print_report()
 
     def test_04_generate_report_by_lang_exception(self):
         self.prepare_report_by_lang()
-        self.partner.print_report('sample_report', {})
+        self.print_report()
         self.backend.password = 'wrong_password'
-        self.partner.print_report('sample_report', {})
+        self.print_report()

@@ -26,7 +26,7 @@ class AerooDmsBackendRepository(models.Model):
     @api.multi
     def name_get(self):
         return [
-            (r.id, "%s / %s" % (self.backend_id.name, self.name))
+            (r.id, "%s / %s" % (r.backend_id.name, r.name))
             for r in self
         ]
 

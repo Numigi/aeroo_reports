@@ -42,7 +42,7 @@ class IrActionsReportLine(models.Model):
 
         try:
             repository = self.report_id.dms_repository_id
-            data, version = repository.read_document_from_path(
+            data, version = repository.sudo().read_document_from_path(
                 self.template_location)
         except:
             if self.template_data:
@@ -53,8 +53,9 @@ class IrActionsReportLine(models.Model):
                 raise
 
         if self.dms_document_version != version:
-            self.template_data = base64.encodestring(data)
-            self.dms_document_version = version
+            line = self.sudo()
+            line.template_data = base64.encodestring(data)
+            line.dms_document_version = version
 
         return data
 

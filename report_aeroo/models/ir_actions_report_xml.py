@@ -166,7 +166,6 @@ class ReportXml(models.Model):
     @api.multi
     def get_aeroo_report_template(self, record):
         self.ensure_one()
-        self = self.sudo()
 
         if self.tml_source == 'lang':
             lang = safe_eval(self.lang_eval, {'o': record})

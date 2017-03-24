@@ -66,8 +66,9 @@ class ReportXml(models.Model):
         assert self.tml_source == 'dms'
 
         try:
-            data, version = self.dms_repository_id.read_document_from_path(
-                self.dms_path)
+            data, version = (
+                self.dms_repository_id.sudo()
+                .read_document_from_path(self.dms_path))
         except:
             if self.report_rml_content:
                 self.log_dms_exception_message(
@@ -77,8 +78,9 @@ class ReportXml(models.Model):
                 raise
 
         if self.dms_document_version != version:
-            self.report_rml_content = base64.encodestring(data)
-            self.dms_document_version = version
+            report = self.sudo()
+            report.report_rml_content = base64.encodestring(data)
+            report.dms_document_version = version
 
         message = _(
             'Printing the report %s using version %s.') % (self.name, version)

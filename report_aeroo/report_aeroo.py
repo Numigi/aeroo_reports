@@ -3,6 +3,7 @@
 # © 2016 Savoir-faire Linux
 # License GPL-3.0 or later (http://www.gnu.org/licenses/gpl).
 
+import base64
 import logging
 import os
 import subprocess
@@ -99,9 +100,9 @@ class AerooReport(report_sxw):
             template = report_xml.template_from_lang(lang)
 
         else:
-            template = report_xml.report_sxw_content
-            if not template:
+            if not report_xml.report_sxw_content:
                 raise osv.except_osv(_('Error!'), _('No template found!'))
+            template = base64.decodestring(report_xml.report_sxw_content)
 
         template_io = StringIO()
         template_io.write(template)

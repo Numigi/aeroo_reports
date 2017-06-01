@@ -5,8 +5,8 @@
 import base64
 import traceback
 
-from openerp import api, fields, models, _, tools
-from openerp.exceptions import ValidationError
+from odoo import api, fields, models, _, tools
+from odoo.exceptions import ValidationError
 
 
 class ReportXml(models.Model):

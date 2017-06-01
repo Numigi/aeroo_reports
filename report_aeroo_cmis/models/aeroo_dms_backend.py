@@ -2,9 +2,9 @@
 # © 2016 Savoir-faire Linux
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from openerp import api, fields, models
-from openerp.addons.connector.connector import ConnectorEnvironment
-from openerp.addons.connector.session import ConnectorSession
+from odoo import api, fields, models
+from odoo.addons.connector.connector import ConnectorEnvironment
+from odoo.addons.connector.session import ConnectorSession
 from ..unit.backend_adapter import DmsAdapter
 
 

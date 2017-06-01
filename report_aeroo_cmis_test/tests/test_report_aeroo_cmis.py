@@ -3,7 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 import base64
-from openerp.tests import common
+from odoo.tests import common
 
 
 class TestReportAerooCmis(common.SavepointCase):

@@ -8,7 +8,7 @@ import logging
 import os
 
 import subprocess
-import time
+from time import time
 
 from aeroolib.plugins.opendocument import Template, OOSerializer
 from cStringIO import StringIO
@@ -20,6 +20,7 @@ from odoo.report.report_sxw import report_sxw
 from odoo.tools.translate import _
 from odoo.tools.safe_eval import safe_eval
 from odoo.exceptions import ValidationError
+
 from tempfile import NamedTemporaryFile
 
 from .extra_functions import ExtraFunctions

@@ -4,13 +4,13 @@
 
 {
     'name': 'Test Aeroo Reports CMIS',
-    'version': '8.0.1.0.0',
+    'version': '10.0.1.0.0',
     'category': 'Generic Modules/Aeroo Reports',
-    'author': 'Alistek',
-    'website': 'https://www.savoirfairelinux.com.com',
+    'author': 'Savoir-faire Linux',
+    'website': 'https://www.savoirfairelinux.com',
     'depends': ['report_aeroo_sample', 'report_aeroo_cmis'],
     'data': [],
     "license": "AGPL-3",
-    'installable': True,
+    'installable': False,
     'application': False,
 }

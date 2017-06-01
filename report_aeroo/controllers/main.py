@@ -4,11 +4,11 @@
 
 import time
 import simplejson
-from openerp import api, http
-from openerp.modules import registry
-from openerp.http import request
-from openerp.tools.safe_eval import safe_eval
-from openerp.addons.web.controllers.main import (
+from odoo import api, http
+from odoo.modules import registry
+from odoo.http import request
+from odoo.tools.safe_eval import safe_eval
+from odoo.addons.web.controllers.main import (
     Reports as ReportController,
     serialize_exception,
 )

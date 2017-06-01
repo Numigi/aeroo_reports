@@ -47,7 +47,6 @@
                                 </field>
                                 <field name="lang_eval"
                                     attrs="{'invisible': [('tml_source', '!=', 'lang')],'required': [('tml_source','=','lang')]}"/>
-                                <field name="parser_loc"/>
                             </group>
                             <group string="Attachments">
                                 <field name="attachment"/>

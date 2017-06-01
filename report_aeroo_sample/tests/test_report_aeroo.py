@@ -47,7 +47,7 @@ class TestAerooReport(common.SavepointCase):
     def test_03_sample_report_pdf_with_attachment(self):
         self.report.write({
             'attachment_use': True,
-            'attachment': "'%s.pdf' % (object.name)",
+            'attachment': "'%s' % (object.name)",
         })
         self.report.out_format = self.env.ref(
             'report_aeroo.report_mimetypes_pdf_odt')

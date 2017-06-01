@@ -4,8 +4,8 @@
 
 import base64
 
-from openerp import api, fields, models
-from openerp.exceptions import ValidationError
+from odoo import api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class IrActionsReportLine(models.Model):

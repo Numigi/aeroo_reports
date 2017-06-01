@@ -4,7 +4,7 @@
 
 from cStringIO import StringIO
 
-from openerp.addons.connector.unit.backend_adapter import CRUDAdapter
+from odoo.addons.connector.unit.backend_adapter import CRUDAdapter
 from cmislib.model import CmisClient
 
 

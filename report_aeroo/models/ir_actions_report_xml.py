@@ -175,6 +175,8 @@ class ReportXml(models.Model):
             if not template:
                 raise ValidationError(
                     _('No template found for report %s' % self.report_name))
-            template = base64.decodestring(template)
+
+            if self.tml_source == 'database':
+                template = base64.decodestring(template)
 
         return template

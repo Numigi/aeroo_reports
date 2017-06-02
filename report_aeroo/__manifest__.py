@@ -12,6 +12,9 @@
     'website': 'http://www.alistek.com',
     'complexity': "easy",
     'depends': ['base', 'report'],
+    'external_dependencies': {
+        'python': ['aeroolib', 'genshi', 'simplejson'],
+    },
     'data': [
         "security/security.xml",
         "report_view.xml",

@@ -11,13 +11,17 @@
     'author': 'Alistek',
     'website': 'http://www.alistek.com',
     'complexity': "easy",
-    'depends': ['base'],
+    'depends': ['base', 'report'],
+    'external_dependencies': {
+        'python': ['aeroolib', 'genshi', 'simplejson'],
+    },
     'data': [
+        "security/security.xml",
         "report_view.xml",
         "data/report_aeroo_data.xml",
         "wizard/add_print_button_view.xml",
         "wizard/remove_print_button_view.xml",
-        "security/ir.model.access.csv"
+        "security/ir.model.access.csv",
     ],
     "license": "GPL-3 or any later version",
     'installable': True,

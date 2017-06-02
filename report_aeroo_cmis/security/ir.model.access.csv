@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+aeroo_dms_backend_system,aeroo_dms_backend_system,model_aeroo_dms_backend,connector.group_connector_manager,1,1,1,1
+aeroo_dms_backend_repository_system,aeroo_dms_backend_repository_system,model_aeroo_dms_backend_repository,connector.group_connector_manager,1,1,1,1
+aeroo_dms_backend_manager,aeroo_dms_backend_manager,model_aeroo_dms_backend,base.group_user,1,0,0,0
+aeroo_dms_backend_repository_manager,aeroo_dms_backend_repository_manager,model_aeroo_dms_backend_repository,base.group_user,1,0,0,0

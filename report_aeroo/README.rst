@@ -8,4 +8,4 @@ was to clean every non absolutely required features.
 
 The advantage of this version is that you don't need an Aeroo DOCS server in order
 to convert your reports from a format to another.
-Instead, you need to install soffice on your Odoo server.
+Instead, you need to install libreoffice on your Odoo server.

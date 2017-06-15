@@ -104,13 +104,75 @@ class AerooReport(report_sxw):
 
             filedir, filename = os.path.split(temp_file.name)
 
-            subprocess.check_output([
-                "soffice", "--headless", "--convert-to", output_format,
+            libreoffice_location = (
+                report_xml.env['ir.config_parameter'].get_param(
+                    'report_aeroo.libreoffice_location')
+            )
+
+            if not libreoffice_location:
+                raise ValidationError(
+                    _('Aeroo reports are wrongly configured. '
+                      'The global parameter report_aeroo.libreoffice_location '
+                      'must be defined.'))
+
+            proc = subprocess.Popen([
+                libreoffice_location, "--headless",
+                "--convert-to", output_format,
                 "--outdir", filedir, temp_file.name
             ])
 
-            with open(temp_file.name[:-3] + output_format, 'r') as f:
+            timetaken = 0
+
+            libreoffice_timeout = (
+                report_xml.env['ir.config_parameter'].get_param(
+                    'report_aeroo.libreoffice_timeout')
+            )
+
+            if not libreoffice_timeout:
+                raise ValidationError(
+                    _('Aeroo reports are wrongly configured. '
+                      'The global parameter report_aeroo.libreoffice_timeout '
+                      'must be defined.'))
+
+            libreoffice_timeout = float(libreoffice_timeout)
+
+            while True:
+                status = proc.poll()
+                if status is 0:
+                    break
+
+                elif status is not None:
+                    os.remove(temp_file.name)
+                    raise ValidationError(
+                        _('Could not convert the report %(report)s '
+                          'from %(input_format)s to %(output_format)s.') % {
+                            'report': report_xml.name,
+                            'input_format': input_format,
+                            'output_format': output_format,
+                        })
+
+                timetaken += 0.1
+                time.sleep(0.1)
+
+                if timetaken > libreoffice_timeout:
+                    proc.kill()
+                    os.remove(temp_file.name)
+                    raise ValidationError(
+                        _('Could not convert the report %(report)s '
+                          'from %(input_format)s to %(output_format)s. '
+                          'Timeout Exceeded.') % {
+                            'report': report_xml.name,
+                            'input_format': input_format,
+                            'output_format': output_format,
+                        })
+
+            output_filename = temp_file.name[:-3] + output_format
+
+            with open(output_filename, 'r') as f:
                 data = f.read()
+
+            os.remove(temp_file.name)
+            os.remove(output_filename)
 
         return data, output_format
 

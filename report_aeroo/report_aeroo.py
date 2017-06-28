@@ -8,7 +8,7 @@ import logging
 import os
 
 import subprocess
-from time import time
+import time
 
 from aeroolib.plugins.opendocument import Template, OOSerializer
 from cStringIO import StringIO

@@ -46,7 +46,7 @@ class TestAerooReport(common.SavepointCase):
         self.report.report_line_ids = [(0, 0, {
             'lang_id': self.env.ref('base.lang_en').id,
             'template_source': 'file',
-            'template_location': 'report_aeroo_sample/report/template.odt',
+            'template_location': 'report_aeroo/demo/template.odt',
         })]
         self.report.out_format = self.env.ref(
             'report_aeroo.report_mimetypes_pdf_odt')

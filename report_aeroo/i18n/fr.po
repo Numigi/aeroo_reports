@@ -52,6 +52,22 @@ msgid "Aeroo Reports"
 msgstr "Rapports Aeroo"
 
 #. module: report_aeroo
+#: code:addons/report_aeroo/report_aeroo.py:0
+#, python-format
+msgid "Aeroo reports are wrongly configured. "
+"The global parameter report_aeroo.libreoffice_timeout "
+"must be defined."
+msgstr "Les rapports Aeroo sont mal configurés. Le paramètre global report_aeroo.libreoffice_timeout doit être défini."
+
+#. module: report_aeroo
+#: code:addons/report_aeroo/report_aeroo.py:0
+#, python-format
+msgid "Aeroo reports are wrongly configured. "
+"The global parameter report_aeroo.libreoffice_location "
+"must be defined."
+msgstr "Les rapports Aeroo sont mal configurés. Le paramètre global report_aeroo.libreoffice_location doit être défini."
+
+#. module: report_aeroo
 #: code:addons/report_aeroo/report_aeroo.py:69
 #, python-format
 msgid ""
@@ -81,6 +97,18 @@ msgstr "Code"
 #: model:ir.model.fields,field_description:report_aeroo.field_report_mimetypes_compatible_types
 msgid "Compatible Mime-Types"
 msgstr "Types compatibles"
+
+#. module: report_aeroo
+#: code:addons/report_aeroo/report_aeroo.py:0
+#, python-format
+msgid "Could not convert the report %(report)s from %(input_format)s to %(output_format)s."
+msgstr "Le rapport %(report)s n'a pu être converti du format %(input_format)s vers %(output_format)s."
+
+#. module: report_aeroo
+#: code:addons/report_aeroo/report_aeroo.py:0
+#, python-format
+msgid "Could not convert the report %(report)s from %(input_format)s to %(output_format)s. Timeout Exceeded."
+msgstr "Le rapport %(report)s n'a pu être converti du format %(input_format)s vers %(output_format)s. Le temps d'attente maximal est atteint."
 
 #. module: report_aeroo
 #: code:addons/report_aeroo/models/ir_actions_report_xml.py:78

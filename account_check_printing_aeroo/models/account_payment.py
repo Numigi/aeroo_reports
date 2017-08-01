@@ -18,13 +18,7 @@ class AccountPayment(models.Model):
         return super(AccountPayment, self).do_print_checks()
 
     def _get_check_amount_in_words(self, amount):
-        """Add support for French amounts in words.
-
-        The module account_check_printing always translates the
-        amount in english in onchange functions.
-        """
         lang = self.journal_id.check_report_lang
-
         amount_in_word = num2words(int(amount), lang=lang or 'en_US')
         cents = int(amount * 100) % 100
         return '%s %s/100' % (amount_in_word, cents)

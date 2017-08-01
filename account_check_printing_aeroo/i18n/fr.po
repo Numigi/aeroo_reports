@@ -28,7 +28,7 @@ msgstr "Langue du rapport de chèque"
 #. module: account_check_printing_aeroo
 #: model:ir.actions.report.xml,name:account_check_printing_aeroo.sample_report
 msgid "Check Sample"
-msgstr "Check Démo"
+msgstr "Chèque Démo"
 
 #. module: account_check_printing_aeroo
 #: model:ir.model,name:account_check_printing_aeroo.model_account_journal
@@ -38,4 +38,4 @@ msgstr "Journal"
 #. module: account_check_printing_aeroo
 #: model:ir.model,name:account_check_printing_aeroo.model_account_payment
 msgid "Payments"
-msgstr "Paiement"
+msgstr "Paiements"

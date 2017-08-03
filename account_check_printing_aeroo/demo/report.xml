@@ -5,7 +5,7 @@
     <record id="sample_report" model="ir.actions.report.xml">
         <field name="name">Check Sample</field>
         <field name="type">ir.actions.report.xml</field>
-        <field name="model">res.partner</field>
+        <field name="model">account.payment</field>
         <field name="report_name">check_ca</field>
         <field name="report_type">aeroo</field>
         <field name="in_format">oo-odt</field>

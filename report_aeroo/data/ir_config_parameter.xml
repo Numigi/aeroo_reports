@@ -7,6 +7,11 @@
             <field name="value">libreoffice</field>
         </record>
 
+        <record id="pdftk_location" model="ir.config_parameter">
+            <field name="key">report_aeroo.pdftk_location</field>
+            <field name="value">pdftk</field>
+        </record>
+
         <record id="libreoffice_timeout" model="ir.config_parameter">
             <field name="key">report_aeroo.libreoffice_timeout</field>
             <field name="value">60</field>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_account_payment_form_inherited" model="ir.ui.view">
+        <field name="name">account.payment.form.inherited</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account_check_printing.view_account_payment_form_inherited" />
+        <field name="arch" type="xml">
+
+            <field name="check_amount_in_words" position="attributes">
+                <attribute name="attrs">{'invisible': [('payment_method_code', '!=', 'check_printing')]}</attribute>
+                <attribute name="groups"/>
+            </field>
+
+            <field name="check_number" position="attributes">
+                <attribute name="attrs">{'invisible': ['|', ('payment_method_code', '!=', 'check_printing')]}</attribute>
+                <attribute name="readonly">0</attribute>
+            </field>
+
+        </field>
+    </record>
+
+</odoo>

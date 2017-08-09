@@ -18,6 +18,10 @@ class AccountPayment(models.Model):
         return super(AccountPayment, self).do_print_checks()
 
     def _get_check_amount_in_words(self, amount):
+        if self.currency_id.rounding != 0.01:
+            return (
+                super(AccountPayment, self)._get_check_amount_in_words(amount)
+            )
         lang = self.journal_id.check_report_lang
         amount_in_word = num2words(int(amount), lang=lang or 'en_US')
         cents = int(amount * 100) % 100

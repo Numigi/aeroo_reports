@@ -1,0 +1,41 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* account_check_printing_aeroo
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 10.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-07-27 17:48+0000\n"
+"PO-Revision-Date: 2017-07-27 17:48+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: account_check_printing_aeroo
+#: model:ir.model.fields,field_description:account_check_printing_aeroo.field_account_journal_check_report_id
+msgid "Check Report"
+msgstr "Rapport de chèque"
+
+#. module: account_check_printing_aeroo
+#: model:ir.model.fields,field_description:account_check_printing_aeroo.field_account_journal_check_report_lang
+msgid "Check Report Language"
+msgstr "Langue du rapport de chèque"
+
+#. module: account_check_printing_aeroo
+#: model:ir.actions.report.xml,name:account_check_printing_aeroo.sample_report
+msgid "Check Sample"
+msgstr "Chèque Démo"
+
+#. module: account_check_printing_aeroo
+#: model:ir.model,name:account_check_printing_aeroo.model_account_journal
+msgid "Journal"
+msgstr "Journal"
+
+#. module: account_check_printing_aeroo
+#: model:ir.model,name:account_check_printing_aeroo.model_account_payment
+msgid "Payments"
+msgstr "Paiements"

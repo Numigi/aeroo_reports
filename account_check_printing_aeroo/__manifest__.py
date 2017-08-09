@@ -17,7 +17,6 @@
     ],
     'data': [
         'views/account_journal.xml',
-        'views/account_payment.xml',
     ],
     'demo': [
         'demo/report.xml',

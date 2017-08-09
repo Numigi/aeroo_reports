@@ -103,3 +103,19 @@ Displaying each element of a list on a seperate row:
 | 2 | python://for each="line in o.order_line" |                          |
 | 3 | python://line.name                       | python://line.price_unit |
 | 4 | python:///for                            |                          |
+
+
+## Insert an image in a report
+
+In the template, you must insert a frame in order to display an image dynamically.
+
+Go to: Insert -> Frame -> Frame...
+In the 'Type' tab:
+* For the Width, check Relative To, then choose a width percentage.
+* For the Height, check Relative To, uncheck AutoSize, then choose a height percentage.
+
+You can also resize with more precision the image/frame by selecting it and dragging
+with the mouse its corner/side.
+
+In the 'Options' tab:
+* In the field Name write image:asimage(o.image)

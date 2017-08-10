@@ -3,7 +3,8 @@
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 
 from num2words import num2words
-from odoo import api, models
+from odoo import api, models, _
+from odoo.exceptions import UserError
 
 
 class AccountPayment(models.Model):
@@ -12,9 +13,15 @@ class AccountPayment(models.Model):
 
     @api.multi
     def do_print_checks(self):
-        if self.journal_id.check_report_id:
+        if len(self.mapped('journal_id')) != 1:
+            raise UserError(_(
+                'In order to generate checks in batch, all selected '
+                'payments must belong to the same journal (bank account).'
+            ))
+        journal = self[0].journal_id
+        if journal.check_report_id:
             return self.env['report'].get_action(
-                self, self.journal_id.check_report_id.report_name)
+                self, journal.check_report_id.report_name)
         return super(AccountPayment, self).do_print_checks()
 
     def _get_check_amount_in_words(self, amount):

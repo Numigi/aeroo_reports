@@ -29,6 +29,11 @@ class TestAerooReport(common.SavepointCase):
         cls.lang_en = cls.env.ref('base.lang_en').id
         cls.lang_fr = cls.env.ref('base.lang_fr').id
 
+        cls.partner_2 = cls.env['res.partner'].create({
+            'name': 'My Partner 2',
+            'lang': 'en_US',
+        })
+
         cls.report = cls.env.ref('report_aeroo.aeroo_sample_report_id')
         cls.report.write({
             'attachment': None,
@@ -37,6 +42,10 @@ class TestAerooReport(common.SavepointCase):
 
         cls.env['ir.config_parameter'].set_param(
             'report_aeroo.libreoffice_location', 'libreoffice')
+
+        cls.env['ir.config_parameter'].set_param(
+            'report_aeroo.pdftk_location', 'pdftk')
+
         cls.env['ir.config_parameter'].set_param(
             'report_aeroo.libreoffice_timeout', '60')
 
@@ -48,7 +57,8 @@ class TestAerooReport(common.SavepointCase):
     def test_02_sample_report_pdf(self):
         self.report.out_format = self.env.ref(
             'report_aeroo.report_mimetypes_pdf_odt')
-        self.partner.print_report('sample_report', {})
+        data = self.partner.print_report('sample_report', {})
+        self.assertEqual(data[0].count('alistek'), 1)
 
     def _create_report_line(self, lang, company=None):
         self.report.write({
@@ -153,3 +163,22 @@ class TestAerooReport(common.SavepointCase):
         self._create_report_line(self.lang_fr)
         with self.assertRaises(ValidationError):
             self.partner.print_report('sample_report', {})
+
+    def test_12_sample_report_pdf_with_multiple_export(self):
+        self.report.out_format = self.env.ref(
+            'report_aeroo.report_mimetypes_pdf_odt')
+        partners = self.partner | self.partner_2
+
+        data = partners.print_report('sample_report', {})
+        self.assertTrue(data[0])
+        self.assertEqual(data[0].count('alistek'), 2)
+
+    def test_13_pdf_low_timeout(self):
+        self.env['ir.config_parameter'].set_param(
+            'report_aeroo.libreoffice_timeout', '0.01')
+        self.report.out_format = self.env.ref(
+            'report_aeroo.report_mimetypes_pdf_odt')
+        partners = self.partner | self.partner_2
+
+        with self.assertRaises(ValidationError):
+            partners.print_report('sample_report', {})

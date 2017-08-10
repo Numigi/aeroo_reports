@@ -56,6 +56,63 @@ class DynamicLookup(StrictLookup):
 
 class AerooReport(report_sxw):
 
+    def generate_temporary_file(self, cr, uid, ids, data, format):
+        temp_file = NamedTemporaryFile(
+            suffix='.%s' % format, delete=False)
+        temp_file.close()
+
+        with open(temp_file.name, 'w') as f:
+            f.write(data)
+
+        return temp_file
+
+    def run_subprocess(self, cr, uid, ids, report_xml, temp_file, cmd):
+        output_format = report_xml.out_format.code[3:]
+
+        proc = subprocess.Popen(cmd)
+
+        timetaken = 0
+
+        libreoffice_timeout = (
+            report_xml.env['ir.config_parameter'].get_param(
+                'report_aeroo.libreoffice_timeout')
+        )
+        if not libreoffice_timeout:
+            raise ValidationError(
+                _('Aeroo reports are wrongly configured. '
+                  'The global parameter report_aeroo.libreoffice_timeout '
+                  'must be defined.'))
+
+        libreoffice_timeout = float(libreoffice_timeout)
+
+        while True:
+            status = proc.poll()
+            if status is 0:
+                break
+
+            elif status is not None:
+                os.remove(temp_file.name)
+                raise ValidationError(
+                    _('Could not generate the report %(report)s '
+                      'using the format %(output_format)s.') % {
+                        'report': report_xml.name,
+                        'output_format': output_format,
+                    })
+
+            timetaken += 0.1
+            time.sleep(0.1)
+
+            if timetaken > libreoffice_timeout:
+                proc.kill()
+                os.remove(temp_file.name)
+                raise ValidationError(
+                    _('Could not generate the report %(report)s '
+                      'using the format %(output_format)s. '
+                      'Timeout Exceeded.') % {
+                        'report': report_xml.name,
+                        'output_format': output_format,
+                    })
+
     def create_aeroo_report(
             self, cr, uid, ids, data, report_xml, context):
         """ Return an aeroo report generated with aeroolib
@@ -95,13 +152,8 @@ class AerooReport(report_sxw):
         data = basic.generate(**oo_parser.localcontext).render().getvalue()
 
         if input_format != output_format:
-            temp_file = NamedTemporaryFile(
-                suffix='.%s' % input_format, delete=False)
-            temp_file.close()
-
-            with open(temp_file.name, 'w') as f:
-                f.write(data)
-
+            temp_file = self.generate_temporary_file(
+                cr, uid, ids, data, input_format)
             filedir, filename = os.path.split(temp_file.name)
 
             libreoffice_location = (
@@ -115,56 +167,13 @@ class AerooReport(report_sxw):
                       'The global parameter report_aeroo.libreoffice_location '
                       'must be defined.'))
 
-            proc = subprocess.Popen([
+            cmd = [
                 libreoffice_location, "--headless",
                 "--convert-to", output_format,
                 "--outdir", filedir, temp_file.name
-            ])
+            ]
 
-            timetaken = 0
-
-            libreoffice_timeout = (
-                report_xml.env['ir.config_parameter'].get_param(
-                    'report_aeroo.libreoffice_timeout')
-            )
-
-            if not libreoffice_timeout:
-                raise ValidationError(
-                    _('Aeroo reports are wrongly configured. '
-                      'The global parameter report_aeroo.libreoffice_timeout '
-                      'must be defined.'))
-
-            libreoffice_timeout = float(libreoffice_timeout)
-
-            while True:
-                status = proc.poll()
-                if status is 0:
-                    break
-
-                elif status is not None:
-                    os.remove(temp_file.name)
-                    raise ValidationError(
-                        _('Could not convert the report %(report)s '
-                          'from %(input_format)s to %(output_format)s.') % {
-                            'report': report_xml.name,
-                            'input_format': input_format,
-                            'output_format': output_format,
-                        })
-
-                timetaken += 0.1
-                time.sleep(0.1)
-
-                if timetaken > libreoffice_timeout:
-                    proc.kill()
-                    os.remove(temp_file.name)
-                    raise ValidationError(
-                        _('Could not convert the report %(report)s '
-                          'from %(input_format)s to %(output_format)s. '
-                          'Timeout Exceeded.') % {
-                            'report': report_xml.name,
-                            'input_format': input_format,
-                            'output_format': output_format,
-                        })
+            self.run_subprocess(cr, uid, ids, report_xml, temp_file, cmd)
 
             output_filename = temp_file.name[:-3] + output_format
 
@@ -176,28 +185,72 @@ class AerooReport(report_sxw):
 
         return data, output_format
 
+    def create_aeroo_merged_report(
+            self, cr, uid, ids, data, report_xml, context=None):
+        output_format = report_xml.out_format.code[3:]
+
+        if output_format != 'pdf':
+            raise ValidationError(
+                _('Aeroo Reports do not support generating non-pdf '
+                  'reports in batch. You must select one record '
+                  'at a time.'))
+
+        file_names = []
+
+        for record_id in ids:
+            report = self.create(cr, uid, [record_id], data, context)
+
+            temp_file = self.generate_temporary_file(
+                cr, uid, [record_id], report[0], output_format)
+            file_names.append(temp_file.name)
+
+        output_file = NamedTemporaryFile(
+            suffix='.%s' % output_format, delete=False)
+        output_file.close()
+        output_filename = output_file.name[:-3] + output_format
+
+        pdftk_location = (
+            report_xml.env['ir.config_parameter'].get_param(
+                'report_aeroo.pdftk_location')
+        )
+
+        if not pdftk_location:
+            raise ValidationError(
+                _('Aeroo reports are wrongly configured. '
+                  'The global parameter report_aeroo.pdftk_location '
+                  'must be defined.'))
+
+        cmd = [pdftk_location]
+        cmd += file_names
+        cmd += ['cat', 'output', output_filename]
+
+        self.run_subprocess(cr, uid, ids, report_xml, temp_file, cmd)
+
+        with open(output_filename, 'r') as f:
+            data = f.read()
+        return data, output_format
+
     def create(self, cr, uid, ids, data, context=None):
         if context is None:
             context = {}
         else:
             context = dict(context)
 
-        if len(ids) > 1:
-            raise ValidationError(
-                _('Aeroo Reports do not support generating reports in batch. '
-                  'You must select one record at a time.'))
-
         env = api.Environment(cr, uid, context)
-
-        if 'tz' not in context:
-            context['tz'] = env.user.tz
-
-        data.setdefault('model', context.get('active_model', False))
 
         name = self.name.startswith('report.') and self.name[7:] or self.name
 
         report_xml = env['ir.actions.report.xml'].search(
             [('report_name', '=', name)])
+
+        if len(ids) > 1:
+            return self.create_aeroo_merged_report(
+                cr, uid, ids, data, report_xml, context=context)
+
+        if 'tz' not in context:
+            context['tz'] = env.user.tz
+
+        data.setdefault('model', context.get('active_model', False))
 
         report_type = report_xml.report_type
         assert report_type == 'aeroo'

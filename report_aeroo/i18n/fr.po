@@ -71,10 +71,10 @@ msgstr "Les rapports Aeroo sont mal configurés. Le paramètre global report_aer
 #: code:addons/report_aeroo/report_aeroo.py:69
 #, python-format
 msgid ""
-"Aeroo Reports do not support generating reports in batch. You must select "
+"Aeroo Reports do not support generating non-pdf reports in batch. You must select "
 "one record at a time."
 msgstr ""
-"Les rapports Aeroo ne supportent pas l'impression en lot. S.v.p. "
+"Les rapports Aeroo ne supportent pas l'impression en lot de rapports non-pdf. S.v.p. "
 "sélectionner un rapport à la fois."
 
 #. module: report_aeroo
@@ -111,14 +111,14 @@ msgstr "Types compatibles"
 #. module: report_aeroo
 #: code:addons/report_aeroo/report_aeroo.py:0
 #, python-format
-msgid "Could not convert the report %(report)s from %(input_format)s to %(output_format)s."
-msgstr "Le rapport %(report)s n'a pu être converti du format %(input_format)s vers %(output_format)s."
+msgid "Could not generate the report %(report)s using the format %(output_format)s."
+msgstr "Le rapport %(report)s n'a pu être généré en format %(output_format)s."
 
 #. module: report_aeroo
 #: code:addons/report_aeroo/report_aeroo.py:0
 #, python-format
-msgid "Could not convert the report %(report)s from %(input_format)s to %(output_format)s. Timeout Exceeded."
-msgstr "Le rapport %(report)s n'a pu être converti du format %(input_format)s vers %(output_format)s. Le temps d'attente maximal est atteint."
+msgid "Could not generate the report %(report)s using the format %(output_format)s. Timeout Exceeded."
+msgstr "Le rapport %(report)s n'a pu être généré en format %(output_format)s. Le temps d'attente maximal est atteint."
 
 #. module: report_aeroo
 #: code:addons/report_aeroo/models/ir_actions_report_xml.py:78

@@ -20,6 +20,10 @@ from odoo.osv.orm import browse_record_list
 from odoo.tools import translate
 from odoo.tools.safe_eval import safe_eval as eval
 
+from odoo.tools import (
+    DEFAULT_SERVER_DATE_FORMAT,
+    DEFAULT_SERVER_DATETIME_FORMAT)
+
 logger = logging.getLogger('report_aeroo')
 
 

@@ -13,18 +13,30 @@ class TestAerooReport(common.SavepointCase):
     @classmethod
     def setUpClass(cls):
         super(TestAerooReport, cls).setUpClass()
+        cls.company = cls.env['res.company'].create({
+            'name': 'My Company',
+        })
+        cls.company_2 = cls.env['res.company'].create({
+            'name': 'My Company 2',
+        })
+
         cls.partner = cls.env['res.partner'].create({
             'name': 'My Partner',
             'lang': 'en_US',
+            'company_id': cls.company.id,
         })
+
+        cls.lang_en = cls.env.ref('base.lang_en').id
+        cls.lang_fr = cls.env.ref('base.lang_fr').id
+
         cls.report = cls.env.ref('report_aeroo.aeroo_sample_report_id')
         cls.report.write({
             'attachment': None,
             'attachment_use': False,
         })
+
         cls.env['ir.config_parameter'].set_param(
             'report_aeroo.libreoffice_location', 'libreoffice')
-
         cls.env['ir.config_parameter'].set_param(
             'report_aeroo.libreoffice_timeout', '60')
 
@@ -38,18 +50,22 @@ class TestAerooReport(common.SavepointCase):
             'report_aeroo.report_mimetypes_pdf_odt')
         self.partner.print_report('sample_report', {})
 
-    def test_03_sample_report_pdf_by_lang(self):
+    def _create_report_line(self, lang, company=None):
         self.report.write({
             'tml_source': 'lang',
             'lang_eval': 'o.lang',
+            'out_format': self.env.ref(
+                'report_aeroo.report_mimetypes_pdf_odt').id,
         })
         self.report.report_line_ids = [(0, 0, {
-            'lang_id': self.env.ref('base.lang_en').id,
+            'lang_id': lang,
+            'company_id': company,
             'template_source': 'file',
             'template_location': 'report_aeroo/demo/template.odt',
         })]
-        self.report.out_format = self.env.ref(
-            'report_aeroo.report_mimetypes_pdf_odt')
+
+    def test_03_sample_report_pdf_by_lang(self):
+        self._create_report_line(self.lang_en)
         self.partner.print_report('sample_report', {})
 
     def test_03_sample_report_pdf_with_attachment(self):
@@ -116,5 +132,24 @@ class TestAerooReport(common.SavepointCase):
         self.env['ir.config_parameter'].set_param(
             'report_aeroo.libreoffice_timeout', '5')
 
+        with self.assertRaises(ValidationError):
+            self.partner.print_report('sample_report', {})
+
+    def test_08_multicompany_context(self):
+        self._create_report_line(self.lang_en, self.company.id)
+        self.partner.print_report('sample_report', {})
+
+    def test_09_multicompany_context(self):
+        self._create_report_line(self.lang_en, self.company.id)
+        self.partner.write({'company_id': self.company_2.id})
+        with self.assertRaises(ValidationError):
+            self.partner.print_report('sample_report', {})
+
+    def test_10_multicompany_context(self):
+        self._create_report_line(self.lang_en)
+        self.partner.print_report('sample_report', {})
+
+    def test_11_multicompany_context(self):
+        self._create_report_line(self.lang_fr)
         with self.assertRaises(ValidationError):
             self.partner.print_report('sample_report', {})

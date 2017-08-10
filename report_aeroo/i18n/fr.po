@@ -94,6 +94,16 @@ msgid "Code"
 msgstr "Code"
 
 #. module: report_aeroo
+#: model:ir.model.fields,field_description:report_aeroo.field_ir_actions_report_line_company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: report_aeroo
+#: model:ir.model.fields,field_description:report_aeroo.field_ir_act_report_xml_company_eval
+msgid "Company Evaluation"
+msgstr "Évaluation de la société"
+
+#. module: report_aeroo
 #: model:ir.model.fields,field_description:report_aeroo.field_report_mimetypes_compatible_types
 msgid "Compatible Mime-Types"
 msgstr "Types compatibles"
@@ -113,8 +123,8 @@ msgstr "Le rapport %(report)s n'a pu être converti du format %(input_format)s v
 #. module: report_aeroo
 #: code:addons/report_aeroo/models/ir_actions_report_xml.py:78
 #, python-format
-msgid "Could not render report %s in lang %s."
-msgstr "Le rapport %s n'est pas disponible pour impression dans la langue %s"
+msgid "Could not render report %s for the company %s in lang %s."
+msgstr "Le rapport %s n'est pas disponible pour impression pour la société %s dans la langue %s."
 
 #. module: report_aeroo
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_add_print_button_create_uid
@@ -321,6 +331,15 @@ msgid ""
 "start               with the module name!\n"
 " Like this: {module name}/{path to the               parser.py file}"
 msgstr ""
+
+#. module: report_aeroo
+#: model:ir.model.fields,help:report_aeroo.field_ir_act_report_xml_company_eval
+msgid ""
+"Python expression used to determine the company of the record being printed "
+"in the report."
+msgstr ""
+"Expression en python utilisée pour déterminer la société de l'objet à "
+"imprimer dans le rapport."
 
 #. module: report_aeroo
 #: model:ir.model.fields,help:report_aeroo.field_ir_act_report_xml_lang_eval

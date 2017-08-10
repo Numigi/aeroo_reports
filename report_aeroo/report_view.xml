@@ -39,6 +39,7 @@
                                 >
                                     <tree editable="bottom">
                                         <field name="lang_id"/>
+                                        <field name="company_id"/>
                                         <field name="template_source"/>
                                         <field name="template_data" filename="template_filename"/>
                                         <field name="template_filename" invisible="1"/>
@@ -46,6 +47,8 @@
                                     </tree>
                                 </field>
                                 <field name="lang_eval"
+                                    attrs="{'invisible': [('tml_source', '!=', 'lang')],'required': [('tml_source','=','lang')]}"/>
+                                <field name="company_eval"
                                     attrs="{'invisible': [('tml_source', '!=', 'lang')],'required': [('tml_source','=','lang')]}"/>
                             </group>
                             <group string="Attachments">

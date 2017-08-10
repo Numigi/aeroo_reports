@@ -61,21 +61,30 @@ class ReportXml(models.Model):
         help="Python expression used to determine the language "
         "of the record being printed in the report.",
         default="o.partner_id.lang")
+    company_eval = fields.Char(
+        'Company Evaluation',
+        help="Python expression used to determine the company "
+        "of the record being printed in the report.",
+        default="o.company_id")
 
     @api.multi
-    def get_template_from_lang(self, record, lang):
+    def get_template(self, record, lang, company):
         self.ensure_one()
 
         if not lang:
             lang = 'en_US'
 
-        line = next(
-            (l for l in self.report_line_ids if l.lang_id.code == lang), None)
+        line = next((
+            l for l in self.report_line_ids
+            if l.lang_id.code == lang and
+            (not l.company_id or l.company_id == company)
+        ), None)
 
         if line is None:
             raise ValidationError(
-                _('Could not render report %s in lang %s.') %
-                (self.name, lang))
+                _('Could not render report %s for the company %s in '
+                  'lang %s.') % (
+                    self.name, company.name, lang))
 
         return line.get_aeroo_report_template(record)
 
@@ -169,7 +178,9 @@ class ReportXml(models.Model):
 
         if self.tml_source == 'lang':
             lang = safe_eval(self.lang_eval, {'o': record})
-            template = self.get_template_from_lang(record, lang)
+            company = safe_eval(self.company_eval, {
+                'o': record, 'user': self.env.user})
+            template = self.get_template(record, lang, company)
         else:
             template = self.report_sxw_content
             if not template:

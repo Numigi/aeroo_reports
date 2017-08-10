@@ -14,6 +14,7 @@ class IrActionsReportLine(models.Model):
         'ir.actions.report.xml', 'Report', required=True,
         ondelete='cascade')
     lang_id = fields.Many2one('res.lang', 'Language', required=True)
+    company_id = fields.Many2one('res.company', 'Company')
 
     template_source = fields.Selection([
         ('database', 'Database'),

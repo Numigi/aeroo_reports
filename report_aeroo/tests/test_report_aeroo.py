@@ -5,6 +5,7 @@
 import os
 import stat
 from odoo.exceptions import ValidationError
+from odoo.modules import module
 from odoo.tests import common
 
 
@@ -13,6 +14,9 @@ class TestAerooReport(common.SavepointCase):
     @classmethod
     def setUpClass(cls):
         super(TestAerooReport, cls).setUpClass()
+        image_path = (
+            module.get_module_path('report_aeroo') + '/static/img/logo.png')
+
         cls.company = cls.env['res.company'].create({
             'name': 'My Company',
         })
@@ -24,6 +28,7 @@ class TestAerooReport(common.SavepointCase):
             'name': 'My Partner',
             'lang': 'en_US',
             'company_id': cls.company.id,
+            'image': open(image_path, 'rb') .read().encode('base64')
         })
 
         cls.lang_en = cls.env.ref('base.lang_en').id

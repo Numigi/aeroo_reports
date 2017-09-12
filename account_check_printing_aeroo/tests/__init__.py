@@ -3,5 +3,6 @@
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 
 from . import (
+    test_account_payment,
     test_check_printing,
 )

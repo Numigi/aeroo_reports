@@ -132,7 +132,7 @@ class ExtraFunctions(object):
         return get_log
 
     def _get_report_xml(self):
-        return self.env['ir.actions.report.xml'].browse(self.report_id)
+        return self.env['ir.actions.report'].browse(self.report_id)
 
     def _get_lang(self, source='current'):
         if source == 'current':
@@ -219,10 +219,10 @@ class ExtraFunctions(object):
                 'type': 'report',
                 'lang': self._get_lang(),
                 'res_id': self.report_id,
-                'name': 'ir.actions.report.xml',
+                'name': 'ir.actions.report',
             })
         return translate(
-            'ir.actions.report.xml', 'report', self._get_lang(), source
+            'ir.actions.report', 'report', self._get_lang(), source
         ) or source
 
     def _countif(self, attr, domain):

@@ -45,7 +45,7 @@ class AerooAddPrintButton(models.TransientModel):
         report = self.env[ctx['active_model']].browse(ctx['active_id'])
         event_id = self.env['ir.values'].set_action(
             report.report_name, 'client_print_multi',
-            report.model, 'ir.actions.report.xml,%d' % ctx['active_id'])
+            report.model, 'ir.actions.report,%d' % ctx['active_id'])
         self.write({'state': 'done'})
         if not self.open_action:
             return {

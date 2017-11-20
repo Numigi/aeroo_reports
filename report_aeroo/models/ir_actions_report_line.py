@@ -11,7 +11,7 @@ class IrActionsReportLine(models.Model):
     _name = 'ir.actions.report.line'
 
     report_id = fields.Many2one(
-        'ir.actions.report.xml', 'Report', required=True,
+        'ir.actions.report', 'Report', required=True,
         ondelete='cascade')
     lang_id = fields.Many2one('res.lang', 'Language', required=True)
     company_id = fields.Many2one('res.company', 'Company')

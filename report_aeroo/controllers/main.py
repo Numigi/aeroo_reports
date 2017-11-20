@@ -40,7 +40,7 @@ class Reports(ReportController):
         with registry.RegistryManager.get(request.session.db).cursor() as cr:
             env = api.Environment(
                 cr, request.session.uid, context)
-            report_xml = env['ir.actions.report.xml'].search(
+            report_xml = env['ir.actions.report'].search(
                 [('report_name', '=', action_data['report_name'])])
 
             if report_xml.attachment:

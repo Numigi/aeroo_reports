@@ -11,7 +11,7 @@ import subprocess
 import time
 
 from aeroolib.plugins.opendocument import Template, OOSerializer
-from cStringIO import StringIO
+from io import StringIO
 from genshi.template.eval import StrictLookup
 
 from odoo import api, models
@@ -240,7 +240,7 @@ class AerooReport(report_sxw):
 
         name = self.name.startswith('report.') and self.name[7:] or self.name
 
-        report_xml = env['ir.actions.report.xml'].search(
+        report_xml = env['ir.actions.report'].search(
             [('report_name', '=', name)])
 
         if len(ids) > 1:

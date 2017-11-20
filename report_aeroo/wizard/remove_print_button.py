@@ -46,7 +46,7 @@ class AerooRemovePrintButton(models.TransientModel):
         assert 'active_id' in ctx
 
         self.env['ir.values'].search([
-            ('value', '=', 'ir.actions.report.xml,%d' % ctx['active_id'])
+            ('value', '=', 'ir.actions.report,%d' % ctx['active_id'])
         ]).unlink()
         self.write({'state': 'done'})
         return {

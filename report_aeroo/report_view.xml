@@ -3,8 +3,8 @@
     <data>
 
         <record id="act_report_xml_view1" model="ir.ui.view">
-            <field name="name">ir.actions.report.xml.aeroo.form</field>
-            <field name="model">ir.actions.report.xml</field>
+            <field name="name">ir.actions.report.aeroo.form</field>
+            <field name="model">ir.actions.report</field>
             <field name="priority">16</field>
             <field name="arch" type="xml">
                 <form string="Aeroo Report">
@@ -70,8 +70,8 @@
         </record>
 
         <record id="act_aeroo_report_xml_view_tree" model="ir.ui.view">
-            <field name="name">ir.actions.report.xml.tree</field>
-            <field name="model">ir.actions.report.xml</field>
+            <field name="name">ir.actions.report.tree</field>
+            <field name="model">ir.actions.report</field>
             <field name="arch" type="xml">
                 <tree string="Report xml">
                     <field name="name"/>
@@ -85,8 +85,8 @@
         </record>
 
         <record id="act_aeroo_report_xml_search_view" model="ir.ui.view">
-            <field name="name">ir.actions.report.xml.search</field>
-            <field name="model">ir.actions.report.xml</field>
+            <field name="name">ir.actions.report.search</field>
+            <field name="model">ir.actions.report</field>
             <field name="arch" type="xml">
                 <search string="Report xml">
                     <field name="name"
@@ -107,7 +107,7 @@
             domain="[('type', '=', 'report'),('res_id', '=', active_id)]"
             view_type="form"
             res_model="ir.translation"
-            src_model="ir.actions.report.xml"
+            src_model="ir.actions.report"
             id="act_translations"/>
 
         <!-- For the original views -->
@@ -128,7 +128,7 @@
         <record id="action_aeroo_report_xml_tree" model="ir.actions.act_window">
             <field name="name">Reports</field>
             <field name="type">ir.actions.act_window</field>
-            <field name="res_model">ir.actions.report.xml</field>
+            <field name="res_model">ir.actions.report</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="domain">[('report_type','=','aeroo')]</field>

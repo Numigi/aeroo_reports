@@ -2,7 +2,7 @@
 # © 2016 Savoir-faire Linux
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from cStringIO import StringIO
+from io import StringIO
 
 from odoo.addons.connector.unit.backend_adapter import CRUDAdapter
 from cmislib.model import CmisClient

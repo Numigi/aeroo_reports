@@ -23,7 +23,7 @@ logger = logging.getLogger('report_aeroo')
 
 class ReportXml(models.Model):
 
-    _inherit = 'ir.actions.report.xml'
+    _inherit = 'ir.actions.report'
 
     @api.model
     def _get_default_outformat(self):
@@ -132,7 +132,7 @@ class ReportXml(models.Model):
         if 'report.' + name in interface.report_int._reports:
             new_report = interface.report_int._reports['report.' + name]
         else:
-            action = self.env['ir.actions.report.xml'].search(
+            action = self.env['ir.actions.report'].search(
                 [('report_name', '=', name)], limit=1)
             if action.report_type == 'aeroo':
                 if action.active is True:

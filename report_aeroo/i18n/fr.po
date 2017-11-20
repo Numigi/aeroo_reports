@@ -144,12 +144,12 @@ msgstr ""
 
 #. module: report_aeroo
 #: selection:ir.actions.report.line,template_source:0
-#: selection:ir.actions.report.xml,tml_source:0
+#: selection:ir.actions.report,tml_source:0
 msgid "Database"
 msgstr "Base de données"
 
 #. module: report_aeroo
-#: selection:ir.actions.report.xml,tml_source:0
+#: selection:ir.actions.report,tml_source:0
 msgid "Different Template per Language"
 msgstr "Différent modèle par langue"
 
@@ -190,7 +190,7 @@ msgstr "Options extra"
 
 #. module: report_aeroo
 #: selection:ir.actions.report.line,template_source:0
-#: selection:ir.actions.report.xml,tml_source:0
+#: selection:ir.actions.report,tml_source:0
 msgid "File"
 msgstr "Fichier"
 
@@ -476,7 +476,7 @@ msgstr ""
 
 #. module: report_aeroo
 #: model:ir.model,name:report_aeroo.model_ir_actions_report_xml
-msgid "ir.actions.report.xml"
+msgid "ir.actions.report"
 msgstr ""
 
 #. module: report_aeroo

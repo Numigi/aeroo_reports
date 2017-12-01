@@ -6,7 +6,8 @@
 import base64
 import logging
 import os
-
+import psutil
+import signal
 import subprocess
 import time
 
@@ -103,7 +104,7 @@ class AerooReport(report_sxw):
             time.sleep(0.1)
 
             if timetaken > libreoffice_timeout:
-                proc.kill()
+                self._terminate_process(proc)
                 os.remove(temp_file.name)
                 raise ValidationError(
                     _('Could not generate the report %(report)s '
@@ -112,6 +113,22 @@ class AerooReport(report_sxw):
                         'report': report_xml.name,
                         'output_format': output_format,
                     })
+
+    def _terminate_process(self, proc):
+        """Attempt to terminate the process.
+
+        Kill the process if it is still alive after 60 seconds.
+        """
+        proc.terminate()
+        for i in range(60):
+            time.sleep(1)
+            if proc.poll() is not None:
+                return
+
+        parent = psutil.Process(proc.pid)
+        for child in parent.children(recursive=True):
+            child.send_signal(signal.SIGKILL)
+        parent.send_signal(signal.SIGKILL)
 
     def create_aeroo_report(
             self, cr, uid, ids, data, report_xml, context):

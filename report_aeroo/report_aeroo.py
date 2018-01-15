@@ -184,8 +184,8 @@ class AerooReport(report_sxw):
                       'The global parameter report_aeroo.libreoffice_location '
                       'must be defined.'))
 
-            cmd = [
-                libreoffice_location, "--headless",
+            cmd = libreoffice_location.split(' ') + [
+                "--headless",
                 "--convert-to", output_format,
                 "--outdir", filedir, temp_file.name
             ]

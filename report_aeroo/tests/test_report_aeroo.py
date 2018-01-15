@@ -28,7 +28,7 @@ class TestAerooReport(common.SavepointCase):
             'name': 'My Partner',
             'lang': 'en_US',
             'company_id': cls.company.id,
-            'image': open(image_path, 'rb') .read().encode('base64')
+            'image': open(image_path, 'rb').read().encode('base64')
         })
 
         cls.lang_en = cls.env.ref('base.lang_en').id
@@ -112,11 +112,7 @@ class TestAerooReport(common.SavepointCase):
 
     def _set_libreoffice_location(self, filename):
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        file_location = dir_path + '/' + filename
-        os.chmod(
-            file_location,
-            stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH |
-            stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+        file_location = 'sh ' + dir_path + '/' + filename
         self.env['ir.config_parameter'].set_param(
             'report_aeroo.libreoffice_location', file_location)
 

@@ -9,7 +9,6 @@
         <field name="report_name">sample_report</field>
         <field name="report_type">aeroo</field>
         <field name="in_format">oo-odt</field>
-        <field name="parser_loc">report_aeroo/demo/parser.py</field>
         <field name="report_rml">report_aeroo/demo/template.odt</field>
         <field name="parser_state">loc</field>
         <field name="tml_source">file</field>

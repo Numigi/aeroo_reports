@@ -4,6 +4,5 @@
 # License GPL-3.0 or later (http://www.gnu.org/licenses/gpl).
 
 from . import controllers
-from . import report_aeroo
 from . import models
 from . import wizard

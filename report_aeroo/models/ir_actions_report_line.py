@@ -25,9 +25,7 @@ class IrActionsReportLine(models.Model):
     template_filename = fields.Binary('File Name')
     template_location = fields.Char('File Location')
 
-    @api.multi
-    def get_aeroo_report_template(self, record):
-        self.ensure_one()
+    def get_aeroo_template(self, record):
         if self.template_source == 'file':
             fp = tools.file_open(self.template_location, mode='r')
             data = fp.read()

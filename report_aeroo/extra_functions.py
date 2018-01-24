@@ -5,24 +5,17 @@
 
 import base64
 import logging
-import odoo.osv as osv
-import StringIO
 import time
 from datetime import datetime
-from aeroolib.plugins.opendocument import _filter
-from barcode import barcode
-from ctt_objects import supported_language
+from io import StringIO
 from PIL import Image
 
 from odoo import models
-from odoo.api import Environment
-from odoo.osv.orm import browse_record_list
-from odoo.tools import translate
-from odoo.tools.safe_eval import safe_eval as eval
-
 from odoo.tools import (
     DEFAULT_SERVER_DATE_FORMAT,
     DEFAULT_SERVER_DATETIME_FORMAT)
+
+from .barcode import barcode
 
 logger = logging.getLogger(__name__)
 

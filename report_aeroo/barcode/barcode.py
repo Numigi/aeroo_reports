@@ -30,10 +30,10 @@
 #
 ##############################################################################
 
-from code128 import get_code
-from code39 import create_c39
-from EANBarCode import EanBarCode
 from io import StringIO
+from .code128 import get_code
+from .code39 import create_c39
+from .EANBarCode import EanBarCode
 
 
 def make_barcode(code, code_type='ean13', rotate=None, height=50, xw=1):

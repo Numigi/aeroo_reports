@@ -3,7 +3,7 @@
 # License GPL-3.0 or later (http://www.gnu.org/licenses/gpl).
 
 from . import (
+    report_mimetypes,
     ir_actions_report,
     ir_actions_report_line,
-    report_mimetypes,
 )

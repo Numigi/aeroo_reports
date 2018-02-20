@@ -7,7 +7,7 @@ import base64
 import logging
 import time
 from datetime import datetime
-from io import StringIO
+from io import BytesIO
 from PIL import Image
 
 from odoo import models
@@ -62,9 +62,9 @@ class ExtraFunctions(object):
             return result
         ##############################################
         if not field_value:
-            return StringIO.StringIO(), 'image/png'
+            return BytesIO(), 'image/png'
         field_value = base64.decodestring(field_value)
-        tf = StringIO.StringIO(field_value)
+        tf = BytesIO(field_value)
         tf.seek(0)
         im = Image.open(tf)
         format = im.format.lower()

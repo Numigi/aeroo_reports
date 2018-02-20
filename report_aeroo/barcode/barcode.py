@@ -30,7 +30,7 @@
 #
 ##############################################################################
 
-from io import StringIO
+from io import BytesIO
 from .code128 import get_code
 from .code39 import create_c39
 from .EANBarCode import EanBarCode
@@ -46,9 +46,9 @@ def make_barcode(code, code_type='ean13', rotate=None, height=50, xw=1):
         elif code_type.lower() == 'code39':
             im = create_c39(height, xw, code)
     else:
-        return StringIO(), 'image/png'
+        return BytesIO(), 'image/png'
 
-    tf = StringIO()
+    tf = BytesIO()
     try:
         if rotate is not None:
             im = im.rotate(int(rotate))

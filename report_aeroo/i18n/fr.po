@@ -89,12 +89,12 @@ msgid "Client Events"
 msgstr ""
 
 #. module: report_aeroo
-#: model:ir.model.fields,field_description:report_aeroo.field_report_mimetypes_code
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_mimetype_code
 msgid "Code"
 msgstr "Code"
 
 #. module: report_aeroo
-#: model:ir.model.fields,field_description:report_aeroo.field_ir_actions_report_line_company_id
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_company_id
 msgid "Company"
 msgstr "Société"
 
@@ -104,7 +104,7 @@ msgid "Company Evaluation"
 msgstr "Évaluation de la société"
 
 #. module: report_aeroo
-#: model:ir.model.fields,field_description:report_aeroo.field_report_mimetypes_compatible_types
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_mimetype_compatible_types
 msgid "Compatible Mime-Types"
 msgstr "Types compatibles"
 
@@ -129,27 +129,27 @@ msgstr "Le rapport %s n'est pas disponible pour impression pour la société %s 
 #. module: report_aeroo
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_add_print_button_create_uid
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_remove_print_button_create_uid
-#: model:ir.model.fields,field_description:report_aeroo.field_ir_actions_report_line_create_uid
-#: model:ir.model.fields,field_description:report_aeroo.field_report_mimetypes_create_uid
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_create_uid
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_mimetype_create_uid
 msgid "Created by"
 msgstr ""
 
 #. module: report_aeroo
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_add_print_button_create_date
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_remove_print_button_create_date
-#: model:ir.model.fields,field_description:report_aeroo.field_ir_actions_report_line_create_date
-#: model:ir.model.fields,field_description:report_aeroo.field_report_mimetypes_create_date
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_create_date
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_mimetype_create_date
 msgid "Created on"
 msgstr ""
 
 #. module: report_aeroo
-#: selection:ir.actions.report.line,template_source:0
-#: selection:ir.actions.report,tml_source:0
+#: selection:aeroo.template.line,template_source:0
+#: selection:ir.actions.report,aeroo_template_source:0
 msgid "Database"
 msgstr "Base de données"
 
 #. module: report_aeroo
-#: selection:ir.actions.report,tml_source:0
+#: selection:ir.actions.report,aeroo_template_source:0
 msgid "Different Template per Language"
 msgstr "Différent modèle par langue"
 
@@ -161,8 +161,8 @@ msgstr "Si décoché, le rapport devient inactif"
 #. module: report_aeroo
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_add_print_button_display_name
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_remove_print_button_display_name
-#: model:ir.model.fields,field_description:report_aeroo.field_ir_actions_report_line_display_name
-#: model:ir.model.fields,field_description:report_aeroo.field_report_mimetypes_display_name
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_display_name
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_mimetype_display_name
 msgid "Display Name"
 msgstr ""
 
@@ -189,23 +189,23 @@ msgid "Extra options"
 msgstr "Options extra"
 
 #. module: report_aeroo
-#: selection:ir.actions.report.line,template_source:0
-#: selection:ir.actions.report,tml_source:0
+#: selection:aeroo.template.line,template_source:0
+#: selection:ir.actions.report,aeroo_template_source:0
 msgid "File"
 msgstr "Fichier"
 
 #. module: report_aeroo
-#: model:ir.model.fields,field_description:report_aeroo.field_ir_actions_report_line_template_location
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_template_location
 msgid "File Location"
 msgstr "Emplacement du fichier"
 
 #. module: report_aeroo
-#: model:ir.model.fields,field_description:report_aeroo.field_ir_actions_report_line_template_filename
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_template_filename
 msgid "File Name"
 msgstr "Nom du fichier"
 
 #. module: report_aeroo
-#: model:ir.model.fields,field_description:report_aeroo.field_report_mimetypes_filter_name
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_mimetype_filter_name
 msgid "Filter Name"
 msgstr "Filtrer par nom"
 
@@ -227,8 +227,8 @@ msgstr "Groupes"
 #. module: report_aeroo
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_add_print_button_id
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_remove_print_button_id
-#: model:ir.model.fields,field_description:report_aeroo.field_ir_actions_report_line_id
-#: model:ir.model.fields,field_description:report_aeroo.field_report_mimetypes_id
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_id
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_mimetype_id
 msgid "ID"
 msgstr "ID"
 
@@ -238,7 +238,7 @@ msgid "Inactive"
 msgstr "Inactif"
 
 #. module: report_aeroo
-#: model:ir.model.fields,field_description:report_aeroo.field_ir_actions_report_line_lang_id
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_lang_id
 msgid "Language"
 msgstr "Langue"
 
@@ -250,24 +250,24 @@ msgstr "Évaluation de la langue"
 #. module: report_aeroo
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_add_print_button___last_update
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_remove_print_button___last_update
-#: model:ir.model.fields,field_description:report_aeroo.field_ir_actions_report_line___last_update
-#: model:ir.model.fields,field_description:report_aeroo.field_report_mimetypes___last_update
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line___last_update
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_mimetype___last_update
 msgid "Last Modified on"
 msgstr ""
 
 #. module: report_aeroo
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_add_print_button_write_uid
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_remove_print_button_write_uid
-#: model:ir.model.fields,field_description:report_aeroo.field_ir_actions_report_line_write_uid
-#: model:ir.model.fields,field_description:report_aeroo.field_report_mimetypes_write_uid
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_write_uid
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_mimetype_write_uid
 msgid "Last Updated by"
 msgstr ""
 
 #. module: report_aeroo
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_add_print_button_write_date
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_remove_print_button_write_date
-#: model:ir.model.fields,field_description:report_aeroo.field_ir_actions_report_line_write_date
-#: model:ir.model.fields,field_description:report_aeroo.field_report_mimetypes_write_date
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_write_date
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_mimetype_write_date
 msgid "Last Updated on"
 msgstr ""
 
@@ -277,7 +277,7 @@ msgid "Miscellaneous"
 msgstr "Divers"
 
 #. module: report_aeroo
-#: model:ir.model.fields,field_description:report_aeroo.field_report_mimetypes_name
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_mimetype_name
 msgid "Name"
 msgstr "Nom"
 
@@ -367,7 +367,7 @@ msgid "Remove print button"
 msgstr "Enlever le bouton d'impression"
 
 #. module: report_aeroo
-#: model:ir.model.fields,field_description:report_aeroo.field_ir_actions_report_line_report_id
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_report_id
 #: model:ir.ui.view,arch_db:report_aeroo.act_aeroo_report_xml_search_view
 msgid "Report"
 msgstr "Rapport"
@@ -378,7 +378,7 @@ msgid "Report Action already exist for this report."
 msgstr "Une action existe déjà pour ce rapport"
 
 #. module: report_aeroo
-#: model:ir.model,name:report_aeroo.model_report_mimetypes
+#: model:ir.model,name:report_aeroo.model_aeroo_mimetype
 msgid "Report Mime-Types"
 msgstr "Types de fichier générés"
 
@@ -400,7 +400,7 @@ msgid "State"
 msgstr "État"
 
 #. module: report_aeroo
-#: model:ir.model.fields,field_description:report_aeroo.field_ir_actions_report_line_template_data
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_template_data
 #: model:ir.ui.view,arch_db:report_aeroo.act_report_xml_view1
 msgid "Template"
 msgstr "Modèle"
@@ -427,13 +427,13 @@ msgid "Template path"
 msgstr "Emplacement du modèle"
 
 #. module: report_aeroo
-#: model:ir.model.fields,field_description:report_aeroo.field_ir_act_report_xml_tml_source
-#: model:ir.model.fields,field_description:report_aeroo.field_ir_actions_report_line_template_source
+#: model:ir.model.fields,field_description:report_aeroo.field_ir_act_report_xml_aeroo_template_source
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_template_source
 msgid "Template source"
 msgstr "Source du modèle"
 
 #. module: report_aeroo
-#: model:ir.model.fields,field_description:report_aeroo.field_ir_act_report_xml_report_line_ids
+#: model:ir.model.fields,field_description:report_aeroo.field_ir_act_report_xml_aeroo_template_line_ids
 msgid "Templates by Language"
 msgstr "Modèles par langue"
 
@@ -470,8 +470,8 @@ msgid "_Ok"
 msgstr ""
 
 #. module: report_aeroo
-#: model:ir.model,name:report_aeroo.model_ir_actions_report_line
-msgid "ir.actions.report.line"
+#: model:ir.model,name:report_aeroo.model_aeroo_template_line
+msgid "aeroo.template.line"
 msgstr ""
 
 #. module: report_aeroo

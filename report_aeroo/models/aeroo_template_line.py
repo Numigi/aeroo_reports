@@ -6,9 +6,9 @@ import base64
 from odoo import api, fields, models, tools
 
 
-class IrActionsReportLine(models.Model):
+class AerooTemplateLine(models.Model):
 
-    _name = 'ir.actions.report.line'
+    _name = 'aeroo.template.line'
 
     report_id = fields.Many2one(
         'ir.actions.report', 'Report', required=True,
@@ -19,7 +19,7 @@ class IrActionsReportLine(models.Model):
     template_source = fields.Selection([
         ('database', 'Database'),
         ('file', 'File'),
-    ], string='Template source', default='database', select=True)
+    ], string='Template source', default='database')
 
     template_data = fields.Binary('Template')
     template_filename = fields.Binary('File Name')
@@ -27,9 +27,7 @@ class IrActionsReportLine(models.Model):
 
     def get_aeroo_template(self, record):
         if self.template_source == 'file':
-            fp = tools.file_open(self.template_location, mode='r')
-            data = fp.read()
-            fp.close()
+            with tools.file_open(self.template_location, mode='rb') as file:
+                return file.read()
         else:
-            data = base64.decodestring(self.template_data)
-        return data
+            return base64.b64decode(self.aeroo_template_data)

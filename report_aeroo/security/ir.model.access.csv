@@ -1,6 +1,6 @@
-"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
-"report_mimetypes_system","report.mimetypes.system","model_report_mimetypes","base.group_system",1,1,1,1
-"report_mimetypes_user","report.mimetypes.user","model_report_mimetypes","base.group_user",1,0,0,0
-"manage_ir_actions_report_xml","ir_actions_report_xml","model_ir_actions_report_xml","group_aeroo_manager",1,1,1,1
-"manage_ir_actions_report_line","ir_actions_report_line","model_ir_actions_report_line","group_aeroo_manager",1,1,1,1
-"manage_ir_actions_report_line_user","ir_actions_report_line","model_ir_actions_report_line","base.group_user",1,0,0,0
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+aeroo_mimetype_system,aeroo.mimetype.system,model_aeroo_mimetype,base.group_system,1,1,1,1
+aeroo_mimetype_user,aeroo.mimetype.user,model_aeroo_mimetype,base.group_user,1,0,0,0
+manage_ir_actions_report_xml,ir_actions_report_xml,model_ir_actions_report,group_aeroo_manager,1,1,1,1
+manage_aeroo_template_line,aeroo_template_line,model_aeroo_template_line,group_aeroo_manager,1,1,1,1
+manage_aeroo_template_line_user,aeroo_template_line,model_aeroo_template_line,base.group_user,1,0,0,0

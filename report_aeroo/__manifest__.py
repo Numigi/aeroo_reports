@@ -20,8 +20,6 @@
         "report_view.xml",
         "data/ir_config_parameter.xml",
         "data/report_aeroo_data.xml",
-        "wizard/add_print_button_view.xml",
-        "wizard/remove_print_button_view.xml",
         "security/ir.model.access.csv",
     ],
     'demo': ["demo/report_sample.xml"],

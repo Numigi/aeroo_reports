@@ -8,34 +8,40 @@
             <field name="priority">16</field>
             <field name="arch" type="xml">
                 <form string="Aeroo Report">
+                    <field name="binding_model_id" invisible="1"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="create_action" string="Add in the 'Print' menu" type="object"
+                                attrs="{'invisible':[('binding_model_id','!=',False)]}" icon="fa-plus-square"
+                                help="Display an option on related documents to print this report" class="oe_stat_button"/>
+                        <button name="unlink_action" string="Remove from the 'Print' menu" type="object"
+                                attrs="{'invisible':[('binding_model_id','=',False)]}" icon="fa-minus-square"
+                                help="Remove the contextual action related this report" class="oe_stat_button"/>
+                    </div>
+
                     <group>
                         <field name="name"/>
                         <field name="model"/>
                         <field name="report_name"/>
-                        <field name="usage"/>
                         <field name="report_type" invisible="1"/>
-                        <field name="type" invisible="1"/>
-                        <field name="active"/>
                     </group>
                     <group>
-                        <field name="in_format" required="1"/>
-                        <field name="out_format" required="1" domain="[('compatible_types','=',in_format)]"/>
+                        <field name="aeroo_in_format" required="1"/>
+                        <field name="aeroo_out_format_id" required="1" domain="[('compatible_types', '=', aeroo_in_format)]"/>
                     </group>
 
                     <notebook>
                         <page string="Generic">
                             <group string="Template">
-                                <field name="tml_source" required="1"/>
-                                <field name="report_sxw_content_data"
+                                <field name="aeroo_template_source" required="1"/>
+                                <field name="aeroo_template_data"
                                     string="Template Content"
-                                    attrs="{'invisible': [('tml_source', '!=', 'database')],'required': [('tml_source','=','database')]}"/>
-                                <field
-                                    name="report_rml"
+                                    attrs="{'invisible': [('aeroo_template_source', '!=', 'database')],'required': [('aeroo_template_source', '=', 'database')]}"/>
+                                <field name="aeroo_template_path"
                                     string="Template path"
-                                    attrs="{'invisible': [('tml_source', '!=', 'file')],'required': [('tml_source','=','file')]}"/>
+                                    attrs="{'invisible': [('aeroo_template_source', '!=', 'file')],'required': [('aeroo_template_source', '=', 'file')]}"/>
                                 <field
-                                    name="report_line_ids"
-                                    attrs="{'invisible': [('tml_source', '!=', 'lang')],'required': [('tml_source','=','lang')]}"
+                                    name="aeroo_template_line_ids"
+                                    attrs="{'invisible': [('aeroo_template_source', '!=', 'lang')],'required': [('aeroo_template_source', '=', 'lang')]}"
                                 >
                                     <tree editable="bottom">
                                         <field name="lang_id"/>
@@ -46,10 +52,10 @@
                                         <field name="template_location"/>
                                     </tree>
                                 </field>
-                                <field name="lang_eval"
-                                    attrs="{'invisible': [('tml_source', '!=', 'lang')],'required': [('tml_source','=','lang')]}"/>
-                                <field name="company_eval"
-                                    attrs="{'invisible': [('tml_source', '!=', 'lang')],'required': [('tml_source','=','lang')]}"/>
+                                <field name="aeroo_lang_eval"
+                                    attrs="{'invisible': [('aeroo_template_source', '!=', 'lang')],'required': [('aeroo_template_source', '=', 'lang')]}"/>
+                                <field name="aeroo_company_eval"
+                                    attrs="{'invisible': [('aeroo_template_source', '!=', 'lang')],'required': [('aeroo_template_source', '=', 'lang')]}"/>
                             </group>
                             <group string="Attachments">
                                 <field name="attachment"/>
@@ -77,9 +83,9 @@
                     <field name="name"/>
                     <field name="model"/>
                     <field name="report_name"/>
-                    <field name="in_format"/>
-                    <field name="out_format"/>
-                    <field name="tml_source"/>
+                    <field name="aeroo_in_format"/>
+                    <field name="aeroo_out_format_id"/>
+                    <field name="aeroo_template_source"/>
                 </tree>
             </field>
         </record>
@@ -90,14 +96,14 @@
             <field name="arch" type="xml">
                 <search string="Report xml">
                     <field name="name"
-                        filter_domain="['|', '|', '|', '|', ('name','ilike',self), ('model','ilike',self), ('type','ilike',self), ('report_name','ilike',self), ('report_type','ilike',self)]"
+                        filter_domain="['|', '|', '|', '|', ('name', 'ilike', self), ('model', 'ilike', self), ('type', 'ilike', self), ('report_name', 'ilike', self), ('report_type', 'ilike', self)]"
                         string="Report"/>
-                    <filter name="active" string="Inactive" domain="[('active','=',False)]"/>
+                    <filter name="active" string="Inactive" domain="[('active', '=', False)]"/>
                     <group expand="0" string="Group By" colspan="4">
-                        <filter string="Template Mime-type" icon="terp-stock_symbol-selection" domain="[]" context="{'group_by':'in_format'}"/>
-                        <filter string="Output Mime-type" icon="terp-stock_symbol-selection" domain="[]" context="{'group_by':'out_format'}"/>
+                        <filter string="Template Mime-type" icon="terp-stock_symbol-selection" domain="[]" context="{'group_by': 'in_format'}"/>
+                        <filter string="Output Mime-type" icon="terp-stock_symbol-selection" domain="[]" context="{'group_by': 'out_format'}"/>
                         <separator orientation="vertical"/>
-                        <filter string="Template Source" icon="gtk-copy" domain="[]" context="{'group_by':'tml_source'}"/>
+                        <filter string="Template Source" icon="gtk-copy" domain="[]" context="{'group_by': 'aeroo_template_source'}"/>
                     </group>
                 </search>
             </field>
@@ -115,14 +121,14 @@
             <field name="sequence" eval="1"/>
             <field name="view_mode">tree</field>
             <field name="view_id" ref="base.act_report_xml_view_tree"/>
-            <field name="act_window_id" ref="base.ir_action_report_xml"/>
+            <field name="act_window_id" ref="base.ir_action_report"/>
         </record>
 
         <record model="ir.actions.act_window.view" id="act_report_xml_form_view">
             <field name="sequence" eval="1"/>
             <field name="view_mode">form</field>
             <field name="view_id" ref="base.act_report_xml_view"/>
-            <field name="act_window_id" ref="base.ir_action_report_xml"/>
+            <field name="act_window_id" ref="base.ir_action_report"/>
         </record>
 
         <record id="action_aeroo_report_xml_tree" model="ir.actions.act_window">
@@ -131,7 +137,7 @@
             <field name="res_model">ir.actions.report</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="domain">[('report_type','=','aeroo')]</field>
+            <field name="domain">[('report_type', '=', 'aeroo')]</field>
             <field name="context">{'default_report_type': 'aeroo'}</field>
             <field name="view_id" ref="act_aeroo_report_xml_view_tree"/>
             <field name="search_view_id" ref="act_aeroo_report_xml_search_view"/>
@@ -154,7 +160,7 @@
         <menuitem name="Aeroo Reports"
             action="action_aeroo_report_xml_tree"
             id="menu_ir_action_aeroo_report_admin"
-            parent="report.reporting_menuitem" sequence="5"/>
+            parent="base.reporting_menuitem" sequence="5"/>
 
         <menuitem name="Aeroo Reports"
             action="action_aeroo_report_xml_tree"

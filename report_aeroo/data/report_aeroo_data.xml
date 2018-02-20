@@ -2,50 +2,50 @@
 <openerp>
     <data noupdate="1">
 
-        <record model="report.mimetypes" id="report_mimetypes_odt_odt" >
+        <record model="aeroo.mimetype" id="aeroo_mimetype_odt_odt" >
             <field name="name">ODF Text Document (.odt)</field>
-            <field name="code">oo-odt</field>
-            <field name="compatible_types">oo-odt</field>
+            <field name="code">odt</field>
+            <field name="compatible_types">odt</field>
         </record>
 
-        <record model="report.mimetypes" id="report_mimetypes_ods_ods" >
+        <record model="aeroo.mimetype" id="aeroo_mimetype_ods_ods" >
             <field name="name">ODF Spreadsheet (.ods)</field>
-            <field name="code">oo-ods</field>
-            <field name="compatible_types">oo-ods</field>
+            <field name="code">ods</field>
+            <field name="compatible_types">ods</field>
         </record>
 
-        <record model="report.mimetypes" id="report_mimetypes_pdf_odt" >
+        <record model="aeroo.mimetype" id="aeroo_mimetype_pdf_odt" >
             <field name="name">PDF - Portable Document Format (.pdf)</field>
-            <field name="code">oo-pdf</field>
-            <field name="compatible_types">oo-odt</field>
+            <field name="code">pdf</field>
+            <field name="compatible_types">odt</field>
             <field name="filter_name">writer_pdf_Export</field>
         </record>
 
-        <record model="report.mimetypes" id="report_mimetypes_pdf_ods" >
+        <record model="aeroo.mimetype" id="aeroo_mimetype_pdf_ods" >
             <field name="name">PDF - Portable Document Format (.pdf)</field>
-            <field name="code">oo-pdf</field>
-            <field name="compatible_types">oo-ods</field>
+            <field name="code">pdf</field>
+            <field name="compatible_types">ods</field>
             <field name="filter_name">calc_pdf_Export</field>
         </record>
 
-        <record model="report.mimetypes" id="report_mimetypes_doc_odt" >
+        <record model="aeroo.mimetype" id="aeroo_mimetype_doc_odt" >
             <field name="name">Microsoft Word 97/2000/XP (.doc)</field>
-            <field name="code">oo-doc</field>
-            <field name="compatible_types">oo-odt</field>
+            <field name="code">doc</field>
+            <field name="compatible_types">odt</field>
             <field name="filter_name">MS Word 97</field>
         </record>
 
-        <record model="report.mimetypes" id="report_mimetypes_xls_odt" >
+        <record model="aeroo.mimetype" id="aeroo_mimetype_xls_odt" >
             <field name="name">Microsoft Excel 97/2000/XP (.xls)</field>
-            <field name="code">oo-xls</field>
-            <field name="compatible_types">oo-ods</field>
+            <field name="code">xls</field>
+            <field name="compatible_types">ods</field>
             <field name="filter_name">MS Excel 97</field>
         </record>
 
-        <record model="report.mimetypes" id="report_mimetypes_csv_ods" >
+        <record model="aeroo.mimetype" id="aeroo_mimetype_csv_ods" >
             <field name="name">Text CSV (.csv)</field>
-            <field name="code">oo-csv</field>
-            <field name="compatible_types">oo-ods</field>
+            <field name="code">csv</field>
+            <field name="compatible_types">ods</field>
             <field name="filter_name">Text - txt - csv (StarCalc)</field>
         </record>
     </data>

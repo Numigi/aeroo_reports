@@ -1,11 +1,6 @@
+venv
+extra-addons
+log
+/.idea
+__pycache__/
 *.pyc
-*.~1~
-*.~2~
-*.py~
-*.~
-*.swp
-.*.*#
-
-.*
-!.gitignore
-*.egg-info

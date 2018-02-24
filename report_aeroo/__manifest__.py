@@ -11,13 +11,14 @@
     'author': 'Alistek',
     'website': 'http://www.alistek.com',
     'complexity': "easy",
-    'depends': ['base'],
+    'depends': ['mail'],
     'external_dependencies': {
         'python': ['aeroolib', 'genshi', 'simplejson'],
     },
     'data': [
         "security/security.xml",
         "views/ir_actions_report.xml",
+        "views/mail_template.xml",
         "data/ir_config_parameter.xml",
         "data/report_aeroo_data.xml",
         "security/ir.model.access.csv",

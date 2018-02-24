@@ -3,18 +3,10 @@
 # © 2016 Savoir-faire Linux
 # License GPL-3.0 or later (http://www.gnu.org/licenses/gpl).
 
-import logging
-
 from odoo import fields, models
 
 
-logger = logging.getLogger('report_aeroo')
-
-
 class ReportMimeType(models.Model):
-    """
-    Aeroo Report Mime-Type
-    """
 
     _name = 'aeroo.mimetype'
     _description = 'Report Mime-Types'

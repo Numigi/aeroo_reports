@@ -9,25 +9,15 @@ from odoo import api, fields, models, tools
 class AerooTemplateLine(models.Model):
 
     _name = 'aeroo.template.line'
+    _order = 'sequence'
 
+    sequence = fields.Integer()
     report_id = fields.Many2one(
-        'ir.actions.report', 'Report', required=True,
-        ondelete='cascade')
-    lang_id = fields.Many2one('res.lang', 'Language', required=True)
+        'ir.actions.report', 'Report', required=True, ondelete='cascade')
     company_id = fields.Many2one('res.company', 'Company')
-
-    template_source = fields.Selection([
-        ('database', 'Database'),
-        ('file', 'File'),
-    ], string='Template source', default='database')
-
-    template_data = fields.Binary('Template')
+    lang_id = fields.Many2one('res.lang', 'Language')
+    template_data = fields.Binary('Template', required=True)
     template_filename = fields.Binary('File Name')
-    template_location = fields.Char('File Location')
 
     def get_aeroo_template(self, record):
-        if self.template_source == 'file':
-            with tools.file_open(self.template_location, mode='rb') as file:
-                return file.read()
-        else:
-            return base64.b64decode(self.aeroo_template_data)
+        return base64.b64decode(self.template_data)

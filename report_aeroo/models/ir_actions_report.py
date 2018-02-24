@@ -22,8 +22,7 @@ from tempfile import NamedTemporaryFile
 
 from odoo import models, fields, api, tools, _
 from odoo.exceptions import ValidationError
-from odoo.tools import file_open
-from openerp.tools.safe_eval import safe_eval
+from odoo.tools import file_open, safe_eval
 
 from ..extra_functions import ExtraFunctions
 
@@ -47,7 +46,7 @@ class IrActionsReport(models.Model):
     aeroo_template_source = fields.Selection([
         ('database', 'Database'),
         ('file', 'File'),
-        ('lang', 'Different Template per Language'),
+        ('lines', 'Different Template per Language / Company'),
     ], string='Template source', default='database')
     aeroo_template_data = fields.Binary()
     aeroo_template_path = fields.Char()
@@ -73,40 +72,60 @@ class IrActionsReport(models.Model):
         return [(r['code'], r['name']) for r in res]
 
     def _get_aeroo_template(self, record):
-        if self.aeroo_template_source == 'lang':
-            return self._get_aeroo_template_from_lines(record)
-        elif self.aeroo_template_source == 'database':
-            if not self.aeroo_template:
-                raise ValidationError(
-                    _('No template found for report %s' % self.report_name))
-            return base64.b64decode(self.aeroo_template_data)
-        else:
+        """Get an aeroo template for the given record.
+
+        There are 3 ways to store the aeroo template:
+
+        1- a single template stored in the file system
+        2- a single template stored in the database
+        3- one template per combination (lang, company) stored in the database
+
+        :param record: the record for which to generate the report
+        :return: the template's binary file
+        """
+        if self.aeroo_template_source == 'file':
             return self._get_aeroo_template_from_file()
 
-    def _get_aeroo_template_from_lines(self, record):
-        lang = self._get_aeroo_lang(record)
-        company = self._get_aeroo_company(record)
-        line = next((
-            l for l in self.aeroo_template_line_ids
-            if l.lang_id.code == lang and
-            (not l.company_id or l.company_id == company)
-        ), None)
+        if self.aeroo_template_source == 'database':
+            return self._get_aeroo_template_from_database()
 
-        if line is None:
-            raise ValidationError(
-                _('Could not render report %(report)s for the '
-                  'company %(company)s in lang %(lang)s.') % {
-                    'report': self.name,
-                    'company': company.name,
-                    'lang': lang,
-                })
-
-        return line.get_aeroo_template(record)
+        return self._get_aeroo_template_from_lines(record)
 
     def _get_aeroo_template_from_file(self):
         """Get an aeroo template from a file."""
         with file_open(self.aeroo_template_path, 'rb') as file:
             return file.read()
+
+    def _get_aeroo_template_from_database(self):
+        """Get an aeroo template stored in the database."""
+        return base64.b64decode(self.aeroo_template_data)
+
+    def _get_aeroo_template_from_lines(self, record):
+        """Get an aeroo template from the template lines.
+
+        An aeroo report can have different templates per company
+        and per language.
+
+        :param record: the record for which to generate the report
+        :return: the template's binary file
+        """
+        lang = self._get_aeroo_lang(record)
+        company = self._get_aeroo_company(record)
+
+        for line in self.aeroo_template_line_ids:
+            if (
+                (not line.lang_id or line.lang_id.code == lang) and
+                (not line.company_id or line.company_id == company)
+            ):
+                return line.get_aeroo_template(record)
+
+        raise ValidationError(
+            _('Could not render report %(report)s for the '
+              'company %(company)s in lang %(lang)s.') % {
+                'report': self.name,
+                'company': company.name,
+                'lang': lang,
+            })
 
     def _get_aeroo_lang(self, record):
         """Get the lang to use in the report for a given record.

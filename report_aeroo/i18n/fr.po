@@ -150,8 +150,8 @@ msgstr "Base de données"
 
 #. module: report_aeroo
 #: selection:ir.actions.report,aeroo_template_source:0
-msgid "Different Template per Language"
-msgstr "Différent modèle par langue"
+msgid "Different Template per Language / Company"
+msgstr "Différent modèle par langue / société"
 
 #. module: report_aeroo
 #: model:ir.model.fields,help:report_aeroo.field_ir_act_report_xml_active

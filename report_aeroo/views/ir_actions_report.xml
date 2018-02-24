@@ -1,176 +1,173 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
-    <data>
+<odoo>
 
-        <record id="act_report_xml_view1" model="ir.ui.view">
-            <field name="name">ir.actions.report.aeroo.form</field>
-            <field name="model">ir.actions.report</field>
-            <field name="priority">16</field>
-            <field name="arch" type="xml">
-                <form string="Aeroo Report">
-                    <field name="binding_model_id" invisible="1"/>
-                    <div class="oe_button_box" name="button_box">
-                        <button name="create_action" string="Add in the 'Print' menu" type="object"
-                                attrs="{'invisible':[('binding_model_id','!=',False)]}" icon="fa-plus-square"
-                                help="Display an option on related documents to print this report" class="oe_stat_button"/>
-                        <button name="unlink_action" string="Remove from the 'Print' menu" type="object"
-                                attrs="{'invisible':[('binding_model_id','=',False)]}" icon="fa-minus-square"
-                                help="Remove the contextual action related this report" class="oe_stat_button"/>
-                    </div>
+    <record id="act_report_xml_view1" model="ir.ui.view">
+        <field name="name">ir.actions.report.aeroo.form</field>
+        <field name="model">ir.actions.report</field>
+        <field name="priority">16</field>
+        <field name="arch" type="xml">
+            <form string="Aeroo Report">
+                <field name="binding_model_id" invisible="1"/>
+                <div class="oe_button_box" name="button_box">
+                    <button name="create_action" string="Add in the 'Print' menu" type="object"
+                            attrs="{'invisible':[('binding_model_id','!=',False)]}" icon="fa-plus-square"
+                            help="Display an option on related documents to print this report" class="oe_stat_button"/>
+                    <button name="unlink_action" string="Remove from the 'Print' menu" type="object"
+                            attrs="{'invisible':[('binding_model_id','=',False)]}" icon="fa-minus-square"
+                            help="Remove the contextual action related this report" class="oe_stat_button"/>
+                </div>
 
-                    <group>
-                        <field name="name"/>
-                        <field name="model"/>
-                        <field name="report_name"/>
-                        <field name="report_type" invisible="1"/>
-                    </group>
-                    <group>
-                        <field name="aeroo_in_format" required="1"/>
-                        <field name="aeroo_out_format_id" required="1" domain="[('compatible_types', '=', aeroo_in_format)]"/>
-                    </group>
-
-                    <notebook>
-                        <page string="Generic">
-                            <group string="Template">
-                                <field name="aeroo_template_source" required="1"/>
-                                <field name="aeroo_template_data"
-                                    string="Template Content"
-                                    attrs="{'invisible': [('aeroo_template_source', '!=', 'database')],'required': [('aeroo_template_source', '=', 'database')]}"/>
-                                <field name="aeroo_template_path"
-                                    string="Template path"
-                                    attrs="{'invisible': [('aeroo_template_source', '!=', 'file')],'required': [('aeroo_template_source', '=', 'file')]}"/>
-                                <field
-                                    name="aeroo_template_line_ids"
-                                    attrs="{'invisible': [('aeroo_template_source', '!=', 'lang')],'required': [('aeroo_template_source', '=', 'lang')]}"
-                                >
-                                    <tree editable="bottom">
-                                        <field name="lang_id"/>
-                                        <field name="company_id"/>
-                                        <field name="template_source"/>
-                                        <field name="template_data" filename="template_filename"/>
-                                        <field name="template_filename" invisible="1"/>
-                                        <field name="template_location"/>
-                                    </tree>
-                                </field>
-                                <field name="aeroo_lang_eval"
-                                    attrs="{'invisible': [('aeroo_template_source', '!=', 'lang')],'required': [('aeroo_template_source', '=', 'lang')]}"/>
-                                <field name="aeroo_company_eval"
-                                    attrs="{'invisible': [('aeroo_template_source', '!=', 'lang')],'required': [('aeroo_template_source', '=', 'lang')]}"/>
-                            </group>
-                            <group string="Attachments">
-                                <field name="attachment"/>
-                                <field name="attachment_use"/>
-                            </group>
-                            <group string="Miscellaneous">
-                                <field name="multi"/>
-                            </group>
-                        </page>
-                        <page string="Security">
-                            <separator string="Groups"/>
-                            <field name="groups_id" nolabel="1"/>
-                        </page>
-                    </notebook>
-
-                </form>
-            </field>
-        </record>
-
-        <record id="act_aeroo_report_xml_view_tree" model="ir.ui.view">
-            <field name="name">ir.actions.report.tree</field>
-            <field name="model">ir.actions.report</field>
-            <field name="arch" type="xml">
-                <tree string="Report xml">
+                <group>
                     <field name="name"/>
                     <field name="model"/>
                     <field name="report_name"/>
-                    <field name="aeroo_in_format"/>
-                    <field name="aeroo_out_format_id"/>
-                    <field name="aeroo_template_source"/>
-                </tree>
-            </field>
-        </record>
+                    <field name="report_type" invisible="1"/>
+                </group>
+                <group>
+                    <field name="aeroo_in_format" required="1"/>
+                    <field name="aeroo_out_format_id" required="1" domain="[('compatible_types', '=', aeroo_in_format)]"/>
+                </group>
 
-        <record id="act_aeroo_report_xml_search_view" model="ir.ui.view">
-            <field name="name">ir.actions.report.search</field>
-            <field name="model">ir.actions.report</field>
-            <field name="arch" type="xml">
-                <search string="Report xml">
-                    <field name="name"
-                        filter_domain="['|', '|', '|', '|', ('name', 'ilike', self), ('model', 'ilike', self), ('type', 'ilike', self), ('report_name', 'ilike', self), ('report_type', 'ilike', self)]"
-                        string="Report"/>
-                    <filter name="active" string="Inactive" domain="[('active', '=', False)]"/>
-                    <group expand="0" string="Group By" colspan="4">
-                        <filter string="Template Mime-type" icon="terp-stock_symbol-selection" domain="[]" context="{'group_by': 'in_format'}"/>
-                        <filter string="Output Mime-type" icon="terp-stock_symbol-selection" domain="[]" context="{'group_by': 'out_format'}"/>
-                        <separator orientation="vertical"/>
-                        <filter string="Template Source" icon="gtk-copy" domain="[]" context="{'group_by': 'aeroo_template_source'}"/>
-                    </group>
-                </search>
-            </field>
-        </record>
+                <notebook>
+                    <page string="Generic">
+                        <group string="Template">
+                            <field name="aeroo_template_source" required="1"/>
+                            <field name="aeroo_template_data"
+                                string="Template Content"
+                                attrs="{'invisible': [('aeroo_template_source', '!=', 'database')],'required': [('aeroo_template_source', '=', 'database')]}"/>
+                            <field name="aeroo_template_path"
+                                string="Template path"
+                                attrs="{'invisible': [('aeroo_template_source', '!=', 'file')],'required': [('aeroo_template_source', '=', 'file')]}"/>
+                            <field
+                                name="aeroo_template_line_ids"
+                                attrs="{'invisible': [('aeroo_template_source', '!=', 'lines')],'required': [('aeroo_template_source', '=', 'lines')]}"
+                            >
+                                <tree editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="lang_id"/>
+                                    <field name="company_id"/>
+                                    <field name="template_data" filename="template_filename"/>
+                                    <field name="template_filename" invisible="1"/>
+                                </tree>
+                            </field>
+                            <field name="aeroo_lang_eval"
+                                attrs="{'invisible': [('aeroo_template_source', '!=', 'lines')],'required': [('aeroo_template_source', '=', 'lines')]}"/>
+                            <field name="aeroo_company_eval"
+                                attrs="{'invisible': [('aeroo_template_source', '!=', 'lines')],'required': [('aeroo_template_source', '=', 'lines')]}"/>
+                        </group>
+                        <group string="Attachments">
+                            <field name="attachment"/>
+                            <field name="attachment_use"/>
+                        </group>
+                        <group string="Miscellaneous">
+                            <field name="multi"/>
+                        </group>
+                    </page>
+                    <page string="Security">
+                        <separator string="Groups"/>
+                        <field name="groups_id" nolabel="1"/>
+                    </page>
+                </notebook>
 
-        <act_window name="Translations"
-            domain="[('type', '=', 'report'),('res_id', '=', active_id)]"
-            view_type="form"
-            res_model="ir.translation"
-            src_model="ir.actions.report"
-            id="act_translations"/>
+            </form>
+        </field>
+    </record>
 
-        <!-- For the original views -->
-        <record model="ir.actions.act_window.view" id="act_report_xml_tree_view">
-            <field name="sequence" eval="1"/>
-            <field name="view_mode">tree</field>
-            <field name="view_id" ref="base.act_report_xml_view_tree"/>
-            <field name="act_window_id" ref="base.ir_action_report"/>
-        </record>
+    <record id="act_aeroo_report_xml_view_tree" model="ir.ui.view">
+        <field name="name">ir.actions.report.tree</field>
+        <field name="model">ir.actions.report</field>
+        <field name="arch" type="xml">
+            <tree string="Report xml">
+                <field name="name"/>
+                <field name="model"/>
+                <field name="report_name"/>
+                <field name="aeroo_in_format"/>
+                <field name="aeroo_out_format_id"/>
+                <field name="aeroo_template_source"/>
+            </tree>
+        </field>
+    </record>
 
-        <record model="ir.actions.act_window.view" id="act_report_xml_form_view">
-            <field name="sequence" eval="1"/>
-            <field name="view_mode">form</field>
-            <field name="view_id" ref="base.act_report_xml_view"/>
-            <field name="act_window_id" ref="base.ir_action_report"/>
-        </record>
+    <record id="act_aeroo_report_xml_search_view" model="ir.ui.view">
+        <field name="name">ir.actions.report.search</field>
+        <field name="model">ir.actions.report</field>
+        <field name="arch" type="xml">
+            <search string="Report xml">
+                <field name="name"
+                    filter_domain="['|', '|', '|', '|', ('name', 'ilike', self), ('model', 'ilike', self), ('type', 'ilike', self), ('report_name', 'ilike', self), ('report_type', 'ilike', self)]"
+                    string="Report"/>
+                <filter name="active" string="Inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By" colspan="4">
+                    <filter string="Template Mime-type" icon="terp-stock_symbol-selection" domain="[]" context="{'group_by': 'in_format'}"/>
+                    <filter string="Output Mime-type" icon="terp-stock_symbol-selection" domain="[]" context="{'group_by': 'out_format'}"/>
+                    <separator orientation="vertical"/>
+                    <filter string="Template Source" icon="gtk-copy" domain="[]" context="{'group_by': 'aeroo_template_source'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
 
-        <record id="action_aeroo_report_xml_tree" model="ir.actions.act_window">
-            <field name="name">Reports</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">ir.actions.report</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-            <field name="domain">[('report_type', '=', 'aeroo')]</field>
-            <field name="context">{'default_report_type': 'aeroo'}</field>
-            <field name="view_id" ref="act_aeroo_report_xml_view_tree"/>
-            <field name="search_view_id" ref="act_aeroo_report_xml_search_view"/>
-        </record>
+    <act_window name="Translations"
+        domain="[('type', '=', 'report'),('res_id', '=', active_id)]"
+        view_type="form"
+        res_model="ir.translation"
+        src_model="ir.actions.report"
+        id="act_translations"/>
 
-        <record model="ir.actions.act_window.view" id="act_aeroo_report_xml_tree_view">
-            <field name="sequence" eval="1"/>
-            <field name="view_mode">tree</field>
-            <field name="view_id" ref="act_aeroo_report_xml_view_tree"/>
-            <field name="act_window_id" ref="action_aeroo_report_xml_tree"/>
-        </record>
+    <!-- For the original views -->
+    <record model="ir.actions.act_window.view" id="act_report_xml_tree_view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="base.act_report_xml_view_tree"/>
+        <field name="act_window_id" ref="base.ir_action_report"/>
+    </record>
 
-        <record model="ir.actions.act_window.view" id="act_aeroo_report_xml_form_view">
-            <field name="sequence" eval="1"/>
-            <field name="view_mode">form</field>
-            <field name="view_id" ref="act_report_xml_view1"/>
-            <field name="act_window_id" ref="action_aeroo_report_xml_tree"/>
-        </record>
+    <record model="ir.actions.act_window.view" id="act_report_xml_form_view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="base.act_report_xml_view"/>
+        <field name="act_window_id" ref="base.ir_action_report"/>
+    </record>
 
-        <menuitem name="Aeroo Reports"
-            action="action_aeroo_report_xml_tree"
-            id="menu_ir_action_aeroo_report_admin"
-            parent="base.reporting_menuitem" sequence="5"/>
+    <record id="action_aeroo_report_xml_tree" model="ir.actions.act_window">
+        <field name="name">Reports</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ir.actions.report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('report_type', '=', 'aeroo')]</field>
+        <field name="context">{'default_report_type': 'aeroo'}</field>
+        <field name="view_id" ref="act_aeroo_report_xml_view_tree"/>
+        <field name="search_view_id" ref="act_aeroo_report_xml_search_view"/>
+    </record>
 
-        <menuitem name="Aeroo Reports"
-            action="action_aeroo_report_xml_tree"
-            id="menu_ir_action_aeroo_report_manager"
-            parent="base.menu_reporting_config" sequence="0"
-            groups="group_aeroo_manager"/>
+    <record model="ir.actions.act_window.view" id="act_aeroo_report_xml_tree_view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="act_aeroo_report_xml_view_tree"/>
+        <field name="act_window_id" ref="action_aeroo_report_xml_tree"/>
+    </record>
 
-        <record id="base.menu_reporting_config" model="ir.ui.menu">
-            <field name="groups_id" eval="[(4, ref('group_aeroo_manager'))]"/>
-        </record>
+    <record model="ir.actions.act_window.view" id="act_aeroo_report_xml_form_view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="act_report_xml_view1"/>
+        <field name="act_window_id" ref="action_aeroo_report_xml_tree"/>
+    </record>
 
-    </data>
-</openerp>
+    <menuitem name="Aeroo Reports"
+        action="action_aeroo_report_xml_tree"
+        id="menu_ir_action_aeroo_report_admin"
+        parent="base.reporting_menuitem" sequence="5"/>
+
+    <menuitem name="Aeroo Reports"
+        action="action_aeroo_report_xml_tree"
+        id="menu_ir_action_aeroo_report_manager"
+        parent="base.menu_reporting_config" sequence="0"
+        groups="group_aeroo_manager"/>
+
+    <record id="base.menu_reporting_config" model="ir.ui.menu">
+        <field name="groups_id" eval="[(4, ref('group_aeroo_manager'))]"/>
+    </record>
+
+</odoo>

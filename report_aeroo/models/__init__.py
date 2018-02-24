@@ -6,4 +6,5 @@ from . import (
     aeroo_mimetype,
     aeroo_template_line,
     ir_actions_report,
+    mail_template,
 )

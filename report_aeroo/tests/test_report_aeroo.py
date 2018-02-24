@@ -66,7 +66,7 @@ class TestAerooReport(common.SavepointCase):
 
     def _create_report_line(self, lang, company=None):
         self.report.write({
-            'aeroo_template_source': 'lang',
+            'aeroo_template_source': 'lines',
             'aeroo_lang_eval': 'o.lang',
             'aeroo_out_format_id': self.env.ref(
                 'report_aeroo.aeroo_mimetype_pdf_odt').id,

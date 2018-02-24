@@ -2,11 +2,12 @@
 # © 2017 Savoir-faire Linux
 # License GPL-3.0 or later (http://www.gnu.org/licenses/gpl).
 
+import json
 import time
 import simplejson
 from odoo import api, http
 from odoo.modules import registry
-from odoo.http import request
+from odoo.http import request, content_disposition
 from odoo.tools.safe_eval import safe_eval
 from odoo.addons.web.controllers.main import (
     Reports as ReportController,
@@ -23,35 +24,25 @@ class Reports(ReportController):
 
         Otherwise the filename is merely the name of the report.
         """
-        response = super(Reports, self).index(action, token)
-
-        action_data = simplejson.loads(action)
+        action_data = json.loads(action)
         if action_data.get('report_type') != 'aeroo':
-            return response
+            return super().index(action, token)
 
-        context = dict(request.context)
-        context.update(action_data["context"])
+        ids = action_data['context']['active_ids']
 
-        ids = context.get("active_ids", None)
-        if 'datas' in action_data:
-            if 'ids' in action_data['datas']:
-                ids = action_data['datas'].pop('ids')
+        report = request.env['ir.actions.report'].browse(action_data['id'])
+        content = report.render_aeroo(ids, {})
 
-        with registry.RegistryManager.get(request.session.db).cursor() as cr:
-            env = api.Environment(
-                cr, request.session.uid, context)
-            report_xml = env['ir.actions.report'].search(
-                [('report_name', '=', action_data['report_name'])])
+        code = report.aeroo_out_format_id.code
+        file_name = action_data.get('name', 'report') + '.' + code
+        report_mimetype = self.TYPES_MAPPING.get(code, 'octet-stream')
 
-            if report_xml.attachment:
-                response.headers['Content-Disposition'] = (
-                    "attachment; filename*=UTF-8''%s.%s" % (
-                        safe_eval(report_xml.attachment, {
-                            'object': env[report_xml.model].browse(ids[0]),
-                            'time': time,
-                        }),
-                        report_xml.out_format.code[3:],
-                    )
-                )
+        response = request.make_response(
+            content,
+            headers=[
+                ('Content-Disposition', content_disposition(file_name)),
+                ('Content-Type', report_mimetype),
+                ('Content-Length', len(content))],
+            cookies={'fileToken': token})
 
         return response

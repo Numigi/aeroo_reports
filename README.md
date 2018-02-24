@@ -1,6 +1,6 @@
 # Aeroo Reports
 
-Aeroo Reports for Odoo v10.0
+Aeroo Reports for Odoo v11.0
 
 ## Installation
 
@@ -14,7 +14,6 @@ Aeroo Reports for Odoo v10.0
 
  - Install libreoffice
     - apt-get install libreoffice, libreoffice-writer, openjdk-7-jre
-
 
 ## Translations
 
@@ -47,24 +46,6 @@ the system will raise an exception saying that the report is unavailable for the
 The language used for printing the template must be parametrized in the field 'Language Evaluation'
 (by default: o.partner_id.lang).
 
-
-## Importing a Template from a DMS
-
-This feature has been tested with Alfresco, but it should work with any DMS compliant with the
-CMIS protocol. The idea is to store and maintain the template(s) of a report in the DMS and
-upload it into Odoo when generating the report.
-
-If the DMS can not be reached when the user clicks for generating the report, the last
-available version of the template is used. A message is logged in the dicsussion thread of the object
-to track what report/version was generated.
-
-### Configure the DMS connector
-
-* Go to: Connectors -> Aeroo Reports / DMS
-* Create a new backend
-* Select the url / username / password that will be used to connect to the DMS
-* Click on 'Update Repository List'
-
 ### Configure the report
 
 * Go to: Settings -> Technical -> Reports -> Aeroo Reports
@@ -75,17 +56,6 @@ to track what report/version was generated.
 
 Note: in Alfresco Share, it is not an easy task to find the absolute path to a document.
 I suggest to find it by trial and error until you figure a patern that works.
-
-### Different template per language + Import from DMS
-
-You may also import distinct templates per language from the DMS:
-
-* In the field 'Template Source', select 'Different Template per Language'
-* In the field 'DMS Repository', select the DMS/repository to use.
-* In the field 'Templates by Language', add a line that maps your language to a template.
-    - In the field 'Template Source', select 'Import From DMS'
-    - In the field 'File Location', enter the absolute path to the template inside the DMS.
-
 
 ## Creating a Template
 

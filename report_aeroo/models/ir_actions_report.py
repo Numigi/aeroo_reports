@@ -40,7 +40,7 @@ class IrActionsReport(models.Model):
     report_type = fields.Selection(selection_add=[('aeroo', 'Aeroo Reports')])
     aeroo_in_format = fields.Selection(
         selection='_get_in_aeroo_mimetypes', string='Template Mime-type',
-        default='oo-odt')
+        default='odt')
     aeroo_out_format_id = fields.Many2one(
         'aeroo.mimetype', 'Output Mime-type',
         default=_get_default_aeroo_out_format)
@@ -199,7 +199,7 @@ class IrActionsReport(models.Model):
 
         return output
 
-    def _get_aeroo_attachment_filename(self, record):
+    def get_aeroo_attachment_filename(self, record):
         """Get the attachement filename for the generated report.
 
         :param record: the record for which to find the attachement
@@ -227,7 +227,7 @@ class IrActionsReport(models.Model):
         :return: the report's binary data or None
         """
         if self.attachment_use:
-            filename = self._get_aeroo_attachment_filename(record)
+            filename = self.get_aeroo_attachment_filename(record)
             attachment = self.env['ir.attachment'].search([
                 ('res_id', '=', record.id),
                 ('res_model', '=', record._name),
@@ -244,7 +244,7 @@ class IrActionsReport(models.Model):
         :param file_data: the generated report's binary file
         :return: the generated attachment
         """
-        filename = self._get_aeroo_attachment_filename(record)
+        filename = self.get_aeroo_attachment_filename(record)
         return self.env['ir.attachment'].create({
             'name': filename,
             'datas': base64.encodestring(file_data),

@@ -20,9 +20,11 @@ class Reports(ReportController):
     @http.route('/web/report', type='http', auth="user")
     @serialize_exception
     def index(self, action, token):
-        """Add the correct filename to the generated report.
+        """Generate an aeroo report.
 
-        Otherwise the filename is merely the name of the report.
+        Add the filename of the generated report to the response headers.
+        If the aeroo report is generated for multiple records, the
+        file name is simply {report.name}.pdf.
         """
         action_data = json.loads(action)
         if action_data.get('report_type') != 'aeroo':
@@ -31,11 +33,15 @@ class Reports(ReportController):
         ids = action_data['context']['active_ids']
 
         report = request.env['ir.actions.report'].browse(action_data['id'])
-        content = report.render_aeroo(ids, {})
+        content, out_format = report.render_aeroo(ids, {})
 
-        code = report.aeroo_out_format_id.code
-        file_name = action_data.get('name', 'report') + '.' + code
-        report_mimetype = self.TYPES_MAPPING.get(code, 'octet-stream')
+        if len(ids) == 1:
+            record = request.env[report.model].browse(ids[0])
+            file_name = report.get_aeroo_filename(record)
+        else:
+            file_name = '%s.%s' % (report.name, out_format)
+
+        report_mimetype = self.TYPES_MAPPING.get(out_format, 'octet-stream')
 
         response = request.make_response(
             content,

@@ -13,8 +13,8 @@ import psutil
 import signal
 import subprocess
 import traceback
-
 from aeroolib.plugins.opendocument import Template, OOSerializer
+from datetime import datetime
 from io import BytesIO
 from genshi.template.eval import StrictLookup
 from genshi.template.base import Context as GenshiContext
@@ -199,18 +199,23 @@ class IrActionsReport(models.Model):
 
         return output
 
-    def get_aeroo_attachment_filename(self, record):
+    def get_aeroo_filename(self, record):
         """Get the attachement filename for the generated report.
 
-        :param record: the record for which to find the attachement
+        :param record: the record for which to generate the report
         :return: the filename
         """
         output_format = self.aeroo_out_format_id.code
         if self.attachment:
+            context_time = fields.Datetime.context_timestamp(
+                record, datetime.now())
             return "%s.%s" % (
-                safe_eval(self.attachment, {'object': record, 'time': time}),
-                output_format
-            )
+                safe_eval(self.attachment, {
+                    'object': record,
+                    'time': context_time,
+                    'date': context_time.date(),
+                }),
+                output_format)
         else:
             return "%s.%s" % (self.name, output_format)
 
@@ -227,7 +232,7 @@ class IrActionsReport(models.Model):
         :return: the report's binary data or None
         """
         if self.attachment_use:
-            filename = self.get_aeroo_attachment_filename(record)
+            filename = self.get_aeroo_filename(record)
             attachment = self.env['ir.attachment'].search([
                 ('res_id', '=', record.id),
                 ('res_model', '=', record._name),
@@ -244,7 +249,7 @@ class IrActionsReport(models.Model):
         :param file_data: the generated report's binary file
         :return: the generated attachment
         """
-        filename = self.get_aeroo_attachment_filename(record)
+        filename = self.get_aeroo_filename(record)
         return self.env['ir.attachment'].create({
             'name': filename,
             'datas': base64.encodestring(file_data),
@@ -332,7 +337,7 @@ class IrActionsReport(models.Model):
             input_files.append(temp_file.name)
 
         try:
-            return self._merge_aeroo_pdf(input_files)
+            return self._merge_aeroo_pdf(input_files), 'pdf'
         except Exception as exc:
             traceback.print_exc()
             raise ValidationError(

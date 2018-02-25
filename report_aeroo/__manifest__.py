@@ -13,7 +13,7 @@
     'complexity': "easy",
     'depends': ['mail'],
     'external_dependencies': {
-        'python': ['aeroolib', 'genshi', 'simplejson'],
+        'python': ['aeroolib', 'genshi'],
     },
     'data': [
         "security/security.xml",

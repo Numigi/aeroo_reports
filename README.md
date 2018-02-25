@@ -10,7 +10,7 @@ Aeroo Reports for Odoo v11.0
     - python setup.py install
 
  - Install the python library Genshi
-    - pip install Genshi, simplejson
+    - pip install Genshi
 
  - Install libreoffice
     - apt-get install libreoffice, libreoffice-writer, openjdk-7-jre

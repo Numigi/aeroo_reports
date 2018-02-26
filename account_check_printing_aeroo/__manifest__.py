@@ -25,6 +25,6 @@
     'external_dependencies': {
         'python': ['num2words'],
     },
-    'installable': True,
+    'installable': False,
     'application': False,
 }

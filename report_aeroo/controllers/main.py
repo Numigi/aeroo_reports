@@ -4,7 +4,6 @@
 
 import json
 import time
-import simplejson
 from odoo import api, http
 from odoo.modules import registry
 from odoo.http import request, content_disposition

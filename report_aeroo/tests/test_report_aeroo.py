@@ -59,11 +59,6 @@ class TestAerooReport(common.SavepointCase):
     def _render_report(self, partners):
         self.report.render(partners.ids, {})
 
-    def test_01_sample_report_doc(self):
-        self.report.aeroo_out_format_id = self.env.ref(
-            'report_aeroo.aeroo_mimetype_doc_odt')
-        self._render_report(self.partner)
-
     def _create_report_line(self, lang, company=None):
         self.report.write({
             'aeroo_template_source': 'lines',
@@ -74,9 +69,14 @@ class TestAerooReport(common.SavepointCase):
         self.report.aeroo_template_line_ids = [(0, 0, {
             'lang_id': lang,
             'company_id': company,
-            'template_source': 'file',
-            'template_location': 'report_aeroo/demo/template.odt',
+            'template_data': base64.b64encode(
+                self.report._get_aeroo_template_from_file()),
         })]
+
+    def test_01_sample_report_doc(self):
+        self.report.aeroo_out_format_id = self.env.ref(
+            'report_aeroo.aeroo_mimetype_doc_odt')
+        self._render_report(self.partner)
 
     def test_02_sample_report_pdf_by_lang(self):
         self._create_report_line(self.lang_en)

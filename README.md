@@ -85,8 +85,6 @@ This parameter accepts a number format using the variables documented on the bab
 
 http://babel.pocoo.org/en/latest/numbers.html#pattern-syntax
 
-By default, the format used in both functions is `#,##0.00`.
-
 ## Date and Time
 
 Aeroo defines 2 helpers for formatting date and datetime field values in the language of the report.

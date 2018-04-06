@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # © 2008-2014 Alistek
-# © 2016 Savoir-faire Linux
+# © 2016-2018 Savoir-faire Linux
+# © 2018 Numigi (tm) and all its contributors (https://bit.ly/numigiens)
 # License GPL-3.0 or later (http://www.gnu.org/licenses/gpl).
 
 import base64
@@ -15,6 +16,7 @@ import subprocess
 import traceback
 from aeroolib.plugins.opendocument import Template, OOSerializer
 from datetime import datetime
+from functools import wraps
 from io import BytesIO
 from genshi.template.eval import StrictLookup
 from genshi.template.base import Context as GenshiContext
@@ -24,7 +26,7 @@ from odoo import models, fields, api, tools, _
 from odoo.exceptions import ValidationError
 from odoo.tools import file_open, safe_eval
 
-from ..extra_functions import ExtraFunctions
+from ..extra_functions import aeroo_function_registry
 
 
 class IrActionsReport(models.Model):
@@ -208,7 +210,7 @@ class IrActionsReport(models.Model):
 
         serializer = OOSerializer(template_io)
         report_context = GenshiContext(**data)
-        report_context.update(ExtraFunctions(self).functions)
+        report_context.update(self._get_aeroo_extra_functions())
         report_context['o'] = record
         output = Template(source=template_io, serializer=serializer)\
             .generate(report_context).render().getvalue()
@@ -217,6 +219,24 @@ class IrActionsReport(models.Model):
             output = self._convert_aeroo_report(output)
 
         return output
+
+    def _get_aeroo_extra_functions(self):
+        """Get a dictionnary of extra functions available inside an aeroo template."""
+        return {
+            k: self._wrap_aeroo_function(v)
+            for k, v in aeroo_function_registry.get_functions().items()
+        }
+
+    def _wrap_aeroo_function(self, func):
+        """Wrap an extra function for the current aeroo report.
+
+        The wrapping automatically adds the report as first parameter of the function.
+        """
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            return func(self, *args, **kwargs)
+
+        return wrapper
 
     def get_aeroo_filename(self, record):
         """Get the attachement filename for the generated report.

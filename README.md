@@ -46,16 +46,81 @@ the system will raise an exception saying that the report is unavailable for the
 The language used for printing the template must be parametrized in the field 'Language Evaluation'
 (by default: o.partner_id.lang).
 
-### Configure the report
+## Numbers and Currencies
 
-* Go to: Settings -> Technical -> Reports -> Aeroo Reports
-* Select your report
-* In the field 'Template Source', select 'Import from DMS'
-* In the field 'DMS Repository', select the DMS/repository to use.
-* In the field 'DMS Path', enter the absolute path to template inside the DMS.
+Aeroo defines 2 helpers for formatting number field values in the language of the report.
 
-Note: in Alfresco Share, it is not an easy task to find the absolute path to a document.
-I suggest to find it by trial and error until you figure a patern that works.
+* format_decimal
+* format_currency
+
+### Exemple for format_decimal
+
+```python
+format_decimal(o.amount_total)
+```
+
+If the report is printed in Canada French, the output will look like:
+
+```
+1 500,00
+```
+
+### Exemple for format_currency
+
+```python
+format_currency(o.amount_total, o.currency_id)
+```
+
+If the report is printed in Canada French, the output will look like:
+
+```
+1 500,00 $US
+```
+
+### Force a number format
+
+Both format_decimal and format_currency functions accept an optional `format` parameter.
+
+This parameter accepts a number format using the variables documented on the babel website:
+
+http://babel.pocoo.org/en/latest/numbers.html#pattern-syntax
+
+By default, the format used in both functions is `#,##0.00`.
+
+## Date and Time
+
+Aeroo defines 2 helpers for formatting date and datetime field values in the language of the report.
+
+* format_date
+* format_datetime
+
+The variables that you can use in these functions are documented on the babel website:
+
+http://babel.pocoo.org/en/latest/dates.html#date-fields
+
+### Exemple for format_date
+
+```python
+format_date(o.date_invoice, 'dd MMMM yyyy')
+```
+
+If the report is printed in French, the output will look like:
+
+```
+6 Avril 2018
+```
+
+### Exemple for format_datetime
+
+```python
+format_datetime(o.confirmation_date, 'dd MMMM yyyy hh:mm a')
+```
+
+If the report is printed in French, the output will look like:
+
+```
+6 Avril 2018 10:34 AM
+```
 
 ## Creating a Template
 

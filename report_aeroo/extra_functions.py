@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 # © 2008-2014 Alistek
-# © 2016 Savoir-faire Linux
+# © 2016-2018 Savoir-faire Linux
+# © 2018 Numigi (tm) and all its contributors (https://bit.ly/numigiens)
 # License GPL-3.0 or later (http://www.gnu.org/licenses/gpl).
 
+import babel.numbers
+import babel.dates
 import base64
 import logging
 import time
@@ -13,92 +16,191 @@ from PIL import Image
 from odoo import models
 from odoo.tools import (
     DEFAULT_SERVER_DATE_FORMAT,
-    DEFAULT_SERVER_DATETIME_FORMAT)
+    DEFAULT_SERVER_DATETIME_FORMAT,
+    DEFAULT_SERVER_TIME_FORMAT,
+)
 
-from .barcode import barcode
+from .barcode.code128 import get_code
+from .barcode.code39 import create_c39
+from .barcode.EANBarCode import EanBarCode
 
 logger = logging.getLogger(__name__)
 
 
-class ExtraFunctions(object):
-    """Extra functions that can be called from templates."""
+class AerooFunctionRegistry(object):
+    """Class responsible for registering functions usable in aeroo templates."""
 
-    def __init__(self, report):
-        self.env = report.env
-        self.report = report
-        self.context = report._context
-        self.functions = {
-            'asimage': self._asimage,
-            'barcode': barcode.make_barcode,
-            'time': time,
-            'report': self.report,
-            'format_date': self._format_date,
-            'format_datetime': self._format_datetime,
-        }
+    def __init__(self):
+        self._functions = {}
 
-    def _format_date(self, value, date_format):
-        if not value:
-            return ''
-        date = datetime.strptime(value, DEFAULT_SERVER_DATE_FORMAT)
-        return date.strftime(date_format)
+    def register(self, func_name, func):
+        """Register a function inside the registry.
 
-    def _format_datetime(self, value, datetime_format):
-        if not value:
-            return ''
-        date = datetime.strptime(value, DEFAULT_SERVER_DATETIME_FORMAT)
-        return date.strftime(datetime_format)
+        :param func_name: the name of the function
+        :param func: the function
+        """
+        if func_name in self._functions:
+            raise RuntimeError(
+                'A function named {func_name} is already registered in the Aeroo registry.'
+                .format(func_name=func_name))
+        self._functions[func_name] = func
 
-    def _asimage(
-        self, field_value, rotate=None, size_x=None, size_y=None,
-        uom='px', hold_ratio=False
-    ):
-        def size_by_uom(val, uom, dpi):
-            if uom == 'px':
-                result = str(val / dpi) + 'in'
-            elif uom == 'cm':
-                result = str(val / 2.54) + 'in'
-            elif uom == 'in':
-                result = str(val) + 'in'
-            return result
-        ##############################################
-        if not field_value:
-            return BytesIO(), 'image/png'
-        field_value = base64.decodestring(field_value)
-        tf = BytesIO(field_value)
-        tf.seek(0)
-        im = Image.open(tf)
-        format = im.format.lower()
-        dpi_x, dpi_y = map(float, im.info.get('dpi', (96, 96)))
-        try:
-            if rotate is not None:
-                im = im.rotate(int(rotate))
-                tf.seek(0)
-                im.save(tf, format)
-        except Exception:
-            logger.error("Error in '_asimage' method", exc_info=True)
+    def get_functions(self):
+        """Get all functions registered inside the registry."""
+        return dict(self._functions)
 
-        if hold_ratio:
-            img_ratio = im.size[0] / float(im.size[1])  # width / height
-            if size_x and not size_y:
-                size_y = size_x / img_ratio
-            elif not size_x and size_y:
-                size_x = size_y * img_ratio
-            elif size_x and size_y:
-                size_y2 = size_x / img_ratio
-                size_x2 = size_y * img_ratio
-                if size_y2 > size_y:
-                    size_x = size_x2
-                elif size_x2 > size_x:
-                    size_y = size_y2
+aeroo_function_registry = AerooFunctionRegistry()
 
-        size_x = size_x and size_by_uom(
-            size_x,
-            uom,
-            dpi_x) or str(
-            im.size[0] / dpi_x) + 'in'
-        size_y = size_y and size_by_uom(
-            size_y,
-            uom,
-            dpi_y) or str(
-            im.size[1] / dpi_y) + 'in'
-        return tf, 'image/%s' % format, size_x, size_y
+
+def aeroo_util(*function_names):
+    """Register a function as an Aeroo utility.
+
+    :param function_names: a list of function names available to call the function in Aeroo
+    """
+    def decorator(func):
+        for name in function_names:
+            aeroo_function_registry.register(name, func)
+        return func
+
+    return decorator
+
+
+@aeroo_util('format_date')
+def format_date(report, value, date_format):
+    """Format a date field value into the given format.
+
+    The language of the template is used to format the date.
+
+    :param report: the aeroo report
+    :param value: the value to format
+    :param format: the format to use
+    """
+    if not value:
+        return ''
+    lang = report._context.get('lang') or 'en_US'
+    date_ = datetime.strptime(value, DEFAULT_SERVER_DATE_FORMAT)
+    return babel.dates.format_date(date_, date_format, locale=lang)
+
+
+@aeroo_util('format_datetime')
+def format_datetime(report, value, datetime_format):
+    """Format a datetime field value into the given format.
+
+    The language of the template is used to format the datetime.
+
+    :param report: the aeroo report
+    :param value: the value to format
+    :param format: the format to use
+    """
+    if not value:
+        return ''
+    lang = report._context.get('lang') or 'en_US'
+    datetime_ = datetime.strptime(value, DEFAULT_SERVER_DATETIME_FORMAT)
+    return babel.dates.format_datetime(datetime_, datetime_format, locale=lang)
+
+
+@aeroo_util('format_decimal')
+def format_decimal(report, amount, format='#,##0.00'):
+    """Format an amount in the language of the user.
+
+    :param report: the aeroo report
+    :param amount: the amount to format
+    :param format: an optional format to use
+    """
+    lang = report._context.get('lang') or 'en_US'
+    return babel.numbers.format_decimal(amount, format=format, locale=lang)
+
+
+@aeroo_util('format_currency')
+def format_currency(report, amount, currency, format=None):
+    """Format an amount into the given currency in the language of the user.
+
+    :param report: the aeroo report
+    :param amount: the amount to format
+    :param currency: the currency object to use (o.currency_id)
+    :param format: the format to use
+    """
+    lang = report._context.get('lang') or 'en_US'
+    return babel.numbers.format_currency(amount, currency.name, format=format, locale=lang)
+
+
+@aeroo_util('asimage')
+def asimage(
+    report, field_value, rotate=None, size_x=None, size_y=None,
+    uom='px', hold_ratio=False
+):
+    def size_by_uom(val, uom, dpi):
+        if uom == 'px':
+            result = str(val / dpi) + 'in'
+        elif uom == 'cm':
+            result = str(val / 2.54) + 'in'
+        elif uom == 'in':
+            result = str(val) + 'in'
+        return result
+    ##############################################
+    if not field_value:
+        return BytesIO(), 'image/png'
+    field_value = base64.decodestring(field_value)
+    tf = BytesIO(field_value)
+    tf.seek(0)
+    im = Image.open(tf)
+    format = im.format.lower()
+    dpi_x, dpi_y = map(float, im.info.get('dpi', (96, 96)))
+    try:
+        if rotate is not None:
+            im = im.rotate(int(rotate))
+            tf.seek(0)
+            im.save(tf, format)
+    except Exception:
+        logger.error("Error in '_asimage' method", exc_info=True)
+
+    if hold_ratio:
+        img_ratio = im.size[0] / float(im.size[1])  # width / height
+        if size_x and not size_y:
+            size_y = size_x / img_ratio
+        elif not size_x and size_y:
+            size_x = size_y * img_ratio
+        elif size_x and size_y:
+            size_y2 = size_x / img_ratio
+            size_x2 = size_y * img_ratio
+            if size_y2 > size_y:
+                size_x = size_x2
+            elif size_x2 > size_x:
+                size_y = size_y2
+
+    size_x = size_x and size_by_uom(
+        size_x,
+        uom,
+        dpi_x) or str(
+        im.size[0] / dpi_x) + 'in'
+    size_y = size_y and size_by_uom(
+        size_y,
+        uom,
+        dpi_y) or str(
+        im.size[1] / dpi_y) + 'in'
+    return tf, 'image/%s' % format, size_x, size_y
+
+
+@aeroo_util('barcode')
+def barcode(report, code, code_type='ean13', rotate=None, height=50, xw=1):
+    if code:
+        if code_type.lower() == 'ean13':
+            bar = EanBarCode()
+            im = bar.getImage(code, height)
+        elif code_type.lower() == 'code128':
+            im = get_code(code, xw, height)
+        elif code_type.lower() == 'code39':
+            im = create_c39(height, xw, code)
+    else:
+        return BytesIO(), 'image/png'
+
+    tf = BytesIO()
+    try:
+        if rotate is not None:
+            im = im.rotate(int(rotate))
+    except Exception:
+        pass
+    im.save(tf, 'png')
+    size_x = str(im.size[0] / 96.0) + 'in'
+    size_y = str(im.size[1] / 96.0) + 'in'
+    return tf, 'image/png', size_x, size_y

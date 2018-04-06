@@ -79,7 +79,7 @@ If the report is printed in Canada French, the output will look like:
 
 ### Force a number format
 
-Both format_decimal and format_currency functions accept an optional `format` parameter.
+Both format_decimal and format_currency functions accept an optional `amount_format` parameter.
 
 This parameter accepts a number format using the variables documented on the babel website:
 

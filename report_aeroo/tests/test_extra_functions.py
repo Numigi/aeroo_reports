@@ -48,7 +48,7 @@ class TestAerooReport(common.TransactionCase):
 
     def test_format_decimal_fr_with_format(self):
         report = self.report.with_context(lang='fr_CA')
-        result = format_decimal(report, 1500, format='#,##0.0')
+        result = format_decimal(report, 1500, amount_format='#,##0.0')
         self.assertEqual(result, '1\xa0500,0')
 
     def test_format_currency_fr(self):
@@ -63,5 +63,6 @@ class TestAerooReport(common.TransactionCase):
 
     def test_format_currency_fr_with_format(self):
         report = self.report.with_context(lang='fr_CA')
-        result = format_currency(report, 1500, self.env.ref('base.USD'), format='#,##0.00\xa0¤¤')
+        result = format_currency(
+            report, 1500, self.env.ref('base.USD'), amount_format='#,##0.00\xa0¤¤')
         self.assertEqual(result, '1\xa0500,00\xa0USD')

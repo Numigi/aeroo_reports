@@ -99,28 +99,28 @@ def format_datetime(report, value, datetime_format):
 
 
 @aeroo_util('format_decimal')
-def format_decimal(report, amount, format='#,##0.00'):
+def format_decimal(report, amount, amount_format='#,##0.00'):
     """Format an amount in the language of the user.
 
     :param report: the aeroo report
     :param amount: the amount to format
-    :param format: an optional format to use
+    :param amount_format: an optional format to use
     """
     lang = report._context.get('lang') or 'en_US'
-    return babel.numbers.format_decimal(amount, format=format, locale=lang)
+    return babel.numbers.format_decimal(amount, format=amount_format, locale=lang)
 
 
 @aeroo_util('format_currency')
-def format_currency(report, amount, currency, format=None):
+def format_currency(report, amount, currency, amount_format=None):
     """Format an amount into the given currency in the language of the user.
 
     :param report: the aeroo report
     :param amount: the amount to format
     :param currency: the currency object to use (o.currency_id)
-    :param format: the format to use
+    :param amount_format: the format to use
     """
     lang = report._context.get('lang') or 'en_US'
-    return babel.numbers.format_currency(amount, currency.name, format=format, locale=lang)
+    return babel.numbers.format_currency(amount, currency.name, format=amount_format, locale=lang)
 
 
 @aeroo_util('asimage')
@@ -136,22 +136,21 @@ def asimage(
         elif uom == 'in':
             result = str(val) + 'in'
         return result
-    ##############################################
+
     if not field_value:
         return BytesIO(), 'image/png'
+
     field_value = base64.decodestring(field_value)
     tf = BytesIO(field_value)
     tf.seek(0)
     im = Image.open(tf)
     format = im.format.lower()
     dpi_x, dpi_y = map(float, im.info.get('dpi', (96, 96)))
-    try:
-        if rotate is not None:
-            im = im.rotate(int(rotate))
-            tf.seek(0)
-            im.save(tf, format)
-    except Exception:
-        logger.error("Error in '_asimage' method", exc_info=True)
+
+    if rotate is not None:
+        im = im.rotate(int(rotate))
+        tf.seek(0)
+        im.save(tf, format)
 
     if hold_ratio:
         img_ratio = im.size[0] / float(im.size[1])  # width / height
@@ -167,16 +166,8 @@ def asimage(
             elif size_x2 > size_x:
                 size_y = size_y2
 
-    size_x = size_x and size_by_uom(
-        size_x,
-        uom,
-        dpi_x) or str(
-        im.size[0] / dpi_x) + 'in'
-    size_y = size_y and size_by_uom(
-        size_y,
-        uom,
-        dpi_y) or str(
-        im.size[1] / dpi_y) + 'in'
+    size_x = size_x and size_by_uom(size_x, uom, dpi_x) or str(im.size[0] / dpi_x) + 'in'
+    size_y = size_y and size_by_uom(size_y, uom, dpi_y) or str(im.size[1] / dpi_y) + 'in'
     return tf, 'image/%s' % format, size_x, size_y
 
 

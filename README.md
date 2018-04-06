@@ -105,7 +105,7 @@ format_date(o.date_invoice, 'dd MMMM yyyy')
 If the report is printed in French, the output will look like:
 
 ```
-6 Avril 2018
+6 avril 2018
 ```
 
 ### Exemple for format_datetime
@@ -117,7 +117,7 @@ format_datetime(o.confirmation_date, 'dd MMMM yyyy hh:mm a')
 If the report is printed in French, the output will look like:
 
 ```
-6 Avril 2018 10:34 AM
+6 avril 2018 10:34 AM
 ```
 
 ## Creating a Template

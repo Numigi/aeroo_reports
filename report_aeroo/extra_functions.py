@@ -52,14 +52,13 @@ class AerooFunctionRegistry(object):
 aeroo_function_registry = AerooFunctionRegistry()
 
 
-def aeroo_util(*function_names):
+def aeroo_util(*function_name):
     """Register a function as an Aeroo utility.
 
-    :param function_names: a list of function names available to call the function in Aeroo
+    :param function_name: the function name available to call the function in Aeroo
     """
     def decorator(func):
-        for name in function_names:
-            aeroo_function_registry.register(name, func)
+        aeroo_function_registry.register(function_name, func)
         return func
 
     return decorator

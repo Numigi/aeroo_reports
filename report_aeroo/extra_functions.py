@@ -185,11 +185,10 @@ def barcode(report, code, code_type='ean13', rotate=None, height=50, xw=1):
         return BytesIO(), 'image/png'
 
     tf = BytesIO()
-    try:
-        if rotate is not None:
-            im = im.rotate(int(rotate))
-    except Exception:
-        pass
+
+    if rotate is not None:
+        im = im.rotate(int(rotate))
+
     im.save(tf, 'png')
     size_x = str(im.size[0] / 96.0) + 'in'
     size_y = str(im.size[1] / 96.0) + 'in'

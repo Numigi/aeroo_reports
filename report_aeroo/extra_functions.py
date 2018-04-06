@@ -52,7 +52,7 @@ class AerooFunctionRegistry(object):
 aeroo_function_registry = AerooFunctionRegistry()
 
 
-def aeroo_util(*function_name):
+def aeroo_util(function_name):
     """Register a function as an Aeroo utility.
 
     :param function_name: the function name available to call the function in Aeroo

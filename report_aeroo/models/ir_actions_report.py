@@ -85,6 +85,10 @@ class IrActionsReport(models.Model):
         :param record: the record for which to generate the report
         :return: the template's binary file
         """
+        # The access rights must not impact the aeroo template selection.
+        self = self.sudo()
+        record = record.sudo()
+
         if self.aeroo_template_source == 'file':
             return self._get_aeroo_template_from_file()
 
@@ -154,14 +158,7 @@ class IrActionsReport(models.Model):
 
         :rtype: float
         """
-        libreoffice_timeout = self.env['ir.config_parameter'].get_param(
-            'report_aeroo.libreoffice_timeout')
-        if not libreoffice_timeout:
-            raise ValidationError(
-                _('Aeroo reports are wrongly configured. '
-                  'The global parameter report_aeroo.libreoffice_timeout '
-                  'must be defined.'))
-
+        libreoffice_timeout = self._get_aeroo_config_parameter('libreoffice_timeout')
         return float(libreoffice_timeout)
 
     def render_aeroo(self, doc_ids, data=None):
@@ -310,15 +307,7 @@ class IrActionsReport(models.Model):
         temp_file = generate_temporary_file(in_format, output)
         filedir, filename = os.path.split(temp_file.name)
 
-        libreoffice_location = (
-            self.env['ir.config_parameter'].get_param(
-                'report_aeroo.libreoffice_location'))
-
-        if not libreoffice_location:
-            raise ValidationError(
-                _('Aeroo reports are wrongly configured. '
-                  'The global parameter report_aeroo.libreoffice_location '
-                  'must be defined.'))
+        libreoffice_location = self._get_aeroo_config_parameter('libreoffice_location')
 
         cmd = libreoffice_location.split(' ') + [
             "--headless",
@@ -396,16 +385,7 @@ class IrActionsReport(models.Model):
         :return: the content of the merged pdf reports
         :rtype: bytes
         """
-        pdftk_location = (
-            self.env['ir.config_parameter'].get_param(
-                'report_aeroo.pdftk_location')
-        )
-
-        if not pdftk_location:
-            raise ValidationError(
-                _('Aeroo reports are wrongly configured. '
-                  'The global parameter report_aeroo.pdftk_location '
-                  'must be defined.'))
+        pdftk_location = self._get_aeroo_config_parameter('pdftk_location')
 
         output_file = generate_temporary_file('pdf')
 
@@ -430,6 +410,27 @@ class IrActionsReport(models.Model):
         os.remove(output_file.name)
 
         return output
+
+    def _get_aeroo_config_parameter(self, parameter_name):
+        """Get a configuration parameter related to aeroo reports.
+
+        The sudo() is required because since Odoo version 11.0, all config parameters
+        are restricted in read access.
+
+        :param parameter_name: the name of the configuration parameter.
+        """
+        param = (
+            self.env['ir.config_parameter'].sudo()
+            .get_param('.'.join(('report_aeroo', parameter_name)))
+        )
+
+        if not param:
+            raise ValidationError(
+                _('Aeroo reports are wrongly configured. '
+                  'The global parameter report_aeroo.{parameter_name} '
+                  'must be defined.').format(parameter_name=parameter_name))
+
+        return param
 
 
 def generate_temporary_file(format, data=None):

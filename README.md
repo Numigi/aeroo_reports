@@ -105,7 +105,7 @@ format_date(o.date_invoice, 'dd MMMM yyyy')
 If the report is printed in French, the output will look like:
 
 ```
-6 avril 2018
+06 avril 2018
 ```
 
 ### Exemple for format_datetime

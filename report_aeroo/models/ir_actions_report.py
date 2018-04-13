@@ -85,10 +85,6 @@ class IrActionsReport(models.Model):
         :param record: the record for which to generate the report
         :return: the template's binary file
         """
-        # The access rights must not impact the aeroo template selection.
-        self = self.sudo()
-        record = record.sudo()
-
         if self.aeroo_template_source == 'file':
             return self._get_aeroo_template_from_file()
 
@@ -431,6 +427,17 @@ class IrActionsReport(models.Model):
                   'must be defined.').format(parameter_name=parameter_name))
 
         return param
+
+
+class IrActionsReportWithSudo(models.Model):
+
+    _inherit = 'ir.actions.report'
+
+    def _get_aeroo_template(self, record):
+        """Prevent access rights from impacting the aeroo template selection."""
+        self = self.sudo()
+        record = record.sudo()
+        return super()._get_aeroo_template(record)
 
 
 def generate_temporary_file(format, data=None):

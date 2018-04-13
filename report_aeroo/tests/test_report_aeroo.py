@@ -58,7 +58,13 @@ class TestAerooReport(common.SavepointCase):
             'report_aeroo.libreoffice_timeout', '60')
 
     def _render_report(self, partners):
-        self.report.render(partners.ids, {})
+        """Render the demo aeroo report for the given partners.
+
+        The report is rendered with a basic user to detect issues related to access rights.
+
+        :param partners: a res.partner recordset
+        """
+        self.report.sudo(self.env.ref('base.user_demo').id).render(partners.ids, {})
 
     def _create_report_line(self, lang, company=None):
         self.report.write({

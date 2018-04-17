@@ -50,10 +50,8 @@
                                     <field name="template_filename" invisible="1"/>
                                 </tree>
                             </field>
-                            <field name="aeroo_lang_eval"
-                                attrs="{'invisible': [('aeroo_template_source', '!=', 'lines')],'required': [('aeroo_template_source', '=', 'lines')]}"/>
-                            <field name="aeroo_company_eval"
-                                attrs="{'invisible': [('aeroo_template_source', '!=', 'lines')],'required': [('aeroo_template_source', '=', 'lines')]}"/>
+                            <field name="aeroo_lang_eval"/>
+                            <field name="aeroo_company_eval"/>
                         </group>
                         <group string="Attachments">
                             <field name="attachment"/>

@@ -136,7 +136,7 @@ class IrActionsReport(models.Model):
         """
         lang = (
             safe_eval(self.aeroo_lang_eval, {'o': record, 'user': self.env.user})
-            if self.aeroo_lang_eval else self.env.user.lang
+            if self.aeroo_lang_eval else None
         )
         return lang or 'en_US'
 

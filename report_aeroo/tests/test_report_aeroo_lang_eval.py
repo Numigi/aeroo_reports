@@ -10,7 +10,10 @@ class TestAerooReportLangEval(common.SavepointCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.env.user.lang = 'es_AR'
+        cls.env['res.lang'].with_context(active_test=False).search(
+            [('code', 'in', ('fr_CA', 'fr_FR'))]).write({'active': True})
+
+        cls.env.user.lang = 'fr_CA'
 
         cls.partner = cls.env['res.partner'].create({
             'name': 'My Partner',
@@ -25,7 +28,7 @@ class TestAerooReportLangEval(common.SavepointCase):
 
     def test_eval_lang_using_the_lang_of_the_user(self):
         self.report.aeroo_lang_eval = "user.lang"
-        self.assertEqual(self.report._get_aeroo_lang(self.partner), 'es_AR')
+        self.assertEqual(self.report._get_aeroo_lang(self.partner), 'fr_CA')
 
     def test_if_lang_eval_is_not_defined_then_the_laguage_used_is_en_us(self):
         self.report.aeroo_lang_eval = None

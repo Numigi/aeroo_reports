@@ -134,7 +134,10 @@ class IrActionsReport(models.Model):
 
         :rtype: res.company
         """
-        lang = safe_eval(self.aeroo_lang_eval, {'o': record})
+        lang = (
+            safe_eval(self.aeroo_lang_eval, {'o': record, 'user': self.env.user})
+            if self.aeroo_lang_eval else None
+        )
         return lang or 'en_US'
 
     def _get_aeroo_company(self, record):
@@ -145,9 +148,10 @@ class IrActionsReport(models.Model):
 
         :rtype: res.company
         """
-        company = safe_eval(
-            self.aeroo_company_eval, {'o': record, 'user': self.env.user})
-        return company or 'en_US'
+        return (
+            safe_eval(self.aeroo_company_eval, {'o': record, 'user': self.env.user})
+            if self.aeroo_company_eval else self.env.user.company_id
+        )
 
     def _get_aeroo_libreoffice_timeout(self):
         """Get the timeout of the Libreoffice process in seconds.

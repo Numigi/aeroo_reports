@@ -8,13 +8,10 @@ from odoo import api, http
 from odoo.modules import registry
 from odoo.http import request, content_disposition
 from odoo.tools.safe_eval import safe_eval
-from odoo.addons.web.controllers.main import (
-    Reports as ReportController,
-    serialize_exception,
-)
+from odoo.addons.web.controllers.main import ReportController, serialize_exception
 
 
-class Reports(ReportController):
+class ReportControllerWithAeroo(ReportController):
 
     @http.route('/web/report', type='http', auth="user")
     @serialize_exception

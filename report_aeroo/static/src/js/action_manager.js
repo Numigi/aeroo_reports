@@ -4,13 +4,13 @@ odoo.define("report_aeroo.action_manager", function (require) {
 // Need to load qweb reports (report.report) before loading aeroo.
 // The method ActionManager.ir_actions_report defined in report.report
 // prevents generating reports other than qweb.
-require('report.report');
+require("report.report");
 
 var ActionManager = require("web.ActionManager");
-var crashManager = require('web.crash_manager');
-var framework = require('web.framework');
-var session = require('web.session');
-var pyeval = require('web.pyeval');
+var crashManager = require("web.crash_manager");
+var framework = require("web.framework");
+var session = require("web.session");
+var pyeval = require("web.pyeval");
 
 ActionManager.include({
     /**

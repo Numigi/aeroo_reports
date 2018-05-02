@@ -8,14 +8,24 @@ from odoo import api, http
 from odoo.modules import registry
 from odoo.http import request, content_disposition
 from odoo.tools.safe_eval import safe_eval
-from odoo.addons.web.controllers.main import ReportController, serialize_exception
+from odoo.addons.web.controllers.main import serialize_exception
+
+MIMETYPES_MAPPING = {
+    'doc': 'application/vnd.ms-word',
+    'ods': 'application/vnd.oasis.opendocument.spreadsheet',
+    'odt': 'application/vnd.oasis.opendocument.text',
+    'pdf': 'application/pdf',
+    'xls': 'application/vnd.ms-excel',
+}
+
+DEFAULT_MIMETYPE = 'octet-stream'
 
 
-class ReportControllerWithAeroo(ReportController):
+class AerooReportController(http.Controller):
 
-    @http.route('/web/report', type='http', auth="user")
+    @http.route('/web/report_aeroo', type='http', auth="user")
     @serialize_exception
-    def index(self, action, token):
+    def generate_aeroo_report(self, action, token):
         """Generate an aeroo report.
 
         Add the filename of the generated report to the response headers.
@@ -23,9 +33,6 @@ class ReportControllerWithAeroo(ReportController):
         file name is simply {report.name}.pdf.
         """
         action_data = json.loads(action)
-        if action_data.get('report_type') != 'aeroo':
-            return super().index(action, token)
-
         ids = action_data['context']['active_ids']
 
         report = request.env['ir.actions.report'].browse(action_data['id'])
@@ -37,7 +44,7 @@ class ReportControllerWithAeroo(ReportController):
         else:
             file_name = '%s.%s' % (report.name, out_format)
 
-        report_mimetype = self.TYPES_MAPPING.get(out_format, 'octet-stream')
+        report_mimetype = MIMETYPES_MAPPING.get(out_format, DEFAULT_MIMETYPE)
 
         response = request.make_response(
             content,

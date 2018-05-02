@@ -10,13 +10,15 @@ from odoo.http import request, content_disposition
 from odoo.tools.safe_eval import safe_eval
 from odoo.addons.web.controllers.main import serialize_exception
 
-TYPES_MAPPING = {
+MIMETYPES_MAPPING = {
     'doc': 'application/vnd.ms-word',
     'ods': 'application/vnd.oasis.opendocument.spreadsheet',
     'odt': 'application/vnd.oasis.opendocument.text',
     'pdf': 'application/pdf',
     'xls': 'application/vnd.ms-excel',
 }
+
+DEFAULT_MIMETYPE = 'octet-stream'
 
 
 class AerooReportController(http.Controller):
@@ -42,7 +44,7 @@ class AerooReportController(http.Controller):
         else:
             file_name = '%s.%s' % (report.name, out_format)
 
-        report_mimetype = TYPES_MAPPING.get(out_format, 'octet-stream')
+        report_mimetype = MIMETYPES_MAPPING.get(out_format, DEFAULT_MIMETYPE)
 
         response = request.make_response(
             content,

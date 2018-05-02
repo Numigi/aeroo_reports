@@ -18,7 +18,7 @@ ActionManager.include({
      */
     ir_actions_report(action, options) {
         if (action.report_type === "aeroo") {
-            return this._print_aeroo_report(action, options);
+            return this._printAerooReport(action, options);
         } else {
             return this._super(action, options);
         }
@@ -29,12 +29,12 @@ ActionManager.include({
      * This function was taken from code removed by the editor and adapted.
      * https://github.com/odoo/odoo/commit/4787bc75
      */
-    _print_aeroo_report(action, options) {
+    _printAerooReport(action, options) {
         framework.blockUI();
 
         action = _.clone(action);
-        var eval_contexts = ([session.user_context] || []).concat([action.context]);
-        action.context = pyeval.eval("contexts", eval_contexts);
+        var evalContexts = ([session.user_context] || []).concat([action.context]);
+        action.context = pyeval.eval("contexts", evalContexts);
 
         var self = this;
         return $.Deferred(function (deferred) {

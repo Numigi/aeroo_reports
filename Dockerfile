@@ -19,6 +19,7 @@ USER odoo
 ########
 
 COPY ./report_aeroo /mnt/extra-addons/report_aeroo
+COPY ./report_aeroo_invoice /mnt/extra-addons/report_aeroo_invoice
 
 COPY .docker_files/main /mnt/extra-addons/main
 COPY .docker_files/odoo.conf /etc/odoo

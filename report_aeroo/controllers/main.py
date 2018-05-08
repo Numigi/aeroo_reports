@@ -66,7 +66,8 @@ class AerooReportController(http.Controller):
 
         return response
 
-    def _get_aeroo_report_from_name(self, report_name):
+    @staticmethod
+    def _get_aeroo_report_from_name(report_name):
         """Get an aeroo report template from the given report name."""
         report = request.env['ir.actions.report'].search([
             ('report_name', '=', report_name),

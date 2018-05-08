@@ -170,7 +170,8 @@ class IrActionsReport(models.Model):
 
         :param list doc_ids: the ids of the records.
         :param dict data: the data to send to the report as context.
-        :param str | None force_output_format: whether to force a given output report format.
+        :param str force_output_format: whether to force a given output report format.
+            If not given the standard output format defined on the report is used.
         """
         output_format = force_output_format or self.aeroo_out_format_id.code
 

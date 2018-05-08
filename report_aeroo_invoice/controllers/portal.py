@@ -12,6 +12,10 @@ class PortalAccountWithAerooInvoiceReport(PortalAccount):
 
     @http.route(['/my/invoices/pdf/<int:invoice_id>'], type='http', auth="public", website=True)
     def portal_my_invoice_detail(self, invoice_id, access_token=None, **kw):
+        """Print the invoice using the aeroo invoice template if it is defined.
+
+        If the aeroo invoice report is not setup, fallback to the qweb template.
+        """
         report = request.env.ref(
             'report_aeroo_invoice.aeroo_invoice_report', raise_if_not_found=False)
         if not report:

@@ -161,14 +161,6 @@ class IrActionsReport(models.Model):
         libreoffice_timeout = self._get_aeroo_config_parameter('libreoffice_timeout')
         return float(libreoffice_timeout)
 
-    def render_aeroo_pdf(self, doc_ids, data=None):
-        """Render the aeroo report in pdf.
-
-        This method is required when printing a document from the portal.
-        Portal users should only see the documents in pdf.
-        """
-        return self.render_aeroo(doc_ids=doc_ids, data=data, force_output_format='pdf')
-
     def render_aeroo(self, doc_ids, data=None, force_output_format=None):
         """Render an aeroo report.
 
@@ -178,7 +170,7 @@ class IrActionsReport(models.Model):
 
         :param list doc_ids: the ids of the records.
         :param dict data: the data to send to the report as context.
-        :param str force_output_format: whether to force a given output report format.
+        :param str | None force_output_format: whether to force a given output report format.
         """
         output_format = force_output_format or self.aeroo_out_format_id.code
 

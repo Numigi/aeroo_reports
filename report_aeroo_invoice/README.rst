@@ -12,7 +12,7 @@ This module changes the behavior of the button to print an aeroo report instead.
 
 Download Button On Portal
 -------------------------
-The dowload link on the portal is hardcoded to print an Aeroo report.
+The dowload link on the portal is hardcoded to print a qweb report.
 
 This module changes the behavior of the button to print an aeroo report instead.
 

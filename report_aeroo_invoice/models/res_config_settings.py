@@ -23,7 +23,7 @@ class ResConfigSettingsWithAerooInvoiceTemplate(models.TransientModel):
 
     @api.model
     def set_values(self):
-        super().get_values()
+        super().set_values()
         if self.aeroo_invoice_template_id:
             self._update_aeroo_invoice_template()
         else:

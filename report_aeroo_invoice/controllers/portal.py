@@ -11,7 +11,7 @@ from odoo.http import request
 class PortalAccountWithAerooInvoiceReport(PortalAccount):
 
     @http.route(['/my/invoices/pdf/<int:invoice_id>'], type='http', auth="public", website=True)
-    def portal_my_invoice_detail(self, invoice_id, access_token=None, **kw):
+    def portal_my_invoice_report(self, invoice_id, access_token=None, **kw):
         """Print the invoice using the aeroo invoice template if it is defined.
 
         If the aeroo invoice report is not setup, fallback to the qweb template.
@@ -19,7 +19,7 @@ class PortalAccountWithAerooInvoiceReport(PortalAccount):
         report = request.env.ref(
             'report_aeroo_invoice.aeroo_invoice_report', raise_if_not_found=False)
         if not report:
-            return super().portal_my_invoice_detail(
+            return super().portal_my_invoice_report(
                 invoice_id=invoice_id, access_token=access_token, **kw)
 
         try:
@@ -27,7 +27,7 @@ class PortalAccountWithAerooInvoiceReport(PortalAccount):
         except AccessError:
             return request.redirect('/my')
 
-        pdf = report.sudo().render_aeroo_pdf(doc_ids=[invoice.id])[0]
+        pdf = report.sudo().render_aeroo(doc_ids=[invoice.id], force_output_format='pdf')[0]
         pdfhttpheaders = [
             ('Content-Type', 'application/pdf'),
             ('Content-Length', len(pdf)),

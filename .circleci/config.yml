@@ -10,7 +10,7 @@ jobs:
 
        - run:
           name: Build -- Init Database
-          command: docker-compose run --rm odoo odoo --stop-after-init -i report_aeroo
+          command: docker-compose run --rm odoo odoo --stop-after-init -i main
 
        - run:
           name: Setup Log Folder For Reports

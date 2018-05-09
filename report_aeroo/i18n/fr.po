@@ -484,3 +484,19 @@ msgstr ""
 #: model:ir.ui.view,arch_db:report_aeroo.view_aeroo_remove_print_button
 msgid "or"
 msgstr "ou"
+
+#. module: report_aeroo
+#: code:addons/report_aeroo/controllers/main.py:81
+#, python-format
+msgid "Multiple aeroo reports found with the same name ({report_name}):\n"
+"\n"
+"{report_display_names}"
+msgstr "Plusieurs rapports aeroo existent avec le même nom ({report_name}) :\n"
+"\n"
+"{report_display_names}"
+
+#. module: report_aeroo
+#: code:addons/report_aeroo/controllers/main.py:47
+#, python-format
+msgid "The report name is expected in order to generate an aeroo report."
+msgstr "Le nom du rapport est requis pour générer un rapport aeroo."

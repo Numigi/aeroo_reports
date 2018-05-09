@@ -161,7 +161,7 @@ class IrActionsReport(models.Model):
         libreoffice_timeout = self._get_aeroo_config_parameter('libreoffice_timeout')
         return float(libreoffice_timeout)
 
-    def render_aeroo(self, doc_ids, data=None):
+    def render_aeroo(self, doc_ids, data=None, force_output_format=None):
         """Render an aeroo report.
 
         If doc_ids contains more than one record id, the report will
@@ -170,31 +170,34 @@ class IrActionsReport(models.Model):
 
         :param list doc_ids: the ids of the records.
         :param dict data: the data to send to the report as context.
+        :param str force_output_format: whether to force a given output report format.
+            If not given the standard output format defined on the report is used.
         """
+        output_format = force_output_format or self.aeroo_out_format_id.code
+
         if data is None:
             data = {}
 
         if len(doc_ids) > 1:
-            return self._render_aeroo_multi(doc_ids, data)
+            return self._render_aeroo_multi(doc_ids, data, output_format)
 
-        out_format = self.aeroo_out_format_id.code
         record = self.env[self.model].browse(doc_ids[0])
 
         # Check if an attachment already exists
-        attachment_output = self._find_aeroo_report_attachment(record)
+        attachment_output = self._find_aeroo_report_attachment(record, output_format)
         if attachment_output:
-            return attachment_output, out_format
+            return attachment_output, output_format
 
         # Render the report
-        output = self._render_aeroo(record, data)
+        output = self._render_aeroo(record, data, output_format)
 
         # Generate the attachment
         if self.attachment_use:
-            self._create_aeroo_attachment(record, output)
+            self._create_aeroo_attachment(record, output, output_format)
 
-        return output, out_format
+        return output, output_format
 
-    def _render_aeroo(self, record, data):
+    def _render_aeroo(self, record, data, output_format):
         """Generate the aeroo report binary from the template.
 
         :param record: the record for which to find the attachement
@@ -212,8 +215,8 @@ class IrActionsReport(models.Model):
         output = Template(source=template_io, serializer=serializer)\
             .generate(report_context).render().getvalue()
 
-        if self.aeroo_in_format != self.aeroo_out_format_id.code:
-            output = self._convert_aeroo_report(output)
+        if self.aeroo_in_format != output_format:
+            output = self._convert_aeroo_report(output, output_format)
 
         return output
 
@@ -235,13 +238,12 @@ class IrActionsReport(models.Model):
 
         return wrapper
 
-    def get_aeroo_filename(self, record):
+    def get_aeroo_filename(self, record, output_format):
         """Get the attachement filename for the generated report.
 
         :param record: the record for which to generate the report
         :return: the filename
         """
-        output_format = self.aeroo_out_format_id.code
         if self.attachment:
             context_time = fields.Datetime.context_timestamp(
                 record, datetime.now())
@@ -255,7 +257,7 @@ class IrActionsReport(models.Model):
         else:
             return "%s.%s" % (self.name, output_format)
 
-    def _find_aeroo_report_attachment(self, record):
+    def _find_aeroo_report_attachment(self, record, output_format):
         """Find an attachment of the Aeroo report on the given record.
 
         If the report is stored as an attachment, it will be generated
@@ -268,7 +270,7 @@ class IrActionsReport(models.Model):
         :return: the report's binary data or None
         """
         if self.attachment_use:
-            filename = self.get_aeroo_filename(record)
+            filename = self.get_aeroo_filename(record, output_format)
             attachment = self.env['ir.attachment'].search([
                 ('res_id', '=', record.id),
                 ('res_model', '=', record._name),
@@ -278,14 +280,14 @@ class IrActionsReport(models.Model):
                 return base64.decodestring(attachment.datas)
         return None
 
-    def _create_aeroo_attachment(self, record, file_data):
+    def _create_aeroo_attachment(self, record, file_data, output_format):
         """Save the generated aeroo report as attachment.
 
         :param record: the record used to generate the report
         :param file_data: the generated report's binary file
         :return: the generated attachment
         """
-        filename = self.get_aeroo_filename(record)
+        filename = self.get_aeroo_filename(record, output_format)
         return self.env['ir.attachment'].create({
             'name': filename,
             'datas': base64.encodestring(file_data),
@@ -294,7 +296,7 @@ class IrActionsReport(models.Model):
             'res_id': record.id,
         })
 
-    def _convert_aeroo_report(self, output):
+    def _convert_aeroo_report(self, output, output_format):
         """Convert a generated aeroo report to the output format.
 
         :param string output: the aeroo data to convert.
@@ -302,7 +304,6 @@ class IrActionsReport(models.Model):
         :rtype: bytes
         """
         in_format = self.aeroo_in_format
-        out_format = self.aeroo_out_format_id.code
 
         temp_file = generate_temporary_file(in_format, output)
         filedir, filename = os.path.split(temp_file.name)
@@ -311,7 +312,7 @@ class IrActionsReport(models.Model):
 
         cmd = libreoffice_location.split(' ') + [
             "--headless",
-            "--convert-to", out_format,
+            "--convert-to", output_format,
             "--outdir", filedir, temp_file.name
         ]
 
@@ -326,11 +327,11 @@ class IrActionsReport(models.Model):
                   'using the format %(output_format)s. '
                   '%(error)s') % {
                     'report': self.name,
-                    'output_format': out_format,
+                    'output_format': output_format,
                     'error': exc,
                 })
 
-        output_file = temp_file.name[:-3] + out_format
+        output_file = temp_file.name[:-3] + output_format
         with open(output_file, 'rb') as f:
             output = f.read()
 
@@ -339,7 +340,7 @@ class IrActionsReport(models.Model):
 
         return output
 
-    def _render_aeroo_multi(self, doc_ids, data):
+    def _render_aeroo_multi(self, doc_ids, data, output_format):
         """Render an aeroo report for multiple records at the same time.
 
         All reports are generated individually and merged together using pdftk.
@@ -350,8 +351,6 @@ class IrActionsReport(models.Model):
         :return: the content of the merged pdf reports
         :rtype: bytes
         """
-        output_format = self.aeroo_out_format_id.code
-
         if output_format != 'pdf':
             raise ValidationError(
                 _('Aeroo Reports do not support generating non-pdf '

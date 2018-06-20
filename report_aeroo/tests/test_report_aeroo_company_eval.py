@@ -28,7 +28,7 @@ class TestAerooReportCompanyEval(common.SavepointCase):
             'company_id': cls.company_2.id,
         })
 
-        cls.report = cls.env.ref('report_aeroo.aeroo_sample_report_id')
+        cls.report = cls.env.ref('report_aeroo.aeroo_sample_report')
 
     def test_eval_company_using_the_company_defined_on_the_partner(self):
         self.report.aeroo_company_eval = "o.company_id"

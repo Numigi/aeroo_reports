@@ -5,8 +5,6 @@
 
 import base64
 import os
-import stat
-from PIL import Image
 from odoo.exceptions import ValidationError
 from odoo.modules import module
 from odoo.tests import common
@@ -17,8 +15,7 @@ class TestAerooReport(common.SavepointCase):
     @classmethod
     def setUpClass(cls):
         super(TestAerooReport, cls).setUpClass()
-        image_path = (
-            module.get_module_path('report_aeroo') + '/static/img/logo.png')
+        image_path = module.get_module_path('report_aeroo') + '/static/img/logo.png'
 
         cls.company = cls.env['res.company'].create({
             'name': 'My Company',
@@ -42,20 +39,11 @@ class TestAerooReport(common.SavepointCase):
             'lang': 'en_US',
         })
 
-        cls.report = cls.env.ref('report_aeroo.aeroo_sample_report_id')
+        cls.report = cls.env.ref('report_aeroo.aeroo_sample_report')
         cls.report.write({
             'attachment': None,
             'attachment_use': False,
         })
-
-        cls.env['ir.config_parameter'].set_param(
-            'report_aeroo.libreoffice_location', 'libreoffice')
-
-        cls.env['ir.config_parameter'].set_param(
-            'report_aeroo.pdftk_location', 'pdftk')
-
-        cls.env['ir.config_parameter'].set_param(
-            'report_aeroo.libreoffice_timeout', '60')
 
     def _render_report(self, partners):
         """Render the demo aeroo report for the given partners.

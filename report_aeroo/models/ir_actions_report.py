@@ -188,8 +188,13 @@ class IrActionsReport(models.Model):
         if attachment_output:
             return attachment_output, output_format
 
+        template = self._get_aeroo_template(record)
+        current_report_data = dict(data, o=record)
+        report_lang = self._get_aeroo_lang(record)
+
         # Render the report
-        output = self._render_aeroo(record, data, output_format)
+        output = self.with_context(lang=report_lang)._render_aeroo(
+            template, current_report_data, output_format)
 
         # Generate the attachment
         if self.attachment_use:
@@ -197,21 +202,22 @@ class IrActionsReport(models.Model):
 
         return output, output_format
 
-    def _render_aeroo(self, record, data, output_format):
+    def _render_aeroo(self, template, data, output_format):
         """Generate the aeroo report binary from the template.
 
-        :param record: the record for which to find the attachement
+        :param template: the Libreoffice template to use
+        :param data: the data used for rendering the report
+        :param output_format: the output format
         :return: the report's binary data
         """
-        self = self.with_context(lang=self._get_aeroo_lang(record))
-
+        # The first given record is
         template_io = BytesIO()
-        template_io.write(self._get_aeroo_template(record))
-
+        template_io.write(template)
         serializer = OOSerializer(template_io)
+
         report_context = GenshiContext(**data)
         report_context.update(self._get_aeroo_extra_functions())
-        report_context['o'] = record
+
         output = Template(source=template_io, serializer=serializer)\
             .generate(report_context).render().getvalue()
 
@@ -392,8 +398,6 @@ class IrActionsReport(models.Model):
         cmd += input_files
         cmd += ['cat', 'output', output_file.name]
 
-        print(cmd)
-
         timeout = self._get_aeroo_libreoffice_timeout()
 
         try:
@@ -441,6 +445,59 @@ class IrActionsReportWithSudo(models.Model):
         self = self.sudo()
         record = record.sudo()
         return super()._get_aeroo_template(record)
+
+
+class AerooReportsGeneratedFromListViews(models.Model):
+    """Enable rendering aeroo reports from a list view.
+
+    Instead of generating one report per record and merging the rendered pdf,
+    a single report is generated.
+
+    A variable `objects` is passed to the renderer instead of a variable `o`.
+    This new variable contains the recordset for which to render the report.
+    """
+
+    _inherit = 'ir.actions.report'
+
+    def render_aeroo(self, doc_ids, data=None, force_output_format=None):
+        if self.multi:
+            return self._render_aeroo_from_list_of_records(doc_ids, data, force_output_format)
+        else:
+            return super().render_aeroo(doc_ids, data, force_output_format)
+
+    def _render_aeroo_from_list_of_records(self, doc_ids, data=None, force_output_format=None):
+        """Render an aeroo report for a list of record ids.
+
+        :param list doc_ids: the ids of the records.
+        :param dict data: the data to send to the report as context.
+        :param str force_output_format: whether to force a given output report format.
+            If not given the standard output format defined on the report is used.
+        """
+        if len(doc_ids) == 0:
+            raise ValidationError(_(
+                'At least one record must be selected to generate the report {report}.'
+            ).format(report=self.name))
+
+        output_format = force_output_format or self.aeroo_out_format_id.code
+
+        if data is None:
+            data = {}
+
+        records = self.env[self.model].browse(doc_ids)
+
+        template = self._get_aeroo_template(records[0])
+        report_lang = self._get_aeroo_lang(records[0])
+        report_data = dict(data, objects=records)
+
+        # Render the report
+        output = self.with_context(lang=report_lang)._render_aeroo(
+            template, report_data, output_format)
+
+        return output, output_format
+
+    def _onchange_is_aeroo_list_report_set_multi(self):
+        if self.is_aeroo_list_report:
+            self.multi = True
 
 
 def generate_temporary_file(format, data=None):

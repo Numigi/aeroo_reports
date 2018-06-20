@@ -53,12 +53,12 @@
                             <field name="aeroo_lang_eval"/>
                             <field name="aeroo_company_eval"/>
                         </group>
-                        <group string="Attachments">
+                        <group string="List Views">
+                            <field name="multi" string="Generate Report From Record List"/>
+                        </group>
+                        <group string="Attachments" attrs="{'invisible': [('multi', '=', True)]}">
                             <field name="attachment"/>
                             <field name="attachment_use"/>
-                        </group>
-                        <group string="Miscellaneous">
-                            <field name="multi"/>
                         </group>
                     </page>
                     <page string="Security">

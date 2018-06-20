@@ -14,7 +14,7 @@ from ..extra_functions import (
 class TestAerooReport(common.TransactionCase):
     def setUp(self):
         super().setUp()
-        self.report = self.env.ref('report_aeroo.aeroo_sample_report_id')
+        self.report = self.env.ref('report_aeroo.aeroo_sample_report')
 
     def test_format_date_fr(self):
         report = self.report.with_context(lang='fr_CA')

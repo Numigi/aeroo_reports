@@ -6,39 +6,26 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 9.0e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-26 21:32+0000\n"
-"PO-Revision-Date: 2016-10-26 17:44-0500\n"
+"POT-Creation-Date: 2018-06-20 12:02-0400\n"
+"PO-Revision-Date: 2018-06-20 12:13-0400\n"
 "Last-Translator: David Dufresne <david.dufresne@savoirfairelinux.com>\n"
 "Language-Team: \n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #. module: report_aeroo
-#: model:ir.model,name:report_aeroo.model_aeroo_add_print_button
-msgid ""
-"\n"
-"    Add Print Button\n"
-"    "
-msgstr "Ajouter le bouton d'impression"
+#: model:ir.ui.view,arch_db:report_aeroo.act_report_xml_view1
+msgid "Add in the 'Print' menu"
+msgstr "Ajouter au menu 'Imprimer'"
 
 #. module: report_aeroo
-#: model:ir.model.fields,field_description:report_aeroo.field_ir_act_report_xml_active
-msgid "Active"
-msgstr "Actif"
-
-#. module: report_aeroo
-#: selection:aeroo.add_print_button,state:0
-msgid "Add"
-msgstr "Ajouter"
-
-#. module: report_aeroo
-#: model:ir.actions.act_window,name:report_aeroo.action_aeroo_add_print_button
-#: model:ir.ui.view,arch_db:report_aeroo.view_aeroo_add_print_button
-msgid "Add Print Button"
-msgstr "Ajouter le bouton d'impression"
+#: model:res.groups,name:report_aeroo.group_aeroo_manager
+msgid "Aeroo Manager"
+msgstr "Gestionnaire de rapports Aeroo"
 
 #. module: report_aeroo
 #: model:ir.ui.view,arch_db:report_aeroo.act_report_xml_view1
@@ -46,36 +33,50 @@ msgid "Aeroo Report"
 msgstr "Rapport Aeroo"
 
 #. module: report_aeroo
-#: model:ir.actions.act_window,name:report_aeroo.action_aeroo_report_xml_tree
-#: model:ir.ui.menu,name:report_aeroo.menu_ir_action_aeroo_report_xml
+#: model:ir.model.fields,field_description:report_aeroo.field_email_template_preview_aeroo_report_ids
+#: model:ir.model.fields,field_description:report_aeroo.field_mail_template_aeroo_report_ids
+#: model:ir.ui.menu,name:report_aeroo.menu_ir_action_aeroo_report_admin
+#: model:ir.ui.menu,name:report_aeroo.menu_ir_action_aeroo_report_manager
 msgid "Aeroo Reports"
 msgstr "Rapports Aeroo"
 
 #. module: report_aeroo
-#: code:addons/report_aeroo/report_aeroo.py:0
-#, python-format
-msgid "Aeroo reports are wrongly configured. "
-"The global parameter report_aeroo.libreoffice_timeout "
-"must be defined."
-msgstr "Les rapports Aeroo sont mal configurés. Le paramètre global report_aeroo.libreoffice_timeout doit être défini."
-
-#. module: report_aeroo
-#: code:addons/report_aeroo/report_aeroo.py:0
-#, python-format
-msgid "Aeroo reports are wrongly configured. "
-"The global parameter report_aeroo.libreoffice_location "
-"must be defined."
-msgstr "Les rapports Aeroo sont mal configurés. Le paramètre global report_aeroo.libreoffice_location doit être défini."
-
-#. module: report_aeroo
-#: code:addons/report_aeroo/report_aeroo.py:69
+#: code:addons/report_aeroo/models/ir_actions_report.py:362
 #, python-format
 msgid ""
-"Aeroo Reports do not support generating non-pdf reports in batch. You must select "
-"one record at a time."
+"Aeroo Reports do not support generating non-pdf reports in batch. You must "
+"select one record at a time."
 msgstr ""
-"Les rapports Aeroo ne supportent pas l'impression en lot de rapports non-pdf. S.v.p. "
-"sélectionner un rapport à la fois."
+"Les rapports Aeroo ne supportent pas l'impression en lot de rapports non-"
+"pdf. S.v.p. sélectionner un rapport à la fois."
+
+#. module: report_aeroo
+#: model:ir.model.fields,field_description:report_aeroo.field_ir_act_report_xml_aeroo_template_data
+msgid "Aeroo Template Data"
+msgstr "Contenu du modèle Aeroo"
+
+#. module: report_aeroo
+#: model:ir.model.fields,field_description:report_aeroo.field_ir_act_report_xml_aeroo_template_path
+msgid "Aeroo Template Path"
+msgstr "Emplacement du modèle Aeroo"
+
+#. module: report_aeroo
+#: code:addons/report_aeroo/models/ir_actions_report.py:432
+#, python-format
+msgid ""
+"Aeroo reports are wrongly configured. The global parameter report_aeroo."
+"{parameter_name} must be defined."
+msgstr ""
+"Les rapports Aeroo ne sont pas configurés correctement. Le paramètre système "
+"report_aeroo.{parameter_name} doit être défini."
+
+#. module: report_aeroo
+#: code:addons/report_aeroo/models/ir_actions_report.py:477
+#, python-format
+msgid "At least one record must be selected to generate the report {report}."
+msgstr ""
+"Au moins un enregistrement doit être sélectionné pour générer le rapport "
+"{report}."
 
 #. module: report_aeroo
 #: model:ir.ui.view,arch_db:report_aeroo.act_report_xml_view1
@@ -83,15 +84,15 @@ msgid "Attachments"
 msgstr "Pièces jointes"
 
 #. module: report_aeroo
-#: code:addons/report_aeroo/wizard/add_print_button.py:63
-#, python-format
-msgid "Client Events"
-msgstr ""
-
-#. module: report_aeroo
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_mimetype_code
 msgid "Code"
 msgstr "Code"
+
+#. module: report_aeroo
+#: code:addons/report_aeroo/models/ir_actions_report.py:534
+#, python-format
+msgid "Command %(command)s exited with status %(status)s."
+msgstr "La commande %(command)s s'est terminée avec le statut %(status)s."
 
 #. module: report_aeroo
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_company_id
@@ -99,7 +100,7 @@ msgid "Company"
 msgstr "Société"
 
 #. module: report_aeroo
-#: model:ir.model.fields,field_description:report_aeroo.field_ir_act_report_xml_company_eval
+#: model:ir.model.fields,field_description:report_aeroo.field_ir_act_report_xml_aeroo_company_eval
 msgid "Company Evaluation"
 msgstr "Évaluation de la société"
 
@@ -109,41 +110,50 @@ msgid "Compatible Mime-Types"
 msgstr "Types compatibles"
 
 #. module: report_aeroo
-#: code:addons/report_aeroo/report_aeroo.py:0
+#: code:addons/report_aeroo/models/ir_actions_report.py:332
 #, python-format
-msgid "Could not generate the report %(report)s using the format %(output_format)s."
-msgstr "Le rapport %(report)s n'a pu être généré en format %(output_format)s."
+msgid ""
+"Could not generate the report %(report)s using the format %(output_format)s. "
+"%(error)s"
+msgstr ""
+"Le rapport %(report)s n'a pas pu être généré avec le format "
+"%(output_format)s. %(error)s"
 
 #. module: report_aeroo
-#: code:addons/report_aeroo/report_aeroo.py:0
+#: code:addons/report_aeroo/models/ir_actions_report.py:377
 #, python-format
-msgid "Could not generate the report %(report)s using the format %(output_format)s. Timeout Exceeded."
-msgstr "Le rapport %(report)s n'a pu être généré en format %(output_format)s. Le temps d'attente maximal est atteint."
+msgid ""
+"Could not merge the pdf outputs of the report %(report)s.\n"
+"\n"
+"%(error)s"
+msgstr ""
+"Les rendus pdf n'ont pas pu être fusionnés pour le rapport %(report)s\n"
+"\n"
+"%(error)s"
 
 #. module: report_aeroo
-#: code:addons/report_aeroo/models/ir_actions_report_xml.py:78
+#: code:addons/report_aeroo/models/ir_actions_report.py:125
 #, python-format
-msgid "Could not render report %s for the company %s in lang %s."
-msgstr "Le rapport %s n'est pas disponible pour impression pour la société %s dans la langue %s."
+msgid ""
+"Could not render report %(report)s for the company %(company)s in lang "
+"%(lang)s."
+msgstr ""
+"Le rapport n'a pas pu être généré pour la société %(company)s dans la langue "
+"%(lang)s."
 
 #. module: report_aeroo
-#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_add_print_button_create_uid
-#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_remove_print_button_create_uid
-#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_create_uid
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_mimetype_create_uid
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_create_uid
 msgid "Created by"
-msgstr ""
+msgstr "Créé par"
 
 #. module: report_aeroo
-#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_add_print_button_create_date
-#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_remove_print_button_create_date
-#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_create_date
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_mimetype_create_date
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_create_date
 msgid "Created on"
-msgstr ""
+msgstr "Créé le"
 
 #. module: report_aeroo
-#: selection:aeroo.template.line,template_source:0
 #: selection:ir.actions.report,aeroo_template_source:0
 msgid "Database"
 msgstr "Base de données"
@@ -154,50 +164,25 @@ msgid "Different Template per Language / Company"
 msgstr "Différent modèle par langue / société"
 
 #. module: report_aeroo
-#: model:ir.model.fields,help:report_aeroo.field_ir_act_report_xml_active
-msgid "Disables the report if unchecked."
-msgstr "Si décoché, le rapport devient inactif"
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_mimetype_display_name
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_display_name
+msgid "Display Name"
+msgstr "Nom affiché"
 
 #. module: report_aeroo
-#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_add_print_button_display_name
-#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_remove_print_button_display_name
-#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_display_name
-#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_mimetype_display_name
-msgid "Display Name"
+#: model:ir.ui.view,arch_db:report_aeroo.act_report_xml_view1
+msgid "Display an option on related documents to print this report"
 msgstr ""
 
 #. module: report_aeroo
-#: selection:aeroo.add_print_button,state:0
-#: selection:aeroo.remove_print_button,state:0
-msgid "Done"
-msgstr "Terminé"
+#: model:ir.model,name:report_aeroo.model_mail_template
+msgid "Email Templates"
+msgstr ""
 
 #. module: report_aeroo
-#: code:addons/report_aeroo/report_aeroo.py:108
-#, python-format
-msgid "Error!"
-msgstr "Erreur"
-
-#. module: report_aeroo
-#: selection:aeroo.add_print_button,state:0
-msgid "Exist"
-msgstr "Existe"
-
-#. module: report_aeroo
-#: model:ir.model.fields,field_description:report_aeroo.field_ir_act_report_xml_extras
-msgid "Extra options"
-msgstr "Options extra"
-
-#. module: report_aeroo
-#: selection:aeroo.template.line,template_source:0
 #: selection:ir.actions.report,aeroo_template_source:0
 msgid "File"
 msgstr "Fichier"
-
-#. module: report_aeroo
-#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_template_location
-msgid "File Location"
-msgstr "Emplacement du fichier"
 
 #. module: report_aeroo
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_template_filename
@@ -208,6 +193,11 @@ msgstr "Nom du fichier"
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_mimetype_filter_name
 msgid "Filter Name"
 msgstr "Filtrer par nom"
+
+#. module: report_aeroo
+#: model:ir.ui.view,arch_db:report_aeroo.act_report_xml_view1
+msgid "Generate Report From Record List"
+msgstr "Générer rapport depuis vue liste"
 
 #. module: report_aeroo
 #: model:ir.ui.view,arch_db:report_aeroo.act_report_xml_view1
@@ -225,10 +215,8 @@ msgid "Groups"
 msgstr "Groupes"
 
 #. module: report_aeroo
-#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_add_print_button_id
-#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_remove_print_button_id
-#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_id
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_mimetype_id
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_id
 msgid "ID"
 msgstr "ID"
 
@@ -243,38 +231,44 @@ msgid "Language"
 msgstr "Langue"
 
 #. module: report_aeroo
-#: model:ir.model.fields,field_description:report_aeroo.field_ir_act_report_xml_lang_eval
+#: model:ir.model.fields,field_description:report_aeroo.field_ir_act_report_xml_aeroo_lang_eval
 msgid "Language Evaluation"
 msgstr "Évaluation de la langue"
 
 #. module: report_aeroo
-#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_add_print_button___last_update
-#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_remove_print_button___last_update
-#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line___last_update
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_mimetype___last_update
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line___last_update
 msgid "Last Modified on"
-msgstr ""
+msgstr "Dernière modification le"
 
 #. module: report_aeroo
-#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_add_print_button_write_uid
-#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_remove_print_button_write_uid
-#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_write_uid
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_mimetype_write_uid
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_write_uid
 msgid "Last Updated by"
-msgstr ""
+msgstr "Dernière mise à jour par"
 
 #. module: report_aeroo
-#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_add_print_button_write_date
-#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_remove_print_button_write_date
-#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_write_date
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_mimetype_write_date
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_write_date
 msgid "Last Updated on"
-msgstr ""
+msgstr "Dernière mise à jour le"
 
 #. module: report_aeroo
 #: model:ir.ui.view,arch_db:report_aeroo.act_report_xml_view1
-msgid "Miscellaneous"
-msgstr "Divers"
+msgid "List Views"
+msgstr "Vues Liste"
+
+#. module: report_aeroo
+#: code:addons/report_aeroo/controllers/main.py:82
+#, python-format
+msgid ""
+"Multiple aeroo reports found with the same name ({report_name}):\n"
+"\n"
+"{report_display_names}"
+msgstr ""
+"Plusieurs rapports aeroo existent avec le même nom ({report_name}) :\n"
+"\n"
+"{report_display_names}"
 
 #. module: report_aeroo
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_mimetype_name
@@ -282,58 +276,20 @@ msgid "Name"
 msgstr "Nom"
 
 #. module: report_aeroo
-#: model:ir.ui.view,arch_db:report_aeroo.view_aeroo_remove_print_button
-msgid "No Report Action to delete for this report."
-msgstr "Aucune action de rapport à supprimer pour ce rapport."
-
-#. module: report_aeroo
-#: code:addons/report_aeroo/report_aeroo.py:108
+#: code:addons/report_aeroo/controllers/main.py:77
 #, python-format
-msgid "No template found!"
-msgstr "Aucun modèle trouvé"
+msgid "No aeroo report found with the name {report_name}."
+msgstr ""
+"Aucun rapport aeroo n'a été trouvé pour le nom de rapport {report_name}."
 
 #. module: report_aeroo
-#: selection:aeroo.remove_print_button,state:0
-msgid "Not Exist"
-msgstr "N'existe pas"
-
-#. module: report_aeroo
-#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_add_print_button_open_action
-msgid "Open added action"
-msgstr "Ouvrir l'action créée"
-
-#. module: report_aeroo
-#: model:ir.ui.view,arch_db:report_aeroo.view_aeroo_remove_print_button
-msgid "Or you want to remove print button for this report?"
-msgstr "Ou vous désirez enlever le bouton imprimer pour ce rapport?"
-
-#. module: report_aeroo
-#: model:ir.model.fields,field_description:report_aeroo.field_ir_act_report_xml_out_format
+#: model:ir.model.fields,field_description:report_aeroo.field_ir_act_report_xml_aeroo_out_format_id
 #: model:ir.ui.view,arch_db:report_aeroo.act_aeroo_report_xml_search_view
 msgid "Output Mime-type"
 msgstr "Type de sortie"
 
 #. module: report_aeroo
-#: model:ir.model.fields,field_description:report_aeroo.field_ir_act_report_xml_parser_loc
-msgid "Parser location"
-msgstr "Emplacement du parser"
-
-#. module: report_aeroo
-#: code:addons/report_aeroo/models/ir_actions_report_xml.py:127
-#, python-format
-msgid "Parser not found at: %s"
-msgstr "Le parser n'a pas été trouvé à : %s"
-
-#. module: report_aeroo
-#: model:ir.model.fields,help:report_aeroo.field_ir_act_report_xml_parser_loc
-msgid ""
-"Path to the parser location. Beginning of the path must be "
-"start               with the module name!\n"
-" Like this: {module name}/{path to the               parser.py file}"
-msgstr ""
-
-#. module: report_aeroo
-#: model:ir.model.fields,help:report_aeroo.field_ir_act_report_xml_company_eval
+#: model:ir.model.fields,help:report_aeroo.field_ir_act_report_xml_aeroo_company_eval
 msgid ""
 "Python expression used to determine the company of the record being printed "
 "in the report."
@@ -342,7 +298,7 @@ msgstr ""
 "imprimer dans le rapport."
 
 #. module: report_aeroo
-#: model:ir.model.fields,help:report_aeroo.field_ir_act_report_xml_lang_eval
+#: model:ir.model.fields,help:report_aeroo.field_ir_act_report_xml_aeroo_lang_eval
 msgid ""
 "Python expression used to determine the language of the record being printed "
 "in the report."
@@ -351,31 +307,20 @@ msgstr ""
 "imprimer dans le rapport."
 
 #. module: report_aeroo
-#: selection:aeroo.remove_print_button,state:0
-msgid "Remove"
-msgstr "Enlever"
+#: model:ir.ui.view,arch_db:report_aeroo.act_report_xml_view1
+msgid "Remove from the 'Print' menu"
+msgstr ""
 
 #. module: report_aeroo
-#: model:ir.actions.act_window,name:report_aeroo.action_aeroo_remove_print_button
-#: model:ir.ui.view,arch_db:report_aeroo.view_aeroo_remove_print_button
-msgid "Remove Print Button"
-msgstr "Enlever le bouton d'impression"
-
-#. module: report_aeroo
-#: model:ir.model,name:report_aeroo.model_aeroo_remove_print_button
-msgid "Remove print button"
-msgstr "Enlever le bouton d'impression"
+#: model:ir.ui.view,arch_db:report_aeroo.act_report_xml_view1
+msgid "Remove the contextual action related this report"
+msgstr ""
 
 #. module: report_aeroo
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_report_id
 #: model:ir.ui.view,arch_db:report_aeroo.act_aeroo_report_xml_search_view
 msgid "Report"
 msgstr "Rapport"
-
-#. module: report_aeroo
-#: model:ir.ui.view,arch_db:report_aeroo.view_aeroo_add_print_button
-msgid "Report Action already exist for this report."
-msgstr "Une action existe déjà pour ce rapport"
 
 #. module: report_aeroo
 #: model:ir.model,name:report_aeroo.model_aeroo_mimetype
@@ -389,15 +334,30 @@ msgid "Report xml"
 msgstr ""
 
 #. module: report_aeroo
+#: model:ir.actions.act_window,name:report_aeroo.action_aeroo_report_xml_tree
+msgid "Reports"
+msgstr "Rapports"
+
+#. module: report_aeroo
+#: model:ir.actions.report,name:report_aeroo.aeroo_sample_report
+#: model:ir.actions.report,name:report_aeroo.aeroo_sample_report_id
+msgid "Sample Report"
+msgstr "Exemple de rapport"
+
+#. module: report_aeroo
+#: model:ir.actions.report,name:report_aeroo.aeroo_sample_report_multi
+msgid "Sample Report (from list view)"
+msgstr "Exemple de rapport (depuis vue liste)"
+
+#. module: report_aeroo
 #: model:ir.ui.view,arch_db:report_aeroo.act_report_xml_view1
 msgid "Security"
 msgstr "Sécurité"
 
 #. module: report_aeroo
-#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_add_print_button_state
-#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_remove_print_button_state
-msgid "State"
-msgstr "État"
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_sequence
+msgid "Sequence"
+msgstr "Séquence"
 
 #. module: report_aeroo
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_template_data
@@ -411,7 +371,7 @@ msgid "Template Content"
 msgstr "Contenu du modèle"
 
 #. module: report_aeroo
-#: model:ir.model.fields,field_description:report_aeroo.field_ir_act_report_xml_in_format
+#: model:ir.model.fields,field_description:report_aeroo.field_ir_act_report_xml_aeroo_in_format
 #: model:ir.ui.view,arch_db:report_aeroo.act_aeroo_report_xml_search_view
 msgid "Template Mime-type"
 msgstr "Type de fichier du modèle"
@@ -428,7 +388,6 @@ msgstr "Emplacement du modèle"
 
 #. module: report_aeroo
 #: model:ir.model.fields,field_description:report_aeroo.field_ir_act_report_xml_aeroo_template_source
-#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_template_source
 msgid "Template source"
 msgstr "Source du modèle"
 
@@ -438,14 +397,20 @@ msgid "Templates by Language"
 msgstr "Modèles par langue"
 
 #. module: report_aeroo
-#: model:ir.ui.view,arch_db:report_aeroo.view_aeroo_add_print_button
-msgid "The print button is successfully added."
-msgstr "Le bouton d'impression a été ajouté avec succès."
+#: code:addons/report_aeroo/controllers/main.py:47
+#, python-format
+msgid "The report name is expected in order to generate an aeroo report."
+msgstr "Le nom du rapport est requis pour générer un rapport aeroo."
 
 #. module: report_aeroo
-#: model:ir.ui.view,arch_db:report_aeroo.view_aeroo_remove_print_button
-msgid "The print button is successfully removed."
-msgstr "Le bouton d'impression a été enlevé avec succès."
+#: code:addons/report_aeroo/models/ir_actions_report.py:545
+#, python-format
+msgid ""
+"Timeout (%(timeout)s seconds) expired while executing the command: "
+"%(command)s"
+msgstr ""
+"Le délai maximal (%(timeout)s seconds) s'est écoulé lors de l'exécution de "
+"la commande: %(command)s"
 
 #. module: report_aeroo
 #: model:ir.actions.act_window,name:report_aeroo.act_translations
@@ -453,50 +418,6 @@ msgid "Translations"
 msgstr "Traductions"
 
 #. module: report_aeroo
-#: model:ir.ui.view,arch_db:report_aeroo.view_aeroo_add_print_button
-#: model:ir.ui.view,arch_db:report_aeroo.view_aeroo_remove_print_button
-msgid "_Cancel"
-msgstr ""
-
-#. module: report_aeroo
-#: model:ir.ui.view,arch_db:report_aeroo.view_aeroo_remove_print_button
-msgid "_No"
-msgstr ""
-
-#. module: report_aeroo
-#: model:ir.ui.view,arch_db:report_aeroo.view_aeroo_add_print_button
-#: model:ir.ui.view,arch_db:report_aeroo.view_aeroo_remove_print_button
-msgid "_Ok"
-msgstr ""
-
-#. module: report_aeroo
 #: model:ir.model,name:report_aeroo.model_aeroo_template_line
 msgid "aeroo.template.line"
 msgstr ""
-
-#. module: report_aeroo
-#: model:ir.model,name:report_aeroo.model_ir_actions_report_xml
-msgid "ir.actions.report"
-msgstr ""
-
-#. module: report_aeroo
-#: model:ir.ui.view,arch_db:report_aeroo.view_aeroo_add_print_button
-#: model:ir.ui.view,arch_db:report_aeroo.view_aeroo_remove_print_button
-msgid "or"
-msgstr "ou"
-
-#. module: report_aeroo
-#: code:addons/report_aeroo/controllers/main.py:81
-#, python-format
-msgid "Multiple aeroo reports found with the same name ({report_name}):\n"
-"\n"
-"{report_display_names}"
-msgstr "Plusieurs rapports aeroo existent avec le même nom ({report_name}) :\n"
-"\n"
-"{report_display_names}"
-
-#. module: report_aeroo
-#: code:addons/report_aeroo/controllers/main.py:47
-#, python-format
-msgid "The report name is expected in order to generate an aeroo report."
-msgstr "Le nom du rapport est requis pour générer un rapport aeroo."

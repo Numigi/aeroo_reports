@@ -120,6 +120,17 @@ If the report is printed in French, the output will look like:
 6 avril 2018 10:34 AM
 ```
 
+## Generate Report From List View
+
+In the form view of your Aeroo report, the checkbox `Generate Report From Record List`
+allows to generate a report from a list view.
+
+![Report From List View](report_aeroo/static/description/report_from_list_view.png?raw=true)
+
+In the Libreoffice template, the variable `o` (which contains a single record) is replaced with a new variable `objects`
+which contains a record set. This variable can be used in a for loop to iterate over all selected records.
+
+
 ## Creating a Template
 
 ### Spreadsheets

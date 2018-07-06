@@ -91,6 +91,8 @@ Aeroo defines 2 helpers for formatting date and datetime field values in the lan
 
 * format_date
 * format_datetime
+* today
+* now
 
 The variables that you can use in these functions are documented on the babel website:
 
@@ -119,6 +121,35 @@ If the report is printed in French, the output will look like:
 ```
 6 avril 2018 10:34 AM
 ```
+
+### Exemple for today
+
+The function today is the same as format_date, but with the current date in the user's timezone.
+
+```python
+today('dd MMMM yyyy')
+```
+
+Suppose we are on the 6 of April 2018 and the report is printed in French, the output will look like:
+
+```
+06 avril 2018
+```
+
+### Exemple for now
+
+The function now is the same as format_datetime, but with the current time in the user's timezone.
+
+```python
+now('dd MMMM yyyy hh:mm a')
+```
+
+Suppose we are on the 6 of April 2018, 10:34 AM and the report is printed in French, the output will look like:
+
+```
+6 avril 2018 10:34 AM
+```
+
 
 
 ## Generate Report From List View

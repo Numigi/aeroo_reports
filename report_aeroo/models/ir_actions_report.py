@@ -59,6 +59,11 @@ class IrActionsReport(models.Model):
         help="Python expression used to determine the language "
         "of the record being printed in the report.",
         default="o.partner_id.lang")
+    aeroo_tz_eval = fields.Char(
+        'Timezone Evaluation',
+        help="Python expression used to determine the timezone "
+        "used for formatting dates and timestamps.",
+        default="user.tz")
     aeroo_company_eval = fields.Char(
         'Company Evaluation',
         help="Python expression used to determine the company "
@@ -140,6 +145,16 @@ class IrActionsReport(models.Model):
         )
         return lang or 'en_US'
 
+    def _get_aeroo_timezone(self, record):
+        """Get the timezone to use in the report for a given record.
+
+        :rtype: res.company
+        """
+        return (
+            safe_eval(self.aeroo_tz_eval, {'o': record, 'user': self.env.user})
+            if self.aeroo_tz_eval else None
+        )
+
     def _get_aeroo_company(self, record):
         """Get the company to use in the report for a given record.
 
@@ -191,9 +206,10 @@ class IrActionsReport(models.Model):
         template = self._get_aeroo_template(record)
         current_report_data = dict(data, o=record)
         report_lang = self._get_aeroo_lang(record)
+        report_timezone = self._get_aeroo_timezone(record)
 
         # Render the report
-        output = self.with_context(lang=report_lang)._render_aeroo(
+        output = self.with_context(lang=report_lang, tz=report_timezone)._render_aeroo(
             template, current_report_data, output_format)
 
         # Generate the attachment
@@ -487,10 +503,11 @@ class AerooReportsGeneratedFromListViews(models.Model):
 
         template = self._get_aeroo_template(records[0])
         report_lang = self._get_aeroo_lang(records[0])
+        report_timezone = self._get_aeroo_timezone(records[0])
         report_data = dict(data, objects=records)
 
         # Render the report
-        output = self.with_context(lang=report_lang)._render_aeroo(
+        output = self.with_context(lang=report_lang, tz=report_timezone)._render_aeroo(
             template, report_data, output_format)
 
         return output, output_format

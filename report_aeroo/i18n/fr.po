@@ -236,6 +236,11 @@ msgid "Language Evaluation"
 msgstr "Évaluation de la langue"
 
 #. module: report_aeroo
+#: model:ir.model.fields,field_description:report_aeroo.field_ir_act_report_xml_aeroo_tz_eval
+msgid "Timezone Evaluation"
+msgstr "Évaluation du fuseau horaire"
+
+#. module: report_aeroo
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_mimetype___last_update
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line___last_update
 msgid "Last Modified on"

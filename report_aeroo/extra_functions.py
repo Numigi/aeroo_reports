@@ -13,7 +13,7 @@ from datetime import datetime
 from io import BytesIO
 from PIL import Image
 
-from odoo import models
+from odoo import fields, models
 from odoo.tools import (
     DEFAULT_SERVER_DATE_FORMAT,
     DEFAULT_SERVER_DATETIME_FORMAT,
@@ -81,6 +81,12 @@ def format_date(report, value, date_format):
     return babel.dates.format_date(date_, date_format, locale=lang)
 
 
+@aeroo_util('today')
+def format_date_today(report, date_format=None):
+    today_in_timezone = fields.Date.context_today(report)
+    return format_date(report, value=today_in_timezone, date_format=date_format)
+
+
 @aeroo_util('format_datetime')
 def format_datetime(report, value, datetime_format):
     """Format a datetime field value into the given format.
@@ -95,7 +101,14 @@ def format_datetime(report, value, datetime_format):
         return ''
     lang = report._context.get('lang') or 'en_US'
     datetime_ = datetime.strptime(value, DEFAULT_SERVER_DATETIME_FORMAT)
-    return babel.dates.format_datetime(datetime_, datetime_format, locale=lang)
+    datetime_in_timezone = fields.Datetime.context_timestamp(report, datetime_)
+    return babel.dates.format_datetime(datetime_in_timezone, datetime_format, locale=lang)
+
+
+@aeroo_util('now')
+def format_datetime_now(report, datetime_format=None):
+    str_timestamp = fields.Datetime.to_string(datetime.now())
+    return format_datetime(report, value=str_timestamp, datetime_format=datetime_format)
 
 
 @aeroo_util('format_decimal')

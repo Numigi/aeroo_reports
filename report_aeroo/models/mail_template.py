@@ -18,7 +18,7 @@ class MailTemplate(models.Model):
         'mail_template_id',
         'aeroo_report_id',
         string='Aeroo Reports',
-        domain="[('model', '=', model), ('report_type', '=', 'aeroo')]")
+        domain="[('model', '=', model), ('report_type', '=', 'aeroo'), ('multi', '=', False)]")
 
     @api.multi
     def generate_email(self, res_ids, fields=None):
@@ -43,7 +43,8 @@ class MailTemplate(models.Model):
                 content = base64.b64encode(content)
 
                 record = self.env[self.model].browse(res_id)
-                file_name = aeroo_report.get_aeroo_filename(record)
+                output_format = aeroo_report.aeroo_out_format_id.code
+                file_name = aeroo_report.get_aeroo_filename(record, output_format)
 
                 if 'attachments' not in values:
                     values['attachments'] = []

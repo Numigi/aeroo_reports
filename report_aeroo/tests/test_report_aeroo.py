@@ -80,10 +80,9 @@ class TestAerooReport(common.SavepointCase):
     def test_sample_report_pdf_with_attachment(self):
         self.report.write({
             'attachment_use': True,
-            'attachment': "object.name",
+            'attachment': "${o.name}",
         })
-        self.report.aeroo_out_format_id = self.env.ref(
-            'report_aeroo.aeroo_mimetype_pdf_odt')
+        self.report.aeroo_out_format_id = self.env.ref('report_aeroo.aeroo_mimetype_pdf_odt')
         self._render_report(self.partner)
 
         attachment = self.env['ir.attachment'].search([
@@ -94,6 +93,28 @@ class TestAerooReport(common.SavepointCase):
         self.assertEqual(len(attachment), 1)
 
         self._render_report(self.partner)
+
+    def test_different_attachment_filename_per_lang(self):
+        self.report.write({
+            'attachment_use': True,
+            'aeroo_filename_per_lang': True,
+            'aeroo_filename_line_ids': [
+                (0, 0, {
+                    'lang_id': self.lang_en,
+                    'filename': "Sample Report: ${o.name}",
+                }),
+            ]
+        })
+
+        self.report.aeroo_out_format_id = self.env.ref('report_aeroo.aeroo_mimetype_pdf_odt')
+        self._render_report(self.partner)
+
+        attachment = self.env['ir.attachment'].search([
+            ('res_id', '=', self.partner.id),
+            ('res_model', '=', 'res.partner'),
+            ('datas_fname', '=', 'Sample Report: My Partner.pdf'),
+        ])
+        self.assertEqual(len(attachment), 1)
 
     def test_libreoffice_low_timeout(self):
         self.env['ir.config_parameter'].set_param(

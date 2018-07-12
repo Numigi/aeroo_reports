@@ -40,6 +40,7 @@
                                 attrs="{'invisible': [('aeroo_template_source', '!=', 'file')],'required': [('aeroo_template_source', '=', 'file')]}"/>
                             <field
                                 name="aeroo_template_line_ids"
+                                nolabel="1" colspan="2"
                                 attrs="{'invisible': [('aeroo_template_source', '!=', 'lines')],'required': [('aeroo_template_source', '=', 'lines')]}"
                             >
                                 <tree editable="bottom">
@@ -57,7 +58,19 @@
                             <field name="multi" string="Generate Report From Record List"/>
                         </group>
                         <group string="Attachments" attrs="{'invisible': [('multi', '=', True)]}">
-                            <field name="attachment"/>
+                            <field name="aeroo_filename_per_lang"/>
+                            <field
+                                name="aeroo_filename_line_ids"
+                                nolabel="1" colspan="2"
+                                attrs="{'invisible': [('aeroo_filename_per_lang', '=', False)]}"
+                            >
+                                <tree editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="lang_id"/>
+                                    <field name="filename"/>
+                                </tree>
+                            </field>
+                            <field name="attachment" attrs="{'invisible': [('aeroo_filename_per_lang', '=', True)]}"/>
                             <field name="attachment_use"/>
                         </group>
                     </page>

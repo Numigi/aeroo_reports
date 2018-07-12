@@ -147,7 +147,7 @@ now('dd MMMM yyyy hh:mm a')
 Suppose we are on the 6 of April 2018, 10:34 AM and the report is printed in French, the output will look like:
 
 ```
-6 avril 2018 10:34 AM
+06 avril 2018 10:34 AM
 ```
 
 
@@ -189,7 +189,7 @@ Displaying each element of a list on a seperate row:
 | 4 | python:///for                            |                          |
 
 
-## Insert an image in a report
+## Insert An Image In A Report
 
 In the template, you must insert a frame in order to display an image dynamically.
 
@@ -203,3 +203,43 @@ with the mouse its corner/side.
 
 In the 'Options' tab:
 * In the field Name write image:asimage(o.image)
+
+## Insert A Report In An Email Template
+
+The `Aeroo Report` module adds an easy way to attach reports to an email template.
+
+![Email Template Form](report_aeroo/static/description/email_template_form.png?raw=true)
+
+The difference between this feature and a report attachment from `Advanced Settings / Optional report to print and attach` is:
+
+1. You may attach more than one aeroo reports.
+2. You do not need to redefine the name of the attachment in the email template.
+   The attachment name will be the one defined on the report.
+
+## Attachment Names
+
+The name of a rendered Aeroo report is similar to the name of an attachment in an email template.
+
+The same functions available from your Aeroo template are available for the name of the attachment.
+
+![Filename](report_aeroo/static/description/filename.png?raw=true)
+
+### Invoice Attachment Name Example
+
+Here is a complex example for the attachment name of an invoice.
+
+```
+${o.company_id.display_name} - ${'Invoice' if o.type == 'out_invoice' else 'Refund'} - ${format_date(o.date_invoice, 'yyyy-mm-dd')}
+```
+
+The result for a given invoice could be the following:
+
+`Your Company - Invoice - 2018-07-12.pdf`
+
+### Different Filename per Language
+
+In order to have a different filename based on the context of the report, you may check `Different Filename per Language`.
+
+Make sure when using this option to add one entry for each active language.
+
+![Filename per Language](report_aeroo/static/description/filename_per_language.png?raw=true)

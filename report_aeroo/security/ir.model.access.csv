@@ -3,4 +3,6 @@ aeroo_mimetype_system,aeroo.mimetype.system,model_aeroo_mimetype,base.group_syst
 aeroo_mimetype_user,aeroo.mimetype.user,model_aeroo_mimetype,base.group_user,1,0,0,0
 manage_ir_actions_report_xml,ir_actions_report_xml,model_ir_actions_report,group_aeroo_manager,1,1,1,1
 manage_aeroo_template_line,aeroo_template_line,model_aeroo_template_line,group_aeroo_manager,1,1,1,1
+manage_aeroo_filename_line,aeroo_filename_line,model_aeroo_filename_line,group_aeroo_manager,1,1,1,1
 manage_aeroo_template_line_user,aeroo_template_line,model_aeroo_template_line,base.group_user,1,0,0,0
+manage_aeroo_filename_line_user,aeroo_filename_line,model_aeroo_filename_line,base.group_user,1,0,0,0

@@ -4,7 +4,7 @@
 from odoo import fields, models
 
 
-class AerooTemplateLine(models.Model):
+class AerooFilenameLine(models.Model):
 
     _name = 'aeroo.filename.line'
     _order = 'sequence'

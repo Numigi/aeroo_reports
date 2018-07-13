@@ -25,6 +25,7 @@ from tempfile import NamedTemporaryFile
 from odoo import models, fields, api, tools, _
 from odoo.exceptions import ValidationError
 from odoo.tools import file_open, safe_eval
+from odoo.addons.mail.models.mail_template import mako_template_env
 
 from ..extra_functions import aeroo_function_registry
 
@@ -110,6 +111,15 @@ class IrActionsReport(models.Model):
     def _get_aeroo_template_from_lines(self, record):
         """Get an aeroo template from the template lines.
 
+        :param record: the record for which to generate the report
+        :return: the template's binary file
+        """
+        template_line = self._get_aeroo_template_line(record)
+        return template_line.get_aeroo_template(record)
+
+    def _get_aeroo_template_line(self, record):
+        """Get an aeroo template line matching the given record.
+
         An aeroo report can have different templates per company
         and per language.
 
@@ -119,20 +129,24 @@ class IrActionsReport(models.Model):
         lang = self._get_aeroo_lang(record)
         company = self._get_aeroo_company(record)
 
-        for line in self.aeroo_template_line_ids:
-            if (
-                (not line.lang_id or line.lang_id.code == lang) and
-                (not line.company_id or line.company_id == company)
-            ):
-                return line.get_aeroo_template(record)
+        line_matches_lang = (lambda l: l.lang_id or l.lang_id.code == lang)
+        line_matches_company = (lambda l: not l.company_id or l.company_id == company)
 
-        raise ValidationError(
-            _('Could not render report %(report)s for the '
-              'company %(company)s in lang %(lang)s.') % {
-                'report': self.name,
-                'company': company.name,
-                'lang': lang,
-            })
+        line = next((
+            l for l in self.aeroo_template_line_ids
+            if line_matches_lang(l) and line_matches_company(l)
+        ), None)
+
+        if line is None:
+            raise ValidationError(
+                _('Could not render report {report} for the '
+                  'company {company} in the language {lang}.').format(
+                    report=self.name,
+                    company=company.name,
+                    lang=lang,
+                ))
+
+        return line
 
     def _get_aeroo_lang(self, record):
         """Get the lang to use in the report for a given record.
@@ -267,17 +281,22 @@ class IrActionsReport(models.Model):
         :return: the filename
         """
         if self.attachment:
-            context_time = fields.Datetime.context_timestamp(
-                record, datetime.now())
-            return "%s.%s" % (
-                safe_eval(self.attachment, {
-                    'object': record,
-                    'time': context_time,
-                    'date': context_time.date(),
-                }),
-                output_format)
+            filename = self._eval_aeroo_attachment_filename(self.attachment, record)
+            return '.'.join((filename, output_format))
         else:
-            return "%s.%s" % (self.name, output_format)
+            return '.'.join((self.name, output_format))
+
+    def _eval_aeroo_attachment_filename(self, filename, record):
+        """Evaluate the given attachment filename for the given record.
+
+        :param filename: the filename mako template
+        :param record: the record for which to evaluate the filename
+        :return: the rendered attachment filename
+        """
+        template = mako_template_env.from_string(tools.ustr(filename))
+        context = {'o': record}
+        context.update(self._get_aeroo_extra_functions())
+        return template.render(context)
 
     def _find_aeroo_report_attachment(self, record, output_format):
         """Find an attachment of the Aeroo report on the given record.
@@ -515,6 +534,47 @@ class AerooReportsGeneratedFromListViews(models.Model):
     def _onchange_is_aeroo_list_report_set_multi(self):
         if self.is_aeroo_list_report:
             self.multi = True
+
+
+class AerooReportsWithAttachmentFilenamePerLang(models.Model):
+    """Enable one attachment filename per language."""
+
+    _inherit = 'ir.actions.report'
+
+    aeroo_filename_per_lang = fields.Boolean('Different Filename per Language')
+    aeroo_filename_line_ids = fields.One2many(
+        'aeroo.filename.line', 'report_id', 'Filenames by Language')
+
+    def get_aeroo_filename(self, record, output_format):
+        """Get the attachement filename for the generated report.
+
+        :param record: the record for which to generate the freport
+        :return: the filename
+        """
+        if not self.aeroo_filename_per_lang:
+            return super().get_aeroo_filename(record, output_format)
+
+        mako_filename = self._get_aeroo_filename_from_lang(record)
+        rendered_filename = self._eval_aeroo_attachment_filename(mako_filename, record)
+        return '.'.join((rendered_filename, output_format))
+
+    def _get_aeroo_filename_from_lang(self, record):
+        """Get the attachment filename for the record based on the rendering language.
+
+        :param record: the record for which to generate the file name
+        :return: the filename mako template
+        """
+        lang = self._get_aeroo_lang(record)
+        line_matches_lang = (lambda l: l.lang_id.code == lang)
+
+        line = next((l for l in self.aeroo_filename_line_ids if line_matches_lang(l)), None)
+
+        if line is None:
+            raise ValidationError(
+                _("Could not render the attachment filename for the report "
+                  "{report} in the language {lang}.").format(report=self.name, lang=lang))
+
+        return line.filename
 
 
 def generate_temporary_file(format, data=None):

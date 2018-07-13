@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 9.0e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-20 12:02-0400\n"
-"PO-Revision-Date: 2018-06-20 12:13-0400\n"
+"POT-Creation-Date: 2018-07-12 15:40-0400\n"
+"PO-Revision-Date: 2018-07-12 15:42-0400\n"
 "Last-Translator: David Dufresne <david.dufresne@savoirfairelinux.com>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -41,7 +41,7 @@ msgid "Aeroo Reports"
 msgstr "Rapports Aeroo"
 
 #. module: report_aeroo
-#: code:addons/report_aeroo/models/ir_actions_report.py:362
+#: code:addons/report_aeroo/models/ir_actions_report.py:390
 #, python-format
 msgid ""
 "Aeroo Reports do not support generating non-pdf reports in batch. You must "
@@ -61,7 +61,7 @@ msgid "Aeroo Template Path"
 msgstr "Emplacement du modèle Aeroo"
 
 #. module: report_aeroo
-#: code:addons/report_aeroo/models/ir_actions_report.py:432
+#: code:addons/report_aeroo/models/ir_actions_report.py:460
 #, python-format
 msgid ""
 "Aeroo reports are wrongly configured. The global parameter report_aeroo."
@@ -71,7 +71,7 @@ msgstr ""
 "report_aeroo.{parameter_name} doit être défini."
 
 #. module: report_aeroo
-#: code:addons/report_aeroo/models/ir_actions_report.py:477
+#: code:addons/report_aeroo/models/ir_actions_report.py:505
 #, python-format
 msgid "At least one record must be selected to generate the report {report}."
 msgstr ""
@@ -89,12 +89,13 @@ msgid "Code"
 msgstr "Code"
 
 #. module: report_aeroo
-#: code:addons/report_aeroo/models/ir_actions_report.py:534
+#: code:addons/report_aeroo/models/ir_actions_report.py:587
 #, python-format
 msgid "Command %(command)s exited with status %(status)s."
 msgstr "La commande %(command)s s'est terminée avec le statut %(status)s."
 
 #. module: report_aeroo
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_filename_line_company_id
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_company_id
 msgid "Company"
 msgstr "Société"
@@ -110,7 +111,7 @@ msgid "Compatible Mime-Types"
 msgstr "Types compatibles"
 
 #. module: report_aeroo
-#: code:addons/report_aeroo/models/ir_actions_report.py:332
+#: code:addons/report_aeroo/models/ir_actions_report.py:360
 #, python-format
 msgid ""
 "Could not generate the report %(report)s using the format %(output_format)s. "
@@ -120,7 +121,7 @@ msgstr ""
 "%(output_format)s. %(error)s"
 
 #. module: report_aeroo
-#: code:addons/report_aeroo/models/ir_actions_report.py:377
+#: code:addons/report_aeroo/models/ir_actions_report.py:405
 #, python-format
 msgid ""
 "Could not merge the pdf outputs of the report %(report)s.\n"
@@ -132,22 +133,34 @@ msgstr ""
 "%(error)s"
 
 #. module: report_aeroo
-#: code:addons/report_aeroo/models/ir_actions_report.py:125
+#: code:addons/report_aeroo/models/ir_actions_report.py:140
 #, python-format
 msgid ""
-"Could not render report %(report)s for the company %(company)s in lang "
-"%(lang)s."
+"Could not render report {report} for the company {company} in the language "
+"{lang}."
 msgstr ""
-"Le rapport n'a pas pu être généré pour la société %(company)s dans la langue "
-"%(lang)s."
+"Le rapport {report} n'a pas pu être généré pour la société {company} dans la "
+"langue {lang}."
 
 #. module: report_aeroo
+#: code:addons/report_aeroo/models/ir_actions_report.py:550
+#, python-format
+msgid ""
+"Could not render the attachment filename for the report {report} in the "
+"language {lang}."
+msgstr ""
+"Le nom de la pièce jointe n'a pas pu être généré pour le rapport {report} "
+"dans la langue {lang}."
+
+#. module: report_aeroo
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_filename_line_create_uid
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_mimetype_create_uid
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_create_uid
 msgid "Created by"
 msgstr "Créé par"
 
 #. module: report_aeroo
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_filename_line_create_date
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_mimetype_create_date
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_create_date
 msgid "Created on"
@@ -159,25 +172,21 @@ msgid "Database"
 msgstr "Base de données"
 
 #. module: report_aeroo
+#: model:ir.model.fields,field_description:report_aeroo.field_ir_act_report_xml_aeroo_filename_per_lang
+msgid "Different Filename per Language"
+msgstr "Différent nom de fichier par langue"
+
+#. module: report_aeroo
 #: selection:ir.actions.report,aeroo_template_source:0
 msgid "Different Template per Language / Company"
 msgstr "Différent modèle par langue / société"
 
 #. module: report_aeroo
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_filename_line_display_name
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_mimetype_display_name
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_display_name
 msgid "Display Name"
 msgstr "Nom affiché"
-
-#. module: report_aeroo
-#: model:ir.ui.view,arch_db:report_aeroo.act_report_xml_view1
-msgid "Display an option on related documents to print this report"
-msgstr ""
-
-#. module: report_aeroo
-#: model:ir.model,name:report_aeroo.model_mail_template
-msgid "Email Templates"
-msgstr ""
 
 #. module: report_aeroo
 #: selection:ir.actions.report,aeroo_template_source:0
@@ -188,6 +197,16 @@ msgstr "Fichier"
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_template_filename
 msgid "File Name"
 msgstr "Nom du fichier"
+
+#. module: report_aeroo
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_filename_line_filename
+msgid "Filename"
+msgstr "Nom de fichier"
+
+#. module: report_aeroo
+#: model:ir.model.fields,field_description:report_aeroo.field_ir_act_report_xml_aeroo_filename_line_ids
+msgid "Filenames by Language"
+msgstr "Noms de fichiers par langue"
 
 #. module: report_aeroo
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_mimetype_filter_name
@@ -215,6 +234,7 @@ msgid "Groups"
 msgstr "Groupes"
 
 #. module: report_aeroo
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_filename_line_id
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_mimetype_id
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_id
 msgid "ID"
@@ -226,6 +246,7 @@ msgid "Inactive"
 msgstr "Inactif"
 
 #. module: report_aeroo
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_filename_line_lang_id
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_lang_id
 msgid "Language"
 msgstr "Langue"
@@ -236,23 +257,21 @@ msgid "Language Evaluation"
 msgstr "Évaluation de la langue"
 
 #. module: report_aeroo
-#: model:ir.model.fields,field_description:report_aeroo.field_ir_act_report_xml_aeroo_tz_eval
-msgid "Timezone Evaluation"
-msgstr "Évaluation du fuseau horaire"
-
-#. module: report_aeroo
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_filename_line___last_update
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_mimetype___last_update
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line___last_update
 msgid "Last Modified on"
 msgstr "Dernière modification le"
 
 #. module: report_aeroo
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_filename_line_write_uid
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_mimetype_write_uid
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_write_uid
 msgid "Last Updated by"
 msgstr "Dernière mise à jour par"
 
 #. module: report_aeroo
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_filename_line_write_date
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_mimetype_write_date
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_write_date
 msgid "Last Updated on"
@@ -312,16 +331,7 @@ msgstr ""
 "imprimer dans le rapport."
 
 #. module: report_aeroo
-#: model:ir.ui.view,arch_db:report_aeroo.act_report_xml_view1
-msgid "Remove from the 'Print' menu"
-msgstr ""
-
-#. module: report_aeroo
-#: model:ir.ui.view,arch_db:report_aeroo.act_report_xml_view1
-msgid "Remove the contextual action related this report"
-msgstr ""
-
-#. module: report_aeroo
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_filename_line_report_id
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_report_id
 #: model:ir.ui.view,arch_db:report_aeroo.act_aeroo_report_xml_search_view
 msgid "Report"
@@ -333,19 +343,12 @@ msgid "Report Mime-Types"
 msgstr "Types de fichier générés"
 
 #. module: report_aeroo
-#: model:ir.ui.view,arch_db:report_aeroo.act_aeroo_report_xml_search_view
-#: model:ir.ui.view,arch_db:report_aeroo.act_aeroo_report_xml_view_tree
-msgid "Report xml"
-msgstr ""
-
-#. module: report_aeroo
 #: model:ir.actions.act_window,name:report_aeroo.action_aeroo_report_xml_tree
 msgid "Reports"
 msgstr "Rapports"
 
 #. module: report_aeroo
 #: model:ir.actions.report,name:report_aeroo.aeroo_sample_report
-#: model:ir.actions.report,name:report_aeroo.aeroo_sample_report_id
 msgid "Sample Report"
 msgstr "Exemple de rapport"
 
@@ -360,6 +363,7 @@ msgid "Security"
 msgstr "Sécurité"
 
 #. module: report_aeroo
+#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_filename_line_sequence
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line_sequence
 msgid "Sequence"
 msgstr "Séquence"
@@ -408,7 +412,7 @@ msgid "The report name is expected in order to generate an aeroo report."
 msgstr "Le nom du rapport est requis pour générer un rapport aeroo."
 
 #. module: report_aeroo
-#: code:addons/report_aeroo/models/ir_actions_report.py:545
+#: code:addons/report_aeroo/models/ir_actions_report.py:598
 #, python-format
 msgid ""
 "Timeout (%(timeout)s seconds) expired while executing the command: "
@@ -418,11 +422,11 @@ msgstr ""
 "la commande: %(command)s"
 
 #. module: report_aeroo
+#: model:ir.model.fields,field_description:report_aeroo.field_ir_act_report_xml_aeroo_tz_eval
+msgid "Timezone Evaluation"
+msgstr "Évaluation du fuseau horaire"
+
+#. module: report_aeroo
 #: model:ir.actions.act_window,name:report_aeroo.act_translations
 msgid "Translations"
 msgstr "Traductions"
-
-#. module: report_aeroo
-#: model:ir.model,name:report_aeroo.model_aeroo_template_line
-msgid "aeroo.template.line"
-msgstr ""

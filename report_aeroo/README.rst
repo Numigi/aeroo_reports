@@ -1,11 +1,13 @@
-# Aeroo Reports
+Aeroo Reports
+-------------
+This module is the main module required for using Aeroo reports.
 
-Aeroo Reports is a module for generating reports based on OpenOffice documents.
+Contributors
+------------
+* Alistek
+* Savoir-faire Linux
+* Numigi (tm) and all its contributors (https://bit.ly/numigiens)
 
-This version of the module is very different from the original version from Alistek.
-Many advanced features where removed because the code was fuzzy. The objective
-was to clean every non absolutely required features.
-
-The advantage of this version is that you don't need an Aeroo DOCS server in order
-to convert your reports from a format to another.
-Instead, you need to install libreoffice on your Odoo server.
+More information
+----------------
+* Meet us at https://bit.ly/numigi-com

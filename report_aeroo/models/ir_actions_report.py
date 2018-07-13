@@ -551,7 +551,6 @@ class AerooReportsWithAttachmentFilenamePerLang(models.Model):
         :param record: the record for which to generate the freport
         :return: the filename
         """
-        import ipdb;ipdb.set_trace()
         if not self.aeroo_filename_per_lang:
             return super().get_aeroo_filename(record, output_format)
 

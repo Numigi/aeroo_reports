@@ -129,10 +129,12 @@ class IrActionsReport(models.Model):
         lang = self._get_aeroo_lang(record)
         company = self._get_aeroo_company(record)
 
+        line_matches_lang = (lambda l: l.lang_id or l.lang_id.code == lang)
+        line_matches_company = (lambda l: not l.company_id or l.company_id == company)
+
         line = next((
             l for l in self.aeroo_template_line_ids
-            if (not l.lang_id or l.lang_id.code == lang) and
-               (not l.company_id or l.company_id == company)
+            if line_matches_lang(l) and line_matches_company(l)
         ), None)
 
         if line is None:
@@ -278,18 +280,23 @@ class IrActionsReport(models.Model):
         :param record: the record for which to generate the report
         :return: the filename
         """
-        attachment_filename_template = self._get_attachment_filename_template(record)
-        if attachment_filename_template:
-            template = mako_template_env.from_string(tools.ustr(attachment_filename_template))
-            context = {'o': record}
-            context.update(self._get_aeroo_extra_functions())
-            filename = template.render(context)
+        if self.attachment:
+            filename = self._eval_aeroo_attachment_filename(self.attachment, record)
             return '.'.join((filename, output_format))
         else:
             return '.'.join((self.name, output_format))
 
-    def _get_attachment_filename_template(self, record):
-        return self.attachment
+    def _eval_aeroo_attachment_filename(self, filename, record):
+        """Evaluate the given attachment filename for the given record.
+
+        :param filename: the filename mako template
+        :param record: the record for which to evaluate the filename
+        :return: the rendered attachment filename
+        """
+        template = mako_template_env.from_string(tools.ustr(filename))
+        context = {'o': record}
+        context.update(self._get_aeroo_extra_functions())
+        return template.render(context)
 
     def _find_aeroo_report_attachment(self, record, output_format):
         """Find an attachment of the Aeroo report on the given record.
@@ -538,12 +545,30 @@ class AerooReportsWithAttachmentFilenamePerLang(models.Model):
     aeroo_filename_line_ids = fields.One2many(
         'aeroo.filename.line', 'report_id', 'Filenames by Language')
 
-    def _get_attachment_filename_template(self, record):
-        if not self.aeroo_filename_per_lang:
-            return super()._get_attachment_filename_template(record)
+    def get_aeroo_filename(self, record, output_format):
+        """Get the attachement filename for the generated report.
 
+        :param record: the record for which to generate the freport
+        :return: the filename
+        """
+        import ipdb;ipdb.set_trace()
+        if not self.aeroo_filename_per_lang:
+            return super().get_aeroo_filename(record, output_format)
+
+        mako_filename = self._get_aeroo_filename_from_lang(record)
+        rendered_filename = self._eval_aeroo_attachment_filename(mako_filename, record)
+        return '.'.join((rendered_filename, output_format))
+
+    def _get_aeroo_filename_from_lang(self, record):
+        """Get the attachment filename for the record based on the rendering language.
+
+        :param record: the record for which to generate the file name
+        :return: the filename mako template
+        """
         lang = self._get_aeroo_lang(record)
-        line = next((l for l in self.aeroo_filename_line_ids if l.lang_id.code == lang), None)
+        line_matches_lang = (lambda l: l.lang_id.code == lang)
+
+        line = next((l for l in self.aeroo_filename_line_ids if line_matches_lang(l)), None)
 
         if line is None:
             raise ValidationError(

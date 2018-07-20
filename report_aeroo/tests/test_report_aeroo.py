@@ -5,6 +5,8 @@
 
 import base64
 import os
+from freezegun import freeze_time
+
 from odoo.exceptions import ValidationError
 from odoo.modules import module
 from odoo.tests import common
@@ -31,8 +33,8 @@ class TestAerooReport(common.SavepointCase):
             'image': base64.b64encode(open(image_path, 'rb').read())
         })
 
-        cls.lang_en = cls.env.ref('base.lang_en').id
-        cls.lang_fr = cls.env.ref('base.lang_fr').id
+        cls.lang_en = cls.env.ref('base.lang_en')
+        cls.lang_fr = cls.env.ref('base.lang_fr')
 
         cls.partner_2 = cls.env['res.partner'].create({
             'name': 'My Partner 2',
@@ -43,6 +45,7 @@ class TestAerooReport(common.SavepointCase):
         cls.report.write({
             'attachment': None,
             'attachment_use': False,
+            'aeroo_out_format_id': cls.env.ref('report_aeroo.aeroo_mimetype_pdf_odt').id,
         })
 
     def _render_report(self, partners):
@@ -58,12 +61,10 @@ class TestAerooReport(common.SavepointCase):
         self.report.write({
             'aeroo_template_source': 'lines',
             'aeroo_lang_eval': 'o.lang',
-            'aeroo_out_format_id': self.env.ref(
-                'report_aeroo.aeroo_mimetype_pdf_odt').id,
         })
         return self.env['aeroo.template.line'].create({
             'report_id': self.report.id,
-            'lang_id': lang,
+            'lang_id': lang.id if lang else False,
             'company_id': company.id if company else False,
             'template_data': base64.b64encode(
                 self.report._get_aeroo_template_from_file()),
@@ -105,7 +106,6 @@ class TestAerooReport(common.SavepointCase):
             'attachment_use': True,
             'attachment': "${o.name}",
         })
-        self.report.aeroo_out_format_id = self.env.ref('report_aeroo.aeroo_mimetype_pdf_odt')
         self._render_report(self.partner)
 
         attachment = self.env['ir.attachment'].search([
@@ -117,33 +117,64 @@ class TestAerooReport(common.SavepointCase):
 
         self._render_report(self.partner)
 
-    def test_different_attachment_filename_per_lang(self):
+    def _create_filename_line(self, lang, filename):
         self.report.write({
             'attachment_use': True,
             'aeroo_filename_per_lang': True,
             'aeroo_filename_line_ids': [
                 (0, 0, {
-                    'lang_id': self.lang_en,
-                    'filename': "Sample Report: ${o.name}",
+                    'lang_id': lang.id,
+                    'filename': filename,
                 }),
             ]
         })
 
-        self.report.aeroo_out_format_id = self.env.ref('report_aeroo.aeroo_mimetype_pdf_odt')
-        self._render_report(self.partner)
-
-        attachment = self.env['ir.attachment'].search([
+    def _search_attachment(self):
+        return self.env['ir.attachment'].search([
             ('res_id', '=', self.partner.id),
             ('res_model', '=', 'res.partner'),
-            ('datas_fname', '=', 'Sample Report: My Partner.pdf'),
         ])
-        self.assertEqual(len(attachment), 1)
+
+    def test_ifPartnerHasNoLang_thenAttachmentNameIsRenderedInEnglish(self):
+        self.report.aeroo_lang_eval = "None"
+
+        self._create_filename_line(self.lang_fr, "Rapport de contact: ${o.name}")
+        self._create_filename_line(self.lang_en, "Sample Report: ${o.name}")
+
+        self._render_report(self.partner)
+
+        attachment = self._search_attachment()
+        self.assertEqual(attachment.datas_fname, 'Sample Report: My Partner.pdf')
+
+    def test_ifReportHasSpecificLang_thenAttachmentNameIsRenderedInSpecificLang(self):
+        filename = "Rapport de contact: ${today('d MMMM yyyy')}"
+        self._create_filename_line(self.lang_fr, filename)
+
+        self.report.aeroo_lang_eval = "'fr_FR'"
+        self.report.aeroo_tz_eval = "'UTC'"
+
+        with freeze_time('2018-04-06 00:00:00'):
+            self._render_report(self.partner)
+
+        attachment = self._search_attachment()
+        self.assertEqual(attachment.datas_fname, 'Rapport de contact: 6 avril 2018.pdf')
+
+    def test_ifReportHasSpecificTimezone_thenAttachmentNameIsRenderedInSpecificTimezone(self):
+        filename = "Sample Report: ${today('MMMM d, yyyy')}"
+        self._create_filename_line(self.lang_en, filename)
+
+        self.report.aeroo_lang_eval = "'en_US'"
+        self.report.aeroo_tz_eval = "'Canada/Eastern'"
+
+        with freeze_time('2018-04-06 00:00:00'):
+            self._render_report(self.partner)
+
+        attachment = self._search_attachment()
+        self.assertEqual(attachment.datas_fname, 'Sample Report: April 5, 2018.pdf')
 
     def test_libreoffice_low_timeout(self):
         self.env['ir.config_parameter'].set_param(
             'report_aeroo.libreoffice_timeout', '0.01')
-        self.report.aeroo_out_format_id = self.env.ref(
-            'report_aeroo.aeroo_mimetype_pdf_odt')
 
         with self.assertRaises(ValidationError):
             self._render_report(self.partner)
@@ -156,16 +187,12 @@ class TestAerooReport(common.SavepointCase):
 
     def test_fail_after_10ms(self):
         self._set_libreoffice_location('./sleep_10ms.sh')
-        self.report.aeroo_out_format_id = self.env.ref(
-            'report_aeroo.aeroo_mimetype_pdf_odt')
 
         with self.assertRaises(ValidationError):
             self._render_report(self.partner)
 
     def test_libreoffice_finish_after_100s(self):
         self._set_libreoffice_location('./libreoffice_100s.sh')
-        self.report.aeroo_out_format_id = self.env.ref(
-            'report_aeroo.aeroo_mimetype_pdf_odt')
 
         self.env['ir.config_parameter'].set_param(
             'report_aeroo.libreoffice_timeout', '5')
@@ -175,8 +202,6 @@ class TestAerooReport(common.SavepointCase):
 
     def test_libreoffice_fail(self):
         self._set_libreoffice_location('./libreoffice_fail.sh')
-        self.report.aeroo_out_format_id = self.env.ref(
-            'report_aeroo.aeroo_mimetype_pdf_odt')
 
         self.env['ir.config_parameter'].set_param(
             'report_aeroo.libreoffice_timeout', '5')
@@ -204,15 +229,11 @@ class TestAerooReport(common.SavepointCase):
             self._render_report(self.partner)
 
     def test_sample_report_pdf_with_multiple_export(self):
-        self.report.aeroo_out_format_id = self.env.ref(
-            'report_aeroo.aeroo_mimetype_pdf_odt')
         self._render_report(self.partner | self.partner_2)
 
     def test_pdf_low_timeout(self):
         self.env['ir.config_parameter'].set_param(
             'report_aeroo.libreoffice_timeout', '0.01')
-        self.report.aeroo_out_format_id = self.env.ref(
-            'report_aeroo.aeroo_mimetype_pdf_odt')
 
         with self.assertRaises(ValidationError):
             self._render_report(self.partner | self.partner_2)

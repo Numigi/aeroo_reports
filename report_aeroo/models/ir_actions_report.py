@@ -212,19 +212,20 @@ class IrActionsReport(models.Model):
 
         record = self.env[self.model].browse(doc_ids[0])
 
+        current_report_data = dict(data, o=record)
+        report_lang = self._get_aeroo_lang(record)
+        report_timezone = self._get_aeroo_timezone(record)
+        self = self.with_context(lang=report_lang, tz=report_timezone)
+
         # Check if an attachment already exists
         attachment_output = self._find_aeroo_report_attachment(record, output_format)
         if attachment_output:
             return attachment_output, output_format
 
         template = self._get_aeroo_template(record)
-        current_report_data = dict(data, o=record)
-        report_lang = self._get_aeroo_lang(record)
-        report_timezone = self._get_aeroo_timezone(record)
 
         # Render the report
-        output = self.with_context(lang=report_lang, tz=report_timezone)._render_aeroo(
-            template, current_report_data, output_format)
+        output = self._render_aeroo(template, current_report_data, output_format)
 
         # Generate the attachment
         if self.attachment_use:
@@ -294,7 +295,7 @@ class IrActionsReport(models.Model):
         :return: the rendered attachment filename
         """
         template = mako_template_env.from_string(tools.ustr(filename))
-        context = {'o': record}
+        context = {'o': record.with_context()}
         context.update(self._get_aeroo_extra_functions())
         return template.render(context)
 

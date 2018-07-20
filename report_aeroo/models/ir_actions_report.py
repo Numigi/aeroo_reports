@@ -129,7 +129,7 @@ class IrActionsReport(models.Model):
         lang = self._get_aeroo_lang(record)
         company = self._get_aeroo_company(record)
 
-        line_matches_lang = (lambda l: l.lang_id or l.lang_id.code == lang)
+        line_matches_lang = (lambda l: not l.lang_id or l.lang_id.code == lang)
         line_matches_company = (lambda l: not l.company_id or l.company_id == company)
 
         line = next((

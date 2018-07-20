@@ -61,23 +61,46 @@ class TestAerooReport(common.SavepointCase):
             'aeroo_out_format_id': self.env.ref(
                 'report_aeroo.aeroo_mimetype_pdf_odt').id,
         })
-        self.report.aeroo_template_line_ids = [(0, 0, {
+        return self.env['aeroo.template.line'].create({
+            'report_id': self.report.id,
             'lang_id': lang,
-            'company_id': company,
+            'company_id': company.id if company else False,
             'template_data': base64.b64encode(
                 self.report._get_aeroo_template_from_file()),
-        })]
+        })
 
-    def _test_sample_report_doc(self):
+    def test_sample_report_doc(self):
         self.report.aeroo_out_format_id = self.env.ref(
             'report_aeroo.aeroo_mimetype_doc_odt')
         self._render_report(self.partner)
 
-    def _test_sample_report_pdf_by_lang(self):
+    def test_sample_report_pdf_by_lang(self):
         self._create_report_line(self.lang_en)
         self._render_report(self.partner)
 
-    def _test_sample_report_pdf_with_attachment(self):
+    def test_ifFirstTemplateLineHasNoLang_thenItIsSelected(self):
+        line_1 = self._create_report_line(False)
+        self._create_report_line(self.lang_en)
+        selected_line = self.report._get_aeroo_template_line(self.partner)
+        self.assertEqual(selected_line, line_1)
+
+    def test_ifFirstTemplateLineHasWrongLang_thenItIsNotSelected(self):
+        self._create_report_line(self.lang_fr)
+        line_2 = self._create_report_line(self.lang_en)
+        selected_line = self.report._get_aeroo_template_line(self.partner)
+        self.assertEqual(selected_line, line_2)
+
+    def test_ifFirstTemplateLineHasWrongCompany_thenItIsNotSelected(self):
+        self._create_report_line(self.lang_en, company=self.company_2)
+        line_2 = self._create_report_line(self.lang_en, company=self.company)
+        selected_line = self.report._get_aeroo_template_line(self.partner)
+        self.assertEqual(selected_line, line_2)
+
+    def test_get_template_line_with_2_lines(self):
+        self._create_report_line(self.lang_en)
+        self._render_report(self.partner)
+
+    def test_sample_report_pdf_with_attachment(self):
         self.report.write({
             'attachment_use': True,
             'attachment': "${o.name}",
@@ -95,7 +118,6 @@ class TestAerooReport(common.SavepointCase):
         self._render_report(self.partner)
 
     def test_different_attachment_filename_per_lang(self):
-
         self.report.write({
             'attachment_use': True,
             'aeroo_filename_per_lang': True,
@@ -117,7 +139,7 @@ class TestAerooReport(common.SavepointCase):
         ])
         self.assertEqual(len(attachment), 1)
 
-    def _test_libreoffice_low_timeout(self):
+    def test_libreoffice_low_timeout(self):
         self.env['ir.config_parameter'].set_param(
             'report_aeroo.libreoffice_timeout', '0.01')
         self.report.aeroo_out_format_id = self.env.ref(
@@ -132,7 +154,7 @@ class TestAerooReport(common.SavepointCase):
         self.env['ir.config_parameter'].set_param(
             'report_aeroo.libreoffice_location', file_location)
 
-    def _test_fail_after_10ms(self):
+    def test_fail_after_10ms(self):
         self._set_libreoffice_location('./sleep_10ms.sh')
         self.report.aeroo_out_format_id = self.env.ref(
             'report_aeroo.aeroo_mimetype_pdf_odt')
@@ -140,7 +162,7 @@ class TestAerooReport(common.SavepointCase):
         with self.assertRaises(ValidationError):
             self._render_report(self.partner)
 
-    def _test_libreoffice_finish_after_100s(self):
+    def test_libreoffice_finish_after_100s(self):
         self._set_libreoffice_location('./libreoffice_100s.sh')
         self.report.aeroo_out_format_id = self.env.ref(
             'report_aeroo.aeroo_mimetype_pdf_odt')
@@ -151,7 +173,7 @@ class TestAerooReport(common.SavepointCase):
         with self.assertRaises(ValidationError):
             self._render_report(self.partner)
 
-    def _test_libreoffice_fail(self):
+    def test_libreoffice_fail(self):
         self._set_libreoffice_location('./libreoffice_fail.sh')
         self.report.aeroo_out_format_id = self.env.ref(
             'report_aeroo.aeroo_mimetype_pdf_odt')
@@ -162,31 +184,31 @@ class TestAerooReport(common.SavepointCase):
         with self.assertRaises(ValidationError):
             self._render_report(self.partner)
 
-    def _test_multicompany_context_with_lang_and_company(self):
-        self._create_report_line(self.lang_en, self.company.id)
+    def test_multicompany_context_with_lang_and_company(self):
+        self._create_report_line(self.lang_en, self.company)
         self._render_report(self.partner)
 
-    def _test_multicompany_context_company_not_available(self):
-        self._create_report_line(self.lang_en, self.company.id)
+    def test_multicompany_context_company_not_available(self):
+        self._create_report_line(self.lang_en, self.company)
         self.partner.write({'company_id': self.company_2.id})
         with self.assertRaises(ValidationError):
             self._render_report(self.partner)
 
-    def _test_multicompany_context_with_lang(self):
+    def test_multicompany_context_with_lang(self):
         self._create_report_line(self.lang_en)
         self._render_report(self.partner)
 
-    def _test_multicompany_context_lang_not_available(self):
+    def test_multicompany_context_lang_not_available(self):
         self._create_report_line(self.lang_fr)
         with self.assertRaises(ValidationError):
             self._render_report(self.partner)
 
-    def _test_sample_report_pdf_with_multiple_export(self):
+    def test_sample_report_pdf_with_multiple_export(self):
         self.report.aeroo_out_format_id = self.env.ref(
             'report_aeroo.aeroo_mimetype_pdf_odt')
         self._render_report(self.partner | self.partner_2)
 
-    def _test_pdf_low_timeout(self):
+    def test_pdf_low_timeout(self):
         self.env['ir.config_parameter'].set_param(
             'report_aeroo.libreoffice_timeout', '0.01')
         self.report.aeroo_out_format_id = self.env.ref(

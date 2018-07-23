@@ -186,7 +186,7 @@ class TestAerooReport(common.SavepointCase):
             'report_aeroo.libreoffice_location', file_location)
 
     def test_fail_after_10ms(self):
-        self._set_libreoffice_location('./sleep_10ms.sh')
+        self._set_libreoffice_location('./sleep_10ms_and_fail.sh')
 
         with self.assertRaises(ValidationError):
             self._render_report(self.partner)

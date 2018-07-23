@@ -1,4 +1,4 @@
 #!/bin/sh
 
 sleep 0.01
-exit 0
+exit 1

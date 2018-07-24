@@ -5,7 +5,7 @@ import pytest
 import os
 
 from odoo.exceptions import ValidationError
-from ..subprocess_runner import SubProcessRunner
+from ..subprocess import run_subprocess
 
 
 class TestSubprocessRunner:
@@ -16,14 +16,14 @@ class TestSubprocessRunner:
 
     def test_ifTimeoutIsNotExceeded_thenNoErrorRaised(self):
         command = ['sh', self._get_file_path('sleep_10ms.sh')]
-        SubProcessRunner(1).run(command)
+        run_subprocess(command, 1)
 
     def test_ifTimeoutIsExceeded_thenRaiseValidationError(self):
         command = ['sh', self._get_file_path('sleep_100s.sh')]
         with pytest.raises(ValidationError):
-            SubProcessRunner(1).run(command)
+            run_subprocess(command, 1)
 
     def test_ifTimeoutIsNotExceeded_ButProcessFails_thenRaiseValidationError(self):
         command = ['sh', self._get_file_path('sleep_10ms_and_fail.sh')]
         with pytest.raises(ValidationError):
-            SubProcessRunner(1).run(command)
+            run_subprocess(command, 1)

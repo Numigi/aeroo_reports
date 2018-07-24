@@ -23,7 +23,7 @@ from odoo.exceptions import ValidationError
 from odoo.tools import file_open, safe_eval
 from odoo.addons.mail.models.mail_template import mako_template_env
 
-from ..subprocess_runner import SubProcessRunner
+from ..subprocess import run_subprocess
 from ..extra_functions import aeroo_function_registry
 
 
@@ -358,7 +358,7 @@ class IrActionsReport(models.Model):
         timeout = self._get_aeroo_libreoffice_timeout()
 
         try:
-            SubProcessRunner(timeout=timeout).run(cmd)
+            run_subprocess(cmd, timeout)
         except Exception as exc:
             os.remove(temp_file.name)
             raise ValidationError(
@@ -434,7 +434,7 @@ class IrActionsReport(models.Model):
         timeout = self._get_aeroo_libreoffice_timeout()
 
         try:
-            SubProcessRunner(timeout=timeout).run(cmd)
+            run_subprocess(cmd, timeout)
         except:
             traceback.print_exc()
             os.remove(output_file.name)

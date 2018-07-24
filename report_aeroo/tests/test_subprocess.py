@@ -10,7 +10,8 @@ from ..subprocess import run_subprocess
 
 class TestSubprocessRunner:
 
-    def _get_file_path(self, filename):
+    @staticmethod
+    def _get_file_path(filename):
         dir_path = os.path.dirname(os.path.realpath(__file__))
         return dir_path + '/' + filename
 

@@ -9,10 +9,6 @@ import imp
 import logging
 import os
 import sys
-import time
-import psutil
-import signal
-import subprocess
 import traceback
 from aeroolib.plugins.opendocument import Template, OOSerializer
 from datetime import datetime
@@ -27,6 +23,7 @@ from odoo.exceptions import ValidationError
 from odoo.tools import file_open, safe_eval
 from odoo.addons.mail.models.mail_template import mako_template_env
 
+from ..subprocess import run_subprocess
 from ..extra_functions import aeroo_function_registry
 
 
@@ -590,57 +587,3 @@ def generate_temporary_file(format, data=None):
         with open(temp_file.name, 'wb') as f:
             f.write(data)
     return temp_file
-
-
-def run_subprocess(command, timeout):
-    """Run a command in a subprocess with a given timeout.
-
-    When the timeout expires, the process is terminated.
-
-    :param string command: the command to execute
-    :param float timeout: the timeout in seconds
-    """
-    process = subprocess.Popen(command)
-    timetaken = 0
-
-    while True:
-        status = process.poll()
-        if status is 0:
-            break
-        elif status is not None:
-            raise ValidationError(
-                _('Command %(command)s exited with status %(status)s.') % {
-                    'command': command,
-                    'status': status,
-                })
-
-        timetaken += 0.1
-        time.sleep(0.1)
-
-        if timetaken > timeout:
-            terminate_process(process)
-            raise ValidationError(
-                _('Timeout (%(timeout)s seconds) expired while executing '
-                  'the command: %(command)s') % {
-                    'command': command,
-                    'timeout': timeout,
-                })
-
-
-def terminate_process(self, process):
-    """Attempt to terminate the process.
-
-    Kill the process if it is still alive after 60 seconds.
-
-    :param string process: the process pid to kill
-    """
-    process.terminate()
-    for i in range(60):
-        time.sleep(1)
-        if process.poll() is not None:
-            return
-
-    parent = psutil.Process(process.pid)
-    for child in parent.children(recursive=True):
-        child.send_signal(signal.SIGKILL)
-    parent.send_signal(signal.SIGKILL)

@@ -89,10 +89,10 @@ msgid "Code"
 msgstr "Code"
 
 #. module: report_aeroo
-#: code:addons/report_aeroo/models/ir_actions_report.py:587
+#: code:addons/report_aeroo/subprocess_runner:0
 #, python-format
-msgid "Command %(command)s exited with status %(status)s."
-msgstr "La commande %(command)s s'est terminée avec le statut %(status)s."
+msgid "Command {command} exited with status {status}."
+msgstr "La commande {command} s'est terminée avec le statut {status}."
 
 #. module: report_aeroo
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_filename_line_company_id
@@ -412,14 +412,14 @@ msgid "The report name is expected in order to generate an aeroo report."
 msgstr "Le nom du rapport est requis pour générer un rapport aeroo."
 
 #. module: report_aeroo
-#: code:addons/report_aeroo/models/ir_actions_report.py:598
+#: code:addons/report_aeroo/subprocess_runner.py:0
 #, python-format
 msgid ""
-"Timeout (%(timeout)s seconds) expired while executing the command: "
-"%(command)s"
+"Timeout ({timeout} seconds) expired while executing the command: "
+"{command}"
 msgstr ""
-"Le délai maximal (%(timeout)s seconds) s'est écoulé lors de l'exécution de "
-"la commande: %(command)s"
+"Le délai maximal ({timeout} seconds) s'est écoulé lors de l'exécution de "
+"la commande: {command}"
 
 #. module: report_aeroo
 #: model:ir.model.fields,field_description:report_aeroo.field_ir_act_report_xml_aeroo_tz_eval

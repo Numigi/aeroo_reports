@@ -10,6 +10,7 @@ import base64
 import logging
 import time
 from datetime import datetime
+from html2text import html2text
 from io import BytesIO
 from PIL import Image
 
@@ -206,3 +207,15 @@ def barcode(report, code, code_type='ean13', rotate=None, height=50, xw=1):
     size_x = str(im.size[0] / 96.0) + 'in'
     size_y = str(im.size[1] / 96.0) + 'in'
     return tf, 'image/png', size_x, size_y
+
+
+@aeroo_util('html2text')
+def format_html2text(report, html):
+    """Convert the given HTML field value into text.
+
+    The bodywidth=0 parameter prevents line breaks after 79 chars.
+
+    :param html: the html string to format into raw text
+    :return: the raw text
+    """
+    return html2text(html or '', bodywidth=0)

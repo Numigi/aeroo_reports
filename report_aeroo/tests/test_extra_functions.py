@@ -122,3 +122,6 @@ class TestAerooReport(common.TransactionCase):
             "Morbi eleifend magna sit amet sem gravida sollicitudin.  \n"
             "Vestibulum metus ipsum, varius in ultricies eget, vulputate eu felis.\n"
         ))
+
+    def test_format_html2text_with_none(self):
+        self.assertEqual(format_html2text(self.report, None), "\n")

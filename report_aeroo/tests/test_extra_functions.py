@@ -11,6 +11,7 @@ from ..extra_functions import (
     format_datetime_now,
     format_decimal,
     format_currency,
+    format_html2text,
 )
 
 
@@ -98,3 +99,29 @@ class TestAerooReport(common.TransactionCase):
         result = format_currency(
             report, 1500, self.env.ref('base.USD'), amount_format='#,##0.00\xa0¤¤')
         self.assertEqual(result, '1\xa0500,00\xa0USD')
+
+    def test_format_html2text(self):
+        r"""Test the formating of html into text.
+
+        * \n\n is added after the end of a div.
+        * Line breaks are replaced with 2 spaces and one \n.
+        * The text is ended with a single \n.
+        * No \n is added when a line exceeds a given number length (i.e. 79 chars)
+        """
+        html = (
+            "<div>Lorem Ipsum</div>"
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+            "Morbi eleifend magna sit amet sem gravida sollicitudin."
+            "<br/>Vestibulum metus ipsum, varius in ultricies eget, vulputate eu felis."
+        )
+        text = format_html2text(self.report, html)
+        self.assertEqual(text, (
+            "Lorem Ipsum"
+            "\n\n"
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+            "Morbi eleifend magna sit amet sem gravida sollicitudin.  \n"
+            "Vestibulum metus ipsum, varius in ultricies eget, vulputate eu felis.\n"
+        ))
+
+    def test_format_html2text_with_none(self):
+        self.assertEqual(format_html2text(self.report, None), "\n")

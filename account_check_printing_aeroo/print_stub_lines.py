@@ -22,10 +22,13 @@ class AccountPaymentWithCheckStubLines(models.Model):
     def _check_make_stub_line(self, invoice):
         """Return the dict used to display an invoice/refund in the stub.
 
-        This method was backported from odoo version 12.0
+        This method was adapted from the following method in odoo version 12.0
         https://github.com/odoo/odoo/blob/12.0/addons/account_check_printing/models/account_payment.py
 
-        In version 11.0, this method is only available when installing l10n_us_check_printing.
+        It was also improved in order to:
+            * work with invoices paid in different currencies.
+            * work with invoices and refunds in the same payment.
+            * display paid amounts in the currency of the invoice.
         """
         if invoice.type in ['in_invoice', 'out_refund']:
             invoice_sign = 1

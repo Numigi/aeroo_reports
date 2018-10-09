@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 # © 2017 Savoir-faire Linux
+# © 2018 Numigi (tm) and all its contributors (https://bit.ly/numigiens)
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 
 {
@@ -17,7 +17,6 @@
     ],
     'data': [
         'views/account_journal.xml',
-        'views/account_payment.xml',
     ],
     'demo': [
         'demo/report.xml',
@@ -25,6 +24,6 @@
     'external_dependencies': {
         'python': ['num2words'],
     },
-    'installable': False,
+    'installable': True,
     'application': False,
 }

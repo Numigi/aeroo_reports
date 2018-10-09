@@ -1,16 +1,15 @@
 <?xml version="1.0"?>
-<odoo>
-<data noupdate="1">
+<odoo noupdate="1">
 
-    <record id="sample_report" model="ir.actions.report.xml">
+    <record id="sample_report" model="ir.actions.report">
         <field name="name">Check Sample</field>
-        <field name="type">ir.actions.report.xml</field>
+        <field name="type">ir.actions.report</field>
         <field name="model">account.payment</field>
         <field name="report_name">check_ca</field>
         <field name="report_type">aeroo</field>
-        <field name="in_format">oo-odt</field>
-        <field name="report_rml">account_check_printing_aeroo/demo/check_sample.odt</field>
-        <field name="tml_source">file</field>
+        <field name="aeroo_in_format">odt</field>
+        <field name="aeroo_template_path">account_check_printing_aeroo/demo/check_sample.odt</field>
+        <field name="aeroo_template_source">file</field>
     </record>
 
     <ir_set>
@@ -23,6 +22,4 @@
         <field eval="True" name="replace"/>
     </ir_set>
 
-</data>
 </odoo>
-

@@ -169,23 +169,23 @@ class TestCheckPrintStubLines(common.SavepointCase):
     def test_payment_and_invoices_both_in_company_currency(self):
         invoices = self._create_invoices(self.company_currency)
         payment = self._create_payment(invoices, self.company_currency, 60)
-        lines = payment.get_check_stub_lines()
+        lines = payment.get_aeroo_check_stub_lines()
         self._check_stub_lines(lines, invoices)
 
     def test_payment_and_invoices_both_in_foreign_currency(self):
         invoices = self._create_invoices(self.foreign_currency)
         payment = self._create_payment(invoices, self.foreign_currency, 60)
-        lines = payment.get_check_stub_lines()
+        lines = payment.get_aeroo_check_stub_lines()
         self._check_stub_lines(lines, invoices)
 
     def test_payment_in_foreign_currency(self):
         invoices = self._create_invoices(self.company_currency)
         payment = self._create_payment(invoices, self.foreign_currency, 48)  # 60 * 0.80
-        lines = payment.get_check_stub_lines()
+        lines = payment.get_aeroo_check_stub_lines()
         self._check_stub_lines(lines, invoices)
 
     def test_invoices_in_foreign_currency(self):
         invoices = self._create_invoices(self.foreign_currency)
         payment = self._create_payment(invoices, self.company_currency, 75)  # 60 / 0.80
-        lines = payment.get_check_stub_lines()
+        lines = payment.get_aeroo_check_stub_lines()
         self._check_stub_lines(lines, invoices)

@@ -14,12 +14,12 @@ class AccountPaymentWithCheckStubLines(models.Model):
 
     _inherit = "account.payment"
 
-    def get_check_stub_lines(self):
+    def get_aeroo_check_stub_lines(self):
         """Method callable from the aeroo report."""
         invoices = self.invoice_ids.sorted(key=lambda inv: inv.date_due)
-        return [self._check_make_stub_line(inv) for inv in invoices]
+        return [self._aeroo_check_make_stub_line(inv) for inv in invoices]
 
-    def _check_make_stub_line(self, invoice):
+    def _aeroo_check_make_stub_line(self, invoice):
         """Return the dict used to display an invoice/refund in the stub.
 
         This method was adapted from the following method in odoo version 12.0

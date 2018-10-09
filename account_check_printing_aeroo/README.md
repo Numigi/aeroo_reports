@@ -23,7 +23,7 @@ In order to use this module with the United States accounting, you will need to 
 
 ## Check Stubs
 
-A method `get_check_stub_lines` is added on account.payment.
+A method `get_aeroo_check_stub_lines` is added on account.payment.
 This method allows to get the info to display on the check stub.
 This method can be called inside an libreoffice input field.
 For a complete example, see the [demo template](demo/check_sample.odt)

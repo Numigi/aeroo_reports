@@ -118,7 +118,6 @@ class TestCheckPrintStubLines(common.SavepointCase):
             'amount': amount,
             'journal_id': self.journal.id,
             'currency_id': currency.id,
-            'payment_type': 'outbound',
             'payment_method_id': self.env.ref(
                 'account_check_printing.account_payment_method_check').id,
             'invoice_ids': [(6, 0, invoices.ids)],

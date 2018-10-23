@@ -11,6 +11,7 @@ class AerooTemplateLine(models.Model):
 
     _name = 'aeroo.template.line'
     _order = 'sequence'
+    _description = 'Aeroo Template Line'
 
     sequence = fields.Integer()
     report_id = fields.Many2one(

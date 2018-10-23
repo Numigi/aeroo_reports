@@ -209,11 +209,6 @@ msgid "Filenames by Language"
 msgstr "Noms de fichiers par langue"
 
 #. module: report_aeroo
-#: model:ir.model.fields,field_description:report_aeroo.field_aeroo_mimetype_filter_name
-msgid "Filter Name"
-msgstr "Filtrer par nom"
-
-#. module: report_aeroo
 #: model:ir.ui.view,arch_db:report_aeroo.act_report_xml_view1
 msgid "Generate Report From Record List"
 msgstr "Générer rapport depuis vue liste"

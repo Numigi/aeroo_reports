@@ -10,6 +10,7 @@
         <field name="aeroo_in_format">odt</field>
         <field name="aeroo_template_path">account_check_printing_aeroo/demo/check_sample.odt</field>
         <field name="aeroo_template_source">file</field>
+        <field name="aeroo_lang_eval">'en_US'</field>
     </record>
 
     <ir_set>

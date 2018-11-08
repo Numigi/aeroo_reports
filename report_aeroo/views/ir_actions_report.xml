@@ -115,12 +115,12 @@
                             string="Template Mime-type"
                             icon="terp-stock_symbol-selection"
                             domain="[]"
-                            context="{'group_by': 'in_format'}"/>
+                            context="{'group_by': 'aeroo_in_format'}"/>
                     <filter name="group_by_out_format"
                             string="Output Mime-type"
                             icon="terp-stock_symbol-selection"
                             domain="[]"
-                            context="{'group_by': 'out_format'}"/>
+                            context="{'group_by': 'aeroo_out_format_id'}"/>
                     <separator orientation="vertical"/>
                     <filter name="group_by_aeroo_template_source"
                             string="Template Source"

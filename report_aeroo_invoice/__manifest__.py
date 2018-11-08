@@ -16,6 +16,7 @@
     ],
     'data': [
         'views/res_config_settings.xml',
+        'views/portal.xml',
     ],
     'demo': [
         'demo/invoice.xml',

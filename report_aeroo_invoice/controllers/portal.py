@@ -30,24 +30,4 @@ class PortalAccountWithAerooInvoiceReport(PortalAccount):
         except (AccessError, MissingError):
             return request.redirect('/my')
 
-        return self._show_report(
-            model=invoice, report_type='aeroo',
-            report_ref=AEROO_INVOICE_REPORT_REF, download=download)
-
-    def _show_report(self, model, report_type, report_ref, download=False):
-        if report_type != 'aeroo':
-            return super()._show_report(model, report_type, report_ref, download=download)
-
-        report = request.env.ref(report_ref).sudo()
-        pdf = report.render_aeroo(doc_ids=[model.id], force_output_format='pdf')[0]
-
-        headers = [
-            ('Content-Type', 'application/pdf'),
-            ('Content-Length', len(pdf)),
-        ]
-
-        if download:
-            filename = "%s.pdf" % (re.sub('\W+', '-', model._get_report_base_filename()))
-            headers.append(('Content-Disposition', content_disposition(filename)))
-
-        return request.make_response(pdf, headers=headers)
+        return self._show_aeroo_report(record=invoice, template=template, download=download)

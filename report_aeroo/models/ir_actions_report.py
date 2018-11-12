@@ -209,7 +209,6 @@ class IrActionsReport(models.Model):
 
         record = self.env[self.model].browse(doc_ids[0])
 
-        current_report_data = dict(data, o=record)
         report_lang = self._get_aeroo_lang(record)
         report_timezone = self._get_aeroo_timezone(record)
         self = self.with_context(lang=report_lang, tz=report_timezone)
@@ -222,6 +221,8 @@ class IrActionsReport(models.Model):
         template = self._get_aeroo_template(record)
 
         # Render the report
+        current_report_data = dict(
+            data, o=record.with_context(lang=report_lang, tz=report_timezone))
         output = self._render_aeroo(template, current_report_data, output_format)
 
         # Generate the attachment

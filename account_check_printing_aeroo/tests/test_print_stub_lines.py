@@ -36,6 +36,7 @@ class TestCheckPrintStubLines(common.SavepointCase):
             'name': 'BMO',
             'code': 'BMO',
             'type': 'bank',
+            'currency_id': False,
         })
 
     def _create_invoices(self, currency):
@@ -69,8 +70,9 @@ class TestCheckPrintStubLines(common.SavepointCase):
                 'partner_id': self.partner.id,
                 'journal_id': journal.id,
                 'account_id': account.id,
-                'date': datetime.now(),
-                'date_due': datetime.now() + timedelta(i),
+                'date': datetime.now().date(),
+                'date_due': datetime.now().date() + timedelta(i),
+                'payment_term_id': False,
                 'type': 'in_invoice',
                 'reference': 'XXXXXX%s' % i,
                 'currency_id': currency.id,
@@ -88,8 +90,9 @@ class TestCheckPrintStubLines(common.SavepointCase):
             'partner_id': self.partner.id,
             'journal_id': journal.id,
             'account_id': account.id,
-            'date': datetime.now(),
-            'date_due': datetime.now() + timedelta(4),
+            'date': datetime.now().date(),
+            'date_due': datetime.now().date() + timedelta(4),
+            'payment_term_id': False,
             'type': 'in_refund',
             'reference': 'XXXXXX%s' % 4,
             'currency_id': currency.id,
@@ -134,7 +137,7 @@ class TestCheckPrintStubLines(common.SavepointCase):
         payments are in the same currency. The logic to get these amounts
         is however different.
         """
-        self.assertEqual(lines, [
+        assert lines == [
             {
                 'amount_paid': 100,
                 'amount_residual': 0,
@@ -163,7 +166,7 @@ class TestCheckPrintStubLines(common.SavepointCase):
                 'currency': invoices[3].currency_id,
                 'invoice': invoices[3],
             }
-        ])
+        ]
 
     def test_payment_and_invoices_both_in_company_currency(self):
         invoices = self._create_invoices(self.company_currency)

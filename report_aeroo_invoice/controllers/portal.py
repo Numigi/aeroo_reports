@@ -1,13 +1,10 @@
-# -*- coding: utf-8 -*-
 # © 2018 Numigi (tm) and all its contributors (https://bit.ly/numigiens)
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/gpl).
 
-import re
-
 from odoo import http
 from odoo.addons.account.controllers.portal import PortalAccount
-from odoo.exceptions import AccessError, UserError, MissingError
-from odoo.http import content_disposition, request
+from odoo.exceptions import AccessError, MissingError
+from odoo.http import request
 
 AEROO_INVOICE_REPORT_REF = 'report_aeroo_invoice.aeroo_invoice_report'
 

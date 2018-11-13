@@ -42,7 +42,7 @@ ActionManager.include({
                 url: "/web/report_aeroo",
                 data: {action: JSON.stringify(action)},
                 success: deferred.resolve.bind(deferred),
-                error: function(){
+                error(){
                     crashManager.rpc_error.apply(crashManager, arguments);
                     deferred.reject();
                 },

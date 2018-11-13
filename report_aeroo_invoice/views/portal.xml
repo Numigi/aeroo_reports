@@ -4,12 +4,10 @@
     <template id="portal_invoice_page" name="Portal Invoice With PDF Report" inherit_id="account.portal_invoice_page">
         <xpath expr="//iframe" position="replace">
             <object
-                t-att-data="invoice.get_portal_url(report_type='pdf')" type="application/pdf"
+                t-att-data="invoice.get_portal_url(report_type='pdf', anchor='toolbar=0')" type="application/pdf"
                 width="100%" height="100%"
                 style="min-height: 800px"
-                >
-                <embed t-att-src="invoice.get_portal_url(report_type='pdf')" type="application/pdf"/>
-            </object>
+                />
         </xpath>
         <xpath expr="//div[hasclass('o_portal_html_loader')]" position="replace"/>
     </template>

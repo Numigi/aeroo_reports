@@ -18,35 +18,30 @@
             <field name="name">PDF - Portable Document Format (.pdf)</field>
             <field name="code">pdf</field>
             <field name="compatible_types">odt</field>
-            <field name="filter_name">writer_pdf_Export</field>
         </record>
 
         <record model="aeroo.mimetype" id="aeroo_mimetype_pdf_ods" >
             <field name="name">PDF - Portable Document Format (.pdf)</field>
             <field name="code">pdf</field>
             <field name="compatible_types">ods</field>
-            <field name="filter_name">calc_pdf_Export</field>
         </record>
 
         <record model="aeroo.mimetype" id="aeroo_mimetype_doc_odt" >
             <field name="name">Microsoft Word 97/2000/XP (.doc)</field>
             <field name="code">doc</field>
             <field name="compatible_types">odt</field>
-            <field name="filter_name">MS Word 97</field>
         </record>
 
         <record model="aeroo.mimetype" id="aeroo_mimetype_xls_odt" >
             <field name="name">Microsoft Excel 97/2000/XP (.xls)</field>
             <field name="code">xls</field>
             <field name="compatible_types">ods</field>
-            <field name="filter_name">MS Excel 97</field>
         </record>
 
         <record model="aeroo.mimetype" id="aeroo_mimetype_csv_ods" >
             <field name="name">Text CSV (.csv)</field>
             <field name="code">csv</field>
             <field name="compatible_types">ods</field>
-            <field name="filter_name">Text - txt - csv (StarCalc)</field>
         </record>
     </data>
 </odoo>

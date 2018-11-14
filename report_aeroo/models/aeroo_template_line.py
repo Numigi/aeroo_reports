@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2016-2018 Savoir-faire Linux
 # © 2018 Numigi (tm) and all its contributors (https://bit.ly/numigiens)
 # License GPL-3.0 or later (http://www.gnu.org/licenses/gpl).
@@ -11,6 +10,7 @@ class AerooTemplateLine(models.Model):
 
     _name = 'aeroo.template.line'
     _order = 'sequence'
+    _description = 'Aeroo Template Line'
 
     sequence = fields.Integer()
     report_id = fields.Many2one(

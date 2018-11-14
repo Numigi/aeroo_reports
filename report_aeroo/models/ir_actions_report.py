@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2008-2014 Alistek
 # © 2016-2018 Savoir-faire Linux
 # © 2018 Numigi (tm) and all its contributors (https://bit.ly/numigiens)
@@ -36,10 +35,18 @@ class IrActionsReport(models.Model):
         return self.env['aeroo.mimetype'].search(
             [('code', '=', 'odt')], limit=1)
 
+    @api.model
+    def _get_in_aeroo_mimetypes(self):
+        types = self.env['aeroo.mimetype'].search([])
+        return (
+            [(t.code, t.name) for t in types]
+            if types else [('odt', 'odt'), ('ods', 'ods')]
+        )
+
     report_type = fields.Selection(selection_add=[('aeroo', 'Aeroo Reports')])
     aeroo_in_format = fields.Selection(
         selection='_get_in_aeroo_mimetypes', string='Template Mime-type',
-        default='odt')
+        default=lambda self: 'odt')
     aeroo_out_format_id = fields.Many2one(
         'aeroo.mimetype', 'Output Mime-type',
         default=_get_default_aeroo_out_format)
@@ -67,14 +74,6 @@ class IrActionsReport(models.Model):
         help="Python expression used to determine the company "
         "of the record being printed in the report.",
         default="o.company_id")
-
-    @api.model
-    def _get_in_aeroo_mimetypes(self):
-        mime_obj = self.env['aeroo.mimetype']
-        domain = self.env.context.get('allformats') and [] or [
-            ('filter_name', '=', False)]
-        res = mime_obj.search(domain).read(['code', 'name'])
-        return [(r['code'], r['name']) for r in res]
 
     def _get_aeroo_template(self, record):
         """Get an aeroo template for the given record.

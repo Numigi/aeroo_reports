@@ -4,19 +4,19 @@ odoo.define("report_aeroo.action_manager", function (require) {
 // Need to load qweb reports (report.report) before loading aeroo.
 // The method ActionManager.ir_actions_report defined in report.report
 // prevents generating reports other than qweb.
-require("web.ReportActionManager");
+require("report.report");
 
 var ActionManager = require("web.ActionManager");
 var crashManager = require("web.crash_manager");
 var framework = require("web.framework");
 var session = require("web.session");
-var pyeval = require("web.py_utils");
+var pyeval = require("web.pyeval");
 
 ActionManager.include({
     /**
      * Dispatch aeroo reports.
      */
-    _executeReportAction(action, options) {
+    ir_actions_report(action, options) {
         if (action.report_type === "aeroo") {
             return this._printAerooReport(action, options);
         } else {
@@ -37,16 +37,22 @@ ActionManager.include({
         action.context = pyeval.eval("contexts", evalContexts);
 
         var self = this;
-        return $.Deferred((deferred) => {
+        return $.Deferred(function (deferred) {
             session.get_file({
                 url: "/web/report_aeroo",
                 data: {action: JSON.stringify(action)},
-                success: deferred.resolve.bind(deferred),
+                complete: framework.unblockUI,
+                success(){
+                    if (!self.dialog) {
+                        options.on_close();
+                    }
+                    self.dialog_stop();
+                    deferred.resolve();
+                },
                 error(){
                     crashManager.rpc_error.apply(crashManager, arguments);
                     deferred.reject();
                 },
-                complete: framework.unblockUI,
             });
         });
     },

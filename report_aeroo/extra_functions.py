@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # © 2008-2014 Alistek
 # © 2016-2018 Savoir-faire Linux
 # © 2018 Numigi (tm) and all its contributors (https://bit.ly/numigiens)
@@ -8,7 +9,7 @@ import babel.dates
 import base64
 import logging
 import time
-from datetime import datetime, date
+from datetime import datetime
 from html2text import html2text
 from io import BytesIO
 from PIL import Image
@@ -65,7 +66,7 @@ def aeroo_util(function_name):
 
 
 @aeroo_util('format_date')
-def format_date(report, value: date, date_format: str):
+def format_date(report, value, date_format):
     """Format a date field value into the given format.
 
     The language of the template is used to format the date.
@@ -77,17 +78,18 @@ def format_date(report, value: date, date_format: str):
     if not value:
         return ''
     lang = report._context.get('lang') or 'en_US'
-    return babel.dates.format_date(value, date_format, locale=lang)
+    date_ = datetime.strptime(value, DEFAULT_SERVER_DATE_FORMAT)
+    return babel.dates.format_date(date_, date_format, locale=lang)
 
 
 @aeroo_util('today')
-def format_date_today(report, date_format: str = None):
+def format_date_today(report, date_format=None):
     today_in_timezone = fields.Date.context_today(report)
     return format_date(report, value=today_in_timezone, date_format=date_format)
 
 
 @aeroo_util('format_datetime')
-def format_datetime(report, value: datetime, datetime_format: str):
+def format_datetime(report, value, datetime_format):
     """Format a datetime field value into the given format.
 
     The language of the template is used to format the datetime.
@@ -99,18 +101,19 @@ def format_datetime(report, value: datetime, datetime_format: str):
     if not value:
         return ''
     lang = report._context.get('lang') or 'en_US'
-    datetime_in_timezone = fields.Datetime.context_timestamp(report, value)
+    datetime_ = datetime.strptime(value, DEFAULT_SERVER_DATETIME_FORMAT)
+    datetime_in_timezone = fields.Datetime.context_timestamp(report, datetime_)
     return babel.dates.format_datetime(datetime_in_timezone, datetime_format, locale=lang)
 
 
 @aeroo_util('now')
-def format_datetime_now(report, datetime_format: str = None):
-    timestamp = datetime.now()
-    return format_datetime(report, value=timestamp, datetime_format=datetime_format)
+def format_datetime_now(report, datetime_format=None):
+    str_timestamp = fields.Datetime.to_string(datetime.now())
+    return format_datetime(report, value=str_timestamp, datetime_format=datetime_format)
 
 
 @aeroo_util('format_decimal')
-def format_decimal(report, amount: float, amount_format='#,##0.00'):
+def format_decimal(report, amount, amount_format='#,##0.00'):
     """Format an amount in the language of the user.
 
     :param report: the aeroo report
@@ -122,7 +125,7 @@ def format_decimal(report, amount: float, amount_format='#,##0.00'):
 
 
 @aeroo_util('format_currency')
-def format_currency(report, amount: float, currency, amount_format=None):
+def format_currency(report, amount, currency, amount_format=None):
     """Format an amount into the given currency in the language of the user.
 
     :param report: the aeroo report
@@ -136,13 +139,8 @@ def format_currency(report, amount: float, currency, amount_format=None):
 
 @aeroo_util('asimage')
 def asimage(
-    report,
-    field_value: str,
-    rotate: bool = None,
-    size_x: int = None,
-    size_y: int = None,
-    uom: str = 'px',
-    hold_ratio: bool = False
+    report, field_value, rotate=None, size_x=None, size_y=None,
+    uom='px', hold_ratio=False
 ):
     def size_by_uom(val, uom, dpi):
         if uom == 'px':
@@ -188,14 +186,7 @@ def asimage(
 
 
 @aeroo_util('barcode')
-def barcode(
-    report,
-    code: str,
-    code_type: str = 'ean13',
-    rotate: bool = None,
-    height: int = 50,
-    xw: int = 1,
-):
+def barcode(report, code, code_type='ean13', rotate=None, height=50, xw=1):
     if code:
         if code_type.lower() == 'ean13':
             bar = EanBarCode()
@@ -219,7 +210,7 @@ def barcode(
 
 
 @aeroo_util('html2text')
-def format_html2text(report, html: str):
+def format_html2text(report, html):
     """Convert the given HTML field value into text.
 
     The bodywidth=0 parameter prevents line breaks after 79 chars.

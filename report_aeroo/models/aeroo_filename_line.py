@@ -8,7 +8,6 @@ class AerooFilenameLine(models.Model):
 
     _name = 'aeroo.filename.line'
     _order = 'sequence'
-    _description = 'Aeroo Filename Line'
 
     sequence = fields.Integer()
     report_id = fields.Many2one(

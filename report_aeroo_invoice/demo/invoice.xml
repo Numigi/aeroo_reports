@@ -8,11 +8,9 @@
         <field name="report_name">aeroo_invoice_report</field>
         <field name="report_type">aeroo</field>
         <field name="aeroo_in_format">odt</field>
-        <field name="aeroo_out_format_id" ref="report_aeroo.aeroo_mimetype_pdf_odt"/>
         <field name="aeroo_template_source">file</field>
         <field name="aeroo_lang_eval">o.partner_id.lang</field>
         <field name="aeroo_template_path">report_aeroo_invoice/demo/invoice.odt</field>
-        <field name="attachment_use" eval="True"/>
     </record>
 
 </odoo>

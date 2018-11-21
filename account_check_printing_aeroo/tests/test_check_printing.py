@@ -25,7 +25,6 @@ class TestCheckPrinting(common.SavepointCase):
             'name': 'PURCHASES',
             'code': 'PURC',
             'type': 'purchase',
-            'currency_id': currency.id,
         })
 
         expense_account = cls.env['account.account'].search([
@@ -36,7 +35,6 @@ class TestCheckPrinting(common.SavepointCase):
             'user_type_id': cls.env.ref('account.data_account_type_payable').id,
             'name': 'Account Payable',
             'code': '210X00',
-            'currency_id': currency.id,
             'reconcile': True,
         })
 

@@ -1,41 +1,40 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* account_check_printing_aeroo
+# 	* account_check_printing_aeroo
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 11.0+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-07-27 17:48+0000\n"
-"PO-Revision-Date: 2017-07-27 17:48+0000\n"
+"POT-Creation-Date: 2018-11-12 22:33+0000\n"
+"PO-Revision-Date: 2018-11-12 17:34-0500\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
+"X-Generator: Poedit 2.0.6\n"
 
 #. module: account_check_printing_aeroo
-#: model:ir.model.fields,field_description:account_check_printing_aeroo.field_account_journal_check_report_id
+#: model:ir.model.fields,field_description:account_check_printing_aeroo.field_account_journal__check_report_id
 msgid "Check Report"
 msgstr "Rapport de chèque"
 
 #. module: account_check_printing_aeroo
-#: model:ir.model.fields,field_description:account_check_printing_aeroo.field_account_journal_check_report_lang
-msgid "Check Report Language"
-msgstr "Langue du rapport de chèque"
-
-#. module: account_check_printing_aeroo
-#: model:ir.actions.report.xml,name:account_check_printing_aeroo.sample_report
+#: model:ir.actions.report,name:account_check_printing_aeroo.sample_report
 msgid "Check Sample"
 msgstr "Chèque Démo"
 
 #. module: account_check_printing_aeroo
-#: model:ir.actions.report.xml,name:account_check_printing_aeroo.sample_report
+#: code:addons/account_check_printing_aeroo/print_checks_using_aeroo.py:26
+#, python-format
 msgid ""
-"In order to generate checks in batch, all selected "
-"payments must belong to the same journal (bank account)."
-msgstr "Afin de générer les chèques en lot, tous les paiements sélectionnés doivent "
+"In order to generate checks in batch, all selected payments must belong to "
+"the same journal (bank account)."
+msgstr ""
+"Afin de générer les chèques en lot, tous les paiements sélectionnés doivent "
 "appartenir à un même journal (compte bancaire)."
 
 #. module: account_check_printing_aeroo

@@ -107,12 +107,26 @@
                 <field name="name"
                     filter_domain="['|', '|', '|', '|', ('name', 'ilike', self), ('model', 'ilike', self), ('type', 'ilike', self), ('report_name', 'ilike', self), ('report_type', 'ilike', self)]"
                     string="Report"/>
-                <filter name="active" string="Inactive" domain="[('active', '=', False)]"/>
+                <filter name="active"
+                        string="Inactive"
+                        domain="[('active', '=', False)]"/>
                 <group expand="0" string="Group By" colspan="4">
-                    <filter string="Template Mime-type" icon="terp-stock_symbol-selection" domain="[]" context="{'group_by': 'in_format'}"/>
-                    <filter string="Output Mime-type" icon="terp-stock_symbol-selection" domain="[]" context="{'group_by': 'out_format'}"/>
+                    <filter name="group_by_in_format"
+                            string="Template Mime-type"
+                            icon="terp-stock_symbol-selection"
+                            domain="[]"
+                            context="{'group_by': 'aeroo_in_format'}"/>
+                    <filter name="group_by_out_format"
+                            string="Output Mime-type"
+                            icon="terp-stock_symbol-selection"
+                            domain="[]"
+                            context="{'group_by': 'aeroo_out_format_id'}"/>
                     <separator orientation="vertical"/>
-                    <filter string="Template Source" icon="gtk-copy" domain="[]" context="{'group_by': 'aeroo_template_source'}"/>
+                    <filter name="group_by_aeroo_template_source"
+                            string="Template Source"
+                            icon="gtk-copy"
+                            domain="[]"
+                            context="{'group_by': 'aeroo_template_source'}"/>
                 </group>
             </search>
         </field>

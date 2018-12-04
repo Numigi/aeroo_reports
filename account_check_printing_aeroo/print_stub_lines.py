@@ -15,8 +15,11 @@ class AccountPaymentWithCheckStubLines(models.Model):
 
     def get_aeroo_check_stub_lines(self):
         """Method callable from the aeroo report."""
-        invoices = self.invoice_ids.sorted(key=lambda inv: inv.date_due)
-        return [self._aeroo_check_make_stub_line(inv) for inv in invoices]
+        invoices_and_credit_notes = (
+            self.invoice_ids |
+            self.invoice_ids.mapped('payment_move_line_ids.invoice_id')
+        ).sorted(key=lambda inv: inv.date_due)
+        return [self._aeroo_check_make_stub_line(inv) for inv in invoices_and_credit_notes]
 
     def _aeroo_check_make_stub_line(self, invoice):
         """Return the dict used to display an invoice/refund in the stub.

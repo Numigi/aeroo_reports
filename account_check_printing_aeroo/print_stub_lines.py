@@ -37,14 +37,14 @@ class AccountPaymentWithCheckStubLines(models.Model):
             invoice_payment_reconcile = (
                 invoice.move_id.line_ids.mapped('matched_debit_ids')
                 .filtered(lambda r: r.debit_move_id in self.move_line_ids or
-                          r.debit_move_id.invoice_id in self.invoice_ids)
+                          r.debit_move_id.invoice_id)
             )
         else:
             invoice_sign = -1
             invoice_payment_reconcile = (
                 invoice.move_id.line_ids.mapped('matched_credit_ids')
                 .filtered(lambda r: r.credit_move_id in self.move_line_ids or
-                          r.credit_move_id.invoice_id in self.invoice_ids)
+                          r.credit_move_id.invoice_id)
             )
 
         if invoice.currency_id != self.journal_id.company_id.currency_id:

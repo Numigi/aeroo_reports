@@ -223,3 +223,21 @@ class TestCheckPrintStubLines(common.SavepointCase):
         self._check_stub_line(lines[0], invoices[0], 100, 100, 0)
         self._check_stub_line(lines[1], invoices[1], 100, 100, 0)
         self._check_stub_line(lines[2], refund, -50, -50, 0)
+
+    def test_customer_refund_handled_like_supplier_invoice(self):
+        """Test that a customer refund is handled like a supplier invoice."""
+        invoice = self._create_invoice(100, self.company_currency, 1, type_='out_invoice')
+        refund = self._create_invoice(150, self.company_currency, 2, type_='out_refund')
+
+        # Reconcile the refund with the invoices.
+        refund_move_line = refund.move_id.line_ids.filtered(
+            lambda l: l.account_id == self.payable_account)
+        invoice.assign_outstanding_credit(refund_move_line.id)
+
+        # 2. Pay the exceeding amount on the customer refund
+        payment = self._create_payment(refund, self.company_currency, 50)
+
+        lines = payment.get_aeroo_check_stub_lines()
+        assert len(lines) == 2
+        self._check_stub_line(lines[0], refund, 150, 150, 0)
+        self._check_stub_line(lines[1], invoice, -100, -100, 0)

@@ -26,7 +26,7 @@ class AerooReportController(http.Controller):
 
     @http.route('/web/report_aeroo', type='http', auth="user")
     @serialize_exception
-    def generate_aeroo_report(self, action, token):
+    def generate_aeroo_report(self, action, token, debug=False):
         """Generate an aeroo report.
 
         Add the filename of the generated report to the response headers.

@@ -21,6 +21,7 @@ USER odoo
 COPY ./account_check_printing_aeroo /mnt/extra-addons/account_check_printing_aeroo
 COPY ./report_aeroo /mnt/extra-addons/report_aeroo
 COPY ./report_aeroo_invoice /mnt/extra-addons/report_aeroo_invoice
+COPY ./report_aeroo_replace_qweb /mnt/extra-addons/report_aeroo_replace_qweb
 
 COPY .docker_files/main /mnt/extra-addons/main
 COPY .docker_files/odoo.conf /etc/odoo

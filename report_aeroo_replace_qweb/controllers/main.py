@@ -3,9 +3,8 @@
 
 import json
 from odoo import http, models
-from odoo.http import request, Response
+from odoo.http import request
 from odoo.addons.web.controllers.main import ReportController
-from odoo.exceptions import ValidationError
 from typing import List
 
 
@@ -16,7 +15,6 @@ def _get_report_from_qweb_download_url(url_: str) -> models.Model:
 
         /report/download/report_name/doc_ids?query_string
     """
-    url_path = url_.split('?')[0]
     report_name = url_.split('/')[3]
     return request.env['ir.actions.report']._get_report_from_name(report_name)
 
@@ -31,7 +29,6 @@ def _get_doc_ids_from_qweb_download_url(url_: str) -> List[int]:
     The parameter doc_ids inside the URL contains the ids of the
     objects seperated by commas.
     """
-    url_path = url_.split('?')[0]
     url_parts = url_.split('/')
 
     if len(url_parts) < 5:

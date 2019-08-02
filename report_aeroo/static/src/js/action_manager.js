@@ -33,8 +33,8 @@ ActionManager.include({
      */
     _afterAerooReportDownloaded(action, options){
         if (action.close_on_report_download) {
-            var closeAction = {type: 'ir.actions.act_window_close'};
-            return this.doAction(closeAction, _.pick(options, 'on_close'));
+            var closeAction = {type: "ir.actions.act_window_close"};
+            return this.doAction(closeAction, _.pick(options, "on_close"));
         } else {
             return options.on_close();
         }

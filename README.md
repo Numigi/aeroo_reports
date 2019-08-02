@@ -150,8 +150,6 @@ Suppose we are on the 6 of April 2018, 10:34 AM and the report is printed in Fre
 06 avril 2018 10:34 AM
 ```
 
-
-
 ## Generate Report From List View
 
 In the form view of your Aeroo report, the checkbox `Generate Report From Record List`
@@ -243,3 +241,13 @@ In order to have a different filename based on the context of the report, you ma
 Make sure when using this option to add one entry for each active language.
 
 ![Filename per Language](report_aeroo/static/description/filename_per_language.png?raw=true)
+
+## Replacing a Qweb Report
+
+It is possible to replace an existing Qweb report with an Aeroo report.
+
+For more details, see the documentation of the module [report_aeroo_replace_qweb](report_aeroo_replace_qweb/README.rst).
+
+More information
+----------------
+* Meet us at https://bit.ly/numigi-com

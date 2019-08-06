@@ -1,0 +1,69 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* report_aeroo_replace_qweb
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 9.0e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-06-27 18:09+0000\n"
+"PO-Revision-Date: 2019-06-27 14:13-0400\n"
+"Last-Translator: David Dufresne <david.dufresne@savoirfairelinux.com>\n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"X-Generator: Poedit 2.0.6\n"
+
+#. module: report_aeroo_replace_qweb
+#: model_terms:ir.ui.view,arch_db:report_aeroo_replace_qweb.act_report_xml_view1
+msgid "For example, you may replace the standard Quotation / Order report."
+msgstr ""
+"Par exemple, vous pouvez remplacer le rapport Soumission / Commande de "
+"l'application Ventes."
+
+#. module: report_aeroo_replace_qweb
+#: model_terms:ir.ui.view,arch_db:report_aeroo_replace_qweb.act_report_xml_view1
+msgid "Qweb"
+msgstr ""
+
+#. module: report_aeroo_replace_qweb
+#: model:ir.model.fields,field_description:report_aeroo_replace_qweb.field_ir_actions_report__qweb_report_ids
+msgid "Qweb Report"
+msgstr "Rapport Qweb"
+
+#. module: report_aeroo_replace_qweb
+#: model:ir.model.fields,help:report_aeroo_replace_qweb.field_ir_actions_report__qweb_report_ids
+msgid ""
+"This field allows to select Qweb reports that should be replaced by this "
+"Aeroo report. Only qweb-pdf reports are supported."
+msgstr ""
+"Ce champ permet de sélectionner un(des) rapport(s) Qweb à remplacer par ce "
+"rapport Aeroo. Seuls les rapports qweb-pdf sont supportés."
+
+#. module: report_aeroo_replace_qweb
+#: model:ir.model.fields,help:report_aeroo_replace_qweb.field_ir_actions_report__aeroo_report_id
+msgid "This field allows to select an Aeroo report that replaces this report."
+msgstr ""
+"Ce champ permet de sélectionner un rapport Aeroo qui remplace ce rapport."
+
+#. module: report_aeroo_replace_qweb
+#: model_terms:ir.ui.view,arch_db:report_aeroo_replace_qweb.act_report_xml_view1
+msgid ""
+"This tab allows to select Qweb reports that should be replaced by this Aeroo "
+"report."
+msgstr ""
+"Cet onglet permet de sélectionner un(des) rapport Qweb à remplacer par ce "
+"rapport Aeroo."
+
+#. module: report_aeroo_replace_qweb
+#: model_terms:ir.ui.view,arch_db:report_aeroo_replace_qweb.act_report_xml_view1
+msgid ""
+"When doing so, do not forget to adjust any related email template.\n"
+"                                See the documentation of Aeroo reports for "
+"more details."
+msgstr ""
+"Ensuite, ne pas oublier d'ajuster les modèles de courriels associés. "
+"Veuillez consulter la documentation des rapports Aeroo pour plus de détails."

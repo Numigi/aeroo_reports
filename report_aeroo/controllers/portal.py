@@ -27,7 +27,7 @@ class PortalAccountWithAerooInvoiceReport(CustomerPortal):
         ]
 
         if download:
-            filename = "%s.pdf" % (re.sub('\W+', '-', record._get_report_base_filename()))
+            filename = template.get_aeroo_filename(record, "pdf")
             headers.append(('Content-Disposition', content_disposition(filename)))
 
         return request.make_response(pdf, headers=headers)

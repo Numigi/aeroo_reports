@@ -18,9 +18,25 @@ ActionManager.include({
      */
     _executeReportAction(action, options) {
         if (action.report_type === "aeroo") {
-            return this._printAerooReport(action, options);
+            return this._printAerooReport(action, options).then(() => {
+                return this._afterAerooReportDownloaded(action, options);
+            });
         } else {
             return this._super(action, options);
+        }
+    },
+    /**
+     * After the aeroo report is downloaded, execute post actions.
+     *
+     * This code is equivalent to the callback defined method _triggerDownload
+     * at odoo/addons/web/static/src/js/chrome/action_manager_report.js
+     */
+    _afterAerooReportDownloaded(action, options){
+        if (action.close_on_report_download) {
+            var closeAction = {type: "ir.actions.act_window_close"};
+            return this.doAction(closeAction, _.pick(options, "on_close"));
+        } else {
+            return options.on_close();
         }
     },
     /**

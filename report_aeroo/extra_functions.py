@@ -14,7 +14,7 @@ from html2text import html2text
 from io import BytesIO
 from PIL import Image
 
-from odoo import fields, models, _
+from odoo import fields, _
 from odoo.exceptions import ValidationError
 from odoo.tools import (
     DEFAULT_SERVER_DATE_FORMAT,

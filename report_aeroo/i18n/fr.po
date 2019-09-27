@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 9.0e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-27 18:09+0000\n"
-"PO-Revision-Date: 2019-06-27 14:13-0400\n"
+"POT-Creation-Date: 2019-09-27 18:10+0000\n"
+"PO-Revision-Date: 2019-09-27 14:13-0400\n"
 "Last-Translator: David Dufresne <david.dufresne@savoirfairelinux.com>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -33,7 +33,6 @@ msgid "Aeroo Manager"
 msgstr "Gestionnaire de rapports Aeroo"
 
 #. module: report_aeroo
-#: model:ir.model.fields,field_description:report_aeroo.field_ir_actions_report__aeroo_report_id
 #: model_terms:ir.ui.view,arch_db:report_aeroo.act_report_xml_view1
 msgid "Aeroo Report"
 msgstr "Rapport Aeroo"
@@ -48,7 +47,7 @@ msgid "Aeroo Reports"
 msgstr "Rapports Aeroo"
 
 #. module: report_aeroo
-#: code:addons/report_aeroo/models/ir_actions_report.py:395
+#: code:addons/report_aeroo/models/ir_actions_report.py:441
 #, python-format
 msgid ""
 "Aeroo Reports do not support generating non-pdf reports in batch. You must "
@@ -73,7 +72,7 @@ msgid "Aeroo Template Path"
 msgstr "Emplacement du modèle Aeroo"
 
 #. module: report_aeroo
-#: code:addons/report_aeroo/models/ir_actions_report.py:465
+#: code:addons/report_aeroo/models/ir_actions_report.py:511
 #, python-format
 msgid ""
 "Aeroo reports are wrongly configured. The global parameter report_aeroo."
@@ -83,7 +82,7 @@ msgstr ""
 "report_aeroo.{parameter_name} doit être défini."
 
 #. module: report_aeroo
-#: code:addons/report_aeroo/models/ir_actions_report.py:510
+#: code:addons/report_aeroo/models/ir_actions_report.py:556
 #, python-format
 msgid "At least one record must be selected to generate the report {report}."
 msgstr ""
@@ -123,7 +122,7 @@ msgid "Compatible Mime-Types"
 msgstr "Types compatibles"
 
 #. module: report_aeroo
-#: code:addons/report_aeroo/models/ir_actions_report.py:365
+#: code:addons/report_aeroo/models/ir_actions_report.py:411
 #, python-format
 msgid ""
 "Could not generate the report %(report)s using the format %(output_format)s. "
@@ -133,7 +132,7 @@ msgstr ""
 "%(output_format)s. %(error)s"
 
 #. module: report_aeroo
-#: code:addons/report_aeroo/models/ir_actions_report.py:410
+#: code:addons/report_aeroo/models/ir_actions_report.py:456
 #, python-format
 msgid ""
 "Could not merge the pdf outputs of the report %(report)s.\n"
@@ -145,7 +144,7 @@ msgstr ""
 "%(error)s"
 
 #. module: report_aeroo
-#: code:addons/report_aeroo/models/ir_actions_report.py:138
+#: code:addons/report_aeroo/models/ir_actions_report.py:148
 #, python-format
 msgid ""
 "Could not render report {report} for the company {company} in the language "
@@ -155,7 +154,7 @@ msgstr ""
 "langue {lang}."
 
 #. module: report_aeroo
-#: code:addons/report_aeroo/models/ir_actions_report.py:572
+#: code:addons/report_aeroo/models/ir_actions_report.py:617
 #, python-format
 msgid ""
 "Could not render the attachment filename for the report {report} in the "
@@ -163,6 +162,11 @@ msgid ""
 msgstr ""
 "Le nom de la pièce jointe n'a pas pu être généré pour le rapport {report} "
 "dans la langue {lang}."
+
+#. module: report_aeroo
+#: model:ir.model.fields,field_description:report_aeroo.field_ir_actions_report__aeroo_country_eval
+msgid "Country Evaluation"
+msgstr "Évaluation du pays"
 
 #. module: report_aeroo
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_filename_line__create_uid
@@ -177,6 +181,11 @@ msgstr "Créé par"
 #: model:ir.model.fields,field_description:report_aeroo.field_aeroo_template_line__create_date
 msgid "Created on"
 msgstr "Créé le"
+
+#. module: report_aeroo
+#: model:ir.model.fields,field_description:report_aeroo.field_ir_actions_report__aeroo_currency_eval
+msgid "Currency Evaluation"
+msgstr "Évaluation de la devise"
 
 #. module: report_aeroo
 #: selection:ir.actions.report,aeroo_template_source:0
@@ -310,7 +319,7 @@ msgid "List Views"
 msgstr "Vues Liste"
 
 #. module: report_aeroo
-#: code:addons/report_aeroo/controllers/main.py:83
+#: code:addons/report_aeroo/controllers/main.py:82
 #, python-format
 msgid ""
 "Multiple aeroo reports found with the same name ({report_name}):\n"
@@ -327,7 +336,7 @@ msgid "Name"
 msgstr "Nom"
 
 #. module: report_aeroo
-#: code:addons/report_aeroo/controllers/main.py:78
+#: code:addons/report_aeroo/controllers/main.py:77
 #, python-format
 msgid "No aeroo report found with the name {report_name}."
 msgstr ""
@@ -351,6 +360,24 @@ msgid ""
 "in the report."
 msgstr ""
 "Expression en python utilisée pour déterminer la société de l'objet à "
+"imprimer dans le rapport."
+
+#. module: report_aeroo
+#: model:ir.model.fields,help:report_aeroo.field_ir_actions_report__aeroo_country_eval
+msgid ""
+"Python expression used to determine the country of the record being printed "
+"in the report."
+msgstr ""
+"Expression en python utilisée pour déterminer le pays de l'objet à imprimer "
+"dans le rapport."
+
+#. module: report_aeroo
+#: model:ir.model.fields,help:report_aeroo.field_ir_actions_report__aeroo_currency_eval
+msgid ""
+"Python expression used to determine the currency of the record being printed "
+"in the report."
+msgstr ""
+"Expression en python utilisée pour déterminer la devise de l'objet à "
 "imprimer dans le rapport."
 
 #. module: report_aeroo
@@ -394,6 +421,11 @@ msgid "Report Action"
 msgstr "Action de rapport"
 
 #. module: report_aeroo
+#: model_terms:ir.ui.view,arch_db:report_aeroo.act_report_xml_view1
+msgid "Report Context"
+msgstr "Contexte du rapport"
+
+#. module: report_aeroo
 #: model:ir.model,name:report_aeroo.model_aeroo_mimetype
 msgid "Report Mime-Types"
 msgstr "Types de fichier générés"
@@ -406,8 +438,6 @@ msgstr "Types de fichier générés"
 #. module: report_aeroo
 #: model_terms:ir.ui.view,arch_db:report_aeroo.act_aeroo_report_xml_search_view
 #: model_terms:ir.ui.view,arch_db:report_aeroo.act_aeroo_report_xml_view_tree
-#, fuzzy
-#| msgid "Report"
 msgid "Report xml"
 msgstr "Rapport"
 
@@ -480,7 +510,19 @@ msgid "Text"
 msgstr "Texte"
 
 #. module: report_aeroo
-#: code:addons/report_aeroo/controllers/main.py:48
+#: code:addons/report_aeroo/extra_functions.py:152
+#, python-format
+msgid ""
+"The function `format_currency` can not be evaluated without a currency. You "
+"must either define a currency in the field `Currency Evaluation` of the "
+"Aeroo report or call the function with a currency explicitely."
+msgstr ""
+"La fonction `format_currency` ne peut pas être évaluée sans une devise. Vous "
+"devez soit définir une devise dans le champ `Évaluation de la devise` sur le "
+"rapport Aeroo ou appeller la fonction avec une devise explicitement."
+
+#. module: report_aeroo
+#: code:addons/report_aeroo/controllers/main.py:47
 #, python-format
 msgid "The report name is expected in order to generate an aeroo report."
 msgstr "Le nom du rapport est requis pour générer un rapport aeroo."

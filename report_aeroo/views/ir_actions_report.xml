@@ -51,8 +51,12 @@
                                     <field name="template_filename" invisible="1"/>
                                 </tree>
                             </field>
+                        </group>
+                        <group string="Report Context">
                             <field name="aeroo_lang_eval"/>
                             <field name="aeroo_company_eval"/>
+                            <field name="aeroo_country_eval"/>
+                            <field name="aeroo_currency_eval"/>
                         </group>
                         <group string="List Views">
                             <field name="multi" string="Generate Report From Record List"/>

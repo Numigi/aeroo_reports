@@ -85,6 +85,48 @@ This parameter accepts a number format using the variables documented on the bab
 
 http://babel.pocoo.org/en/latest/numbers.html#pattern-syntax
 
+### Forcing a Country
+
+Languages in Odoo are very complex to maintain.
+For example, having all ``en_CA``, ``en_US``, ``fr_CA``, ``fr_FR`` loaded in Odoo would lead to a lot of maintainance effort.
+
+Depending on the country, the amount in currency should be formatted differently:
+
+* If you have a customer in United-States, he might expect the default ``$`` symbol to represent ``USD``, and ``CA$`` to represent ``CAD``.
+* If your customer is in Canada, he might however expect ``$`` to represent ``CAD``, and ``US$`` to represent ``USD``.
+
+Aeroo mitigates this issue by combining the contextual Odoo language and country together.
+
+If your Odoo language is ``fr_FR`` and your country is Canada, you get the locale ``fr_CA``.
+
+To use this feature, you may call the ``format_currency`` with an optional ``country`` parameter.
+
+```python
+format_currency(o.amount_total, o.currency_id, country=o.partner_id.country_id)
+```
+
+### Default Countries and Currencies
+
+Since version ``2.2.0`` of ``report_aeroo``, it is possible to define a default country and currency on the report.
+
+![Countries and Currencies](report_aeroo/static/description/report_context_country_and_currency.png?raw=true)
+
+These fields are evaluated at rendering, like ``Language Evaluation`` and ``Company Evaluation``.
+
+The values are used by default in the ``format_currency`` function.
+Therefore, in your template, each time you need to show an amount in currency, you only need to pass the amount as parameter:
+
+```python
+format_currency(o.amount_total)
+```
+
+Suppose the language is evaluated to ``fr_FR``, the country is ``Canada`` and the currency is ``USD``,
+you would get an amount format as follow:
+
+```
+1 500,00 $US
+```
+
 ## Date and Time
 
 Aeroo defines 2 helpers for formatting date and datetime field values in the language of the report.

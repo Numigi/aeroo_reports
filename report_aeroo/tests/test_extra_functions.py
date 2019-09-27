@@ -1,8 +1,11 @@
 # © 2018 Numigi (tm) and all its contributors (https://bit.ly/numigiens)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
+import pytest
 from datetime import datetime, date
+from ddt import data, ddt, unpack
 from freezegun import freeze_time
+from odoo.exceptions import ValidationError
 from odoo.tests import common
 from ..extra_functions import (
     format_date,
@@ -15,6 +18,7 @@ from ..extra_functions import (
 )
 
 
+@ddt
 class TestAerooReport(common.TransactionCase):
     def setUp(self):
         super().setUp()
@@ -93,6 +97,54 @@ class TestAerooReport(common.TransactionCase):
         report = self.report.with_context(lang='en_US')
         result = format_currency(report, 1500, self.env.ref('base.USD'))
         self.assertEqual(result, '$1,500.00')
+
+    @data(
+        ('en_US', 'base.ca', 'base.CAD', '$1,500.00'),
+        ('en_US', 'base.ca', 'base.USD', 'US$1,500.00'),
+        ('en_US', 'base.us', 'base.CAD', 'CA$1,500.00'),
+        ('en_US', 'base.us', 'base.USD', '$1,500.00'),
+        ('fr_FR', 'base.ca', 'base.CAD', '1 500,00 $'),
+        ('fr_FR', 'base.ca', 'base.USD', '1 500,00 $US'),
+        ('fr_FR', 'base.us', 'base.CAD', '1 500,00 $CA'),
+        ('fr_FR', 'base.us', 'base.USD', '1 500,00 $US'),
+    )
+    @unpack
+    def test_format_currency_en__with_specific_country(
+        self, lang, country, currency, expected_amount
+    ):
+        report = self.report.with_context(lang=lang)
+        result = format_currency(
+            report, 1500, self.env.ref(currency), country=self.env.ref(country))
+        self.assertEqual(result, expected_amount)
+
+    @data(
+        ('fr_FR', 'base.ca', 'base.CAD', '1 500,00 $'),
+        ('fr_FR', 'base.us', 'base.CAD', '1 500,00 $CA'),
+    )
+    @unpack
+    def test_country_from_context_used_by_default(
+        self, lang, country, currency, expected_amount
+    ):
+        report = self.report.with_context(lang=lang, country=self.env.ref(country))
+        result = format_currency(report, 1500, self.env.ref(currency))
+        self.assertEqual(result, expected_amount)
+
+    @data(
+        ('fr_FR', 'base.us', 'base.USD', '1 500,00 $US'),
+        ('fr_FR', 'base.us', 'base.CAD', '1 500,00 $CA'),
+    )
+    @unpack
+    def test_currency_from_context_used_by_default(
+        self, lang, country, currency, expected_amount
+    ):
+        report = self.report.with_context(lang=lang, currency=self.env.ref(currency))
+        result = format_currency(report, 1500, country=self.env.ref(country))
+        self.assertEqual(result, expected_amount)
+
+    def test_if_format_currency_called_without_currency__raise_error(self):
+        report = self.report.with_context(lang='en_US', country=self.env.ref('base.us'))
+        with pytest.raises(ValidationError):
+            format_currency(report, 1500)
 
     def test_format_currency_fr_with_format(self):
         report = self.report.with_context(lang='fr_CA')

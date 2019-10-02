@@ -8,12 +8,14 @@ import babel.dates
 import base64
 import logging
 import time
+from babel.core import localedata
 from datetime import datetime, date
 from html2text import html2text
 from io import BytesIO
 from PIL import Image
 
-from odoo import fields, models
+from odoo import fields, _
+from odoo.exceptions import ValidationError
 from odoo.tools import (
     DEFAULT_SERVER_DATE_FORMAT,
     DEFAULT_SERVER_DATETIME_FORMAT,
@@ -121,8 +123,17 @@ def format_decimal(report, amount: float, amount_format='#,##0.00'):
     return babel.numbers.format_decimal(amount, format=amount_format, locale=lang)
 
 
+def get_locale_from_odoo_lang_and_country(lang: str, country: 'res.country'):
+    locale = '{}_{}'.format(lang.split('_')[0], country.code)
+
+    if not localedata.exists(locale):
+        locale = lang
+
+    return locale
+
+
 @aeroo_util('format_currency')
-def format_currency(report, amount: float, currency, amount_format=None):
+def format_currency(report, amount: float, currency=None, amount_format=None, country=None):
     """Format an amount into the given currency in the language of the user.
 
     :param report: the aeroo report
@@ -130,8 +141,21 @@ def format_currency(report, amount: float, currency, amount_format=None):
     :param currency: the currency object to use (o.currency_id)
     :param amount_format: the format to use
     """
-    lang = report._context.get('lang') or 'en_US'
-    return babel.numbers.format_currency(amount, currency.name, format=amount_format, locale=lang)
+    context = report._context
+
+    lang = context.get('lang') or 'en_US'
+    country = country or context.get('country')
+    locale = get_locale_from_odoo_lang_and_country(lang, country) if country else lang
+
+    currency = currency or context.get('currency')
+    if currency is None:
+        raise ValidationError(_(
+            "The function `format_currency` can not be evaluated without a currency. "
+            "You must either define a currency in the field `Currency Evaluation` of the "
+            "Aeroo report or call the function with a currency explicitely."
+        ))
+
+    return babel.numbers.format_currency(amount, currency.name, format=amount_format, locale=locale)
 
 
 @aeroo_util('asimage')

@@ -74,6 +74,16 @@ class IrActionsReport(models.Model):
         help="Python expression used to determine the company "
         "of the record being printed in the report.",
         default="o.company_id")
+    aeroo_country_eval = fields.Char(
+        'Country Evaluation',
+        help="Python expression used to determine the country "
+        "of the record being printed in the report.",
+        default="user.company_id.country_id")
+    aeroo_currency_eval = fields.Char(
+        'Currency Evaluation',
+        help="Python expression used to determine the currency "
+        "of the record being printed in the report.",
+        default="o.currency_id")
 
     def _get_aeroo_template(self, record):
         """Get an aeroo template for the given record.
@@ -144,13 +154,16 @@ class IrActionsReport(models.Model):
 
         return line
 
+    def _get_aeroo_variable_eval_context(self, record):
+        return {'o': record, 'user': self.env.user}
+
     def _get_aeroo_lang(self, record):
         """Get the lang to use in the report for a given record.
 
         :rtype: res.company
         """
         lang = (
-            safe_eval(self.aeroo_lang_eval, {'o': record, 'user': self.env.user})
+            safe_eval(self.aeroo_lang_eval, self._get_aeroo_variable_eval_context(record))
             if self.aeroo_lang_eval else None
         )
         return lang or 'en_US'
@@ -161,7 +174,7 @@ class IrActionsReport(models.Model):
         :rtype: res.company
         """
         return (
-            safe_eval(self.aeroo_tz_eval, {'o': record, 'user': self.env.user})
+            safe_eval(self.aeroo_tz_eval, self._get_aeroo_variable_eval_context(record))
             if self.aeroo_tz_eval else None
         )
 
@@ -174,9 +187,44 @@ class IrActionsReport(models.Model):
         :rtype: res.company
         """
         return (
-            safe_eval(self.aeroo_company_eval, {'o': record, 'user': self.env.user})
+            safe_eval(self.aeroo_company_eval, self._get_aeroo_variable_eval_context(record))
             if self.aeroo_company_eval else self.env.user.company_id
         )
+
+    def _get_aeroo_country(self, record):
+        """Get the country to use in the report for a given record.
+
+        The country is used if the template of the report is different
+        per country.
+
+        :rtype: res.country
+        """
+        return (
+            safe_eval(self.aeroo_country_eval, self._get_aeroo_variable_eval_context(record))
+            if self.aeroo_country_eval else None
+        )
+
+    def _get_aeroo_currency(self, record):
+        """Get the currency to use in the report for a given record.
+
+        The currency is used if the template of the report is different
+        per currency.
+
+        :rtype: res.currency
+        """
+        return (
+            safe_eval(self.aeroo_currency_eval, self._get_aeroo_variable_eval_context(record))
+            if self.aeroo_currency_eval else None
+        )
+
+    def _get_aeroo_context(self, record):
+        """Get the rendering context of an aeroo report."""
+        return {
+            'lang': self._get_aeroo_lang(record),
+            'tz': self._get_aeroo_timezone(record),
+            'country': self._get_aeroo_country(record),
+            'currency': self._get_aeroo_currency(record),
+        }
 
     def _get_aeroo_libreoffice_timeout(self):
         """Get the timeout of the Libreoffice process in seconds.
@@ -207,10 +255,8 @@ class IrActionsReport(models.Model):
             return self._render_aeroo_multi(doc_ids, data, output_format)
 
         record = self.env[self.model].browse(doc_ids[0])
-
-        report_lang = self._get_aeroo_lang(record)
-        report_timezone = self._get_aeroo_timezone(record)
-        self = self.with_context(lang=report_lang, tz=report_timezone)
+        report_context = self._get_aeroo_context(record)
+        self = self.with_context(**report_context)
 
         # Check if an attachment already exists
         attachment_output = self._find_aeroo_report_attachment(record, output_format)
@@ -221,7 +267,7 @@ class IrActionsReport(models.Model):
 
         # Render the report
         current_report_data = dict(
-            data, o=record.with_context(lang=report_lang, tz=report_timezone))
+            data, o=record.with_context(**report_context))
         output = self._render_aeroo(template, current_report_data, output_format)
 
         # Generate the attachment
@@ -519,12 +565,11 @@ class AerooReportsGeneratedFromListViews(models.Model):
         records = self.env[self.model].browse(doc_ids)
 
         template = self._get_aeroo_template(records[0])
-        report_lang = self._get_aeroo_lang(records[0])
-        report_timezone = self._get_aeroo_timezone(records[0])
+        report_context = self._get_aeroo_context(records[0])
         report_data = dict(data, objects=records)
 
         # Render the report
-        output = self.with_context(lang=report_lang, tz=report_timezone)._render_aeroo(
+        output = self.with_context(**report_context)._render_aeroo(
             template, report_data, output_format)
 
         return output, output_format

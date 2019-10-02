@@ -236,3 +236,17 @@ class TestAerooReport(common.SavepointCase):
 
         with self.assertRaises(ValidationError):
             self._render_report(self.partner | self.partner_2)
+
+    def test_context_contains_evaluated_country(self):
+        country = self.env.ref('base.ca')
+        self.company.country_id = country
+        self.report.aeroo_country_eval = "o.company_id.country_id"
+        context = self.report._get_aeroo_context(self.partner)
+        assert context['country'] == country
+
+    def test_context_contains_evaluated_currency(self):
+        currency = self.env.ref('base.CAD')
+        self.company.currency_id = currency
+        self.report.aeroo_currency_eval = "o.company_id.currency_id"
+        context = self.report._get_aeroo_context(self.partner)
+        assert context['currency'] == currency

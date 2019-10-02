@@ -3,3 +3,4 @@ babel==2.5.3
 Genshi==0.7
 freezegun==0.3.10
 html2text==2018.1.9
+ddt==1.2.1

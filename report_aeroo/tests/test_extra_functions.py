@@ -1,6 +1,7 @@
 # © 2018 Numigi (tm) and all its contributors (https://bit.ly/numigiens)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
+import io
 import pytest
 from datetime import datetime, date
 from ddt import data, ddt, unpack
@@ -8,6 +9,7 @@ from freezegun import freeze_time
 from odoo.exceptions import ValidationError
 from odoo.tests import common
 from ..extra_functions import (
+    barcode,
     format_date,
     format_date_today,
     format_datetime,
@@ -177,3 +179,13 @@ class TestAerooReport(common.TransactionCase):
 
     def test_format_html2text_with_none(self):
         self.assertEqual(format_html2text(self.report, None), "\n")
+
+    @data(
+        ('ean13', '501234567890'),
+        ('code128', '1234'),
+        ('code39', '1234'),
+    )
+    @unpack
+    def test_render_barcode(self, barcode_type, code):
+        result = barcode(self.report, code, barcode_type)
+        assert isinstance(result[0], io.BytesIO)

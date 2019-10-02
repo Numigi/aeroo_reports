@@ -162,11 +162,9 @@ class EanBarCode:
                 ustr(
                     config['root_path']),
                 u'addons'))
-        mod_path_list = map(
-            lambda m: os.path.abspath(
-                ustr(
-                    m.strip())),
-            config['addons_path'].split(','))
+        mod_path_list = list(map(
+            lambda m: os.path.abspath(ustr(m.strip())), config['addons_path'].split(',')
+        ))
         mod_path_list.append(ad)
 
         for mod_path in mod_path_list:

@@ -2,12 +2,6 @@
 # © 2018 Numigi (tm) and all its contributors (https://bit.ly/numigiens)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-import base64
-import os
-from freezegun import freeze_time
-
-from odoo.exceptions import ValidationError
-from odoo.modules import module
 from odoo.tests import common
 
 

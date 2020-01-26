@@ -29,9 +29,30 @@ jobs:
        - store_test_results:
           path: ./log
 
+  auto-tag:
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: Get nws
+          command: |
+            curl -L $NWS_BIN_LOCATION > ./nws
+            chmod +x ./nws
+      - run:
+          name: Set tag
+          command: |
+            ./nws circleci create-tag -t odoo-base
+
 workflows:
   version: 2
   basic-odoo-test:
     jobs:
       - odoo:
           context: quay.io
+      - auto-tag:
+          context: nws
+          requires:
+            - odoo
+          filters:
+            branches:
+              only: /^1\d\.0/

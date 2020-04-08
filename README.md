@@ -150,7 +150,38 @@ Suppose we are on the 6 of April 2018, 10:34 AM and the report is printed in Fre
 06 avril 2018 10:34 AM
 ```
 
+## Grouping Rows
 
+It is possible to group rows to display in a table.
+
+In the following example, the invoice lines are grouped by per product category:
+
+```xml
+<for each="(category, lines) in group_by(o.invoice_line_ids, lambda line: line.product_id.categ_id)">
+```
+
+Each tuple contains:
+
+1. the groupment key
+2. the records matching this groupment key
+
+### Grouping Rows in a Particular Order
+
+By default, the groupment keys are not sorted in any particular order.
+
+Usually, we will require to sort the grouped records by some criteria.
+This can be done using the argument ``sort`` of the ``group_by`` function.
+
+The ``sort`` argument expects a function.
+This function takes as argument the groupment key.
+
+```xml
+<for each="(category, lines) in group_by(o.invoice_line_ids, lambda line: line.product_id.categ_id, sort=lambda category: category.display_name)">
+```
+
+Here is a preview on how to organize your grouped lines inside the libreoffice template.
+
+![Group By Example](report_aeroo/static/description/libreoffice_writer_group_by.png?raw=true)
 
 ## Generate Report From List View
 

@@ -175,11 +175,13 @@ This can be done using the argument ``sort`` of the ``group_by`` function.
 The ``sort`` argument expects a function.
 This function takes as argument the groupment key.
 
+In the following example, the groupment keys (the product categories) are sorted by their ``Display Name``.
+
 ```xml
 <for each="(category, lines) in group_by(o.invoice_line_ids, lambda line: line.product_id.categ_id, sort=lambda category: category.display_name)">
 ```
 
-Here is a preview on how to organize your grouped lines inside the libreoffice template.
+Here is a preview on how to organize the for/each statements in your libreoffice template.
 
 ![Group By Example](report_aeroo/static/description/libreoffice_writer_group_by.png?raw=true)
 

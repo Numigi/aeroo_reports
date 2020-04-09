@@ -12,6 +12,7 @@ from ..extra_functions import (
     format_decimal,
     format_currency,
     format_html2text,
+    group_by,
 )
 
 
@@ -125,3 +126,75 @@ class TestAerooReport(common.TransactionCase):
 
     def test_format_html2text_with_none(self):
         self.assertEqual(format_html2text(self.report, None), "\n")
+
+
+class TestGroupBy(common.SavepointCase):
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.report = cls.env.ref('report_aeroo.aeroo_sample_report')
+        cls.contact_1 = cls.env["res.partner"].create({"name": "C1", "type": "contact"})
+        cls.invoice_1 = cls.env["res.partner"].create({"name": "I1", "type": "invoice"})
+        cls.invoice_2 = cls.env["res.partner"].create({"name": "I2", "type": "invoice"})
+        cls.delivery_1 = cls.env["res.partner"].create({"name": "D1", "type": "delivery"})
+        cls.delivery_2 = cls.env["res.partner"].create({"name": "D2", "type": "delivery"})
+
+    def test_group_by_with_no_record(self):
+        partners = self.env["res.partner"]
+        groups = list(group_by(self.report, partners, lambda p: p.type))
+        assert len(groups) == 0
+
+    def test_group_by_with_one_record(self):
+        groups = list(group_by(self.report, self.contact_1, lambda p: p.type))
+        assert len(groups) == 1
+        assert groups[0][0] == "contact"
+        assert groups[0][1] == self.contact_1
+
+    def test_group_by_with_multiple_records(self):
+        partners = (
+            self.delivery_1 |
+            self.contact_1 |
+            self.invoice_1 |
+            self.delivery_2 |
+            self.invoice_2
+        )
+
+        groupby = (lambda p: p.type)
+
+        groups = list(group_by(self.report, partners, groupby))
+        assert len(groups) == 3
+        assert groups[0][0] == "contact"
+        assert groups[0][1] == self.contact_1
+        assert groups[1][0] == "delivery"
+        assert groups[1][1] == self.delivery_1 | self.delivery_2
+        assert groups[2][0] == "invoice"
+        assert groups[2][1] == self.invoice_1 | self.invoice_2
+
+    def test_group_by_with_custom_sort(self):
+        partners = (
+            self.delivery_1 |
+            self.contact_1 |
+            self.invoice_1 |
+            self.delivery_2 |
+            self.invoice_2
+        )
+
+        groupby = (lambda p: p.type)
+
+        def custom_sort(partner_type):
+            if partner_type == "invoice":
+                return 1
+            elif partner_type == "delivery":
+                return 2
+            else:
+                return 3
+
+        groups = list(group_by(self.report, partners, groupby, sort=custom_sort))
+        assert len(groups) == 3
+        assert groups[0][0] == "invoice"
+        assert groups[0][1] == self.invoice_1 | self.invoice_2
+        assert groups[1][0] == "delivery"
+        assert groups[1][1] == self.delivery_1 | self.delivery_2
+        assert groups[2][0] == "contact"
+        assert groups[2][1] == self.contact_1

@@ -7,6 +7,7 @@
 import babel.numbers
 import babel.dates
 import base64
+import itertools
 import logging
 import time
 from datetime import datetime
@@ -42,13 +43,16 @@ class AerooFunctionRegistry(object):
         """
         if func_name in self._functions:
             raise RuntimeError(
-                'A function named {func_name} is already registered in the Aeroo registry.'
-                .format(func_name=func_name))
+                "A function named {func_name} is already registered in the Aeroo registry.".format(
+                    func_name=func_name
+                )
+            )
         self._functions[func_name] = func
 
     def get_functions(self):
         """Get all functions registered inside the registry."""
         return dict(self._functions)
+
 
 aeroo_function_registry = AerooFunctionRegistry()
 
@@ -58,6 +62,7 @@ def aeroo_util(function_name):
 
     :param function_name: the function name available to call the function in Aeroo
     """
+
     def decorator(func):
         aeroo_function_registry.register(function_name, func)
         return func
@@ -65,7 +70,7 @@ def aeroo_util(function_name):
     return decorator
 
 
-@aeroo_util('format_date')
+@aeroo_util("format_date")
 def format_date(report, value, date_format):
     """Format a date field value into the given format.
 
@@ -76,19 +81,19 @@ def format_date(report, value, date_format):
     :param format: the format to use
     """
     if not value:
-        return ''
-    lang = report._context.get('lang') or 'en_US'
+        return ""
+    lang = report._context.get("lang") or "en_US"
     date_ = datetime.strptime(value, DEFAULT_SERVER_DATE_FORMAT)
     return babel.dates.format_date(date_, date_format, locale=lang)
 
 
-@aeroo_util('today')
+@aeroo_util("today")
 def format_date_today(report, date_format=None):
     today_in_timezone = fields.Date.context_today(report)
     return format_date(report, value=today_in_timezone, date_format=date_format)
 
 
-@aeroo_util('format_datetime')
+@aeroo_util("format_datetime")
 def format_datetime(report, value, datetime_format):
     """Format a datetime field value into the given format.
 
@@ -99,32 +104,34 @@ def format_datetime(report, value, datetime_format):
     :param format: the format to use
     """
     if not value:
-        return ''
-    lang = report._context.get('lang') or 'en_US'
+        return ""
+    lang = report._context.get("lang") or "en_US"
     datetime_ = datetime.strptime(value, DEFAULT_SERVER_DATETIME_FORMAT)
     datetime_in_timezone = fields.Datetime.context_timestamp(report, datetime_)
-    return babel.dates.format_datetime(datetime_in_timezone, datetime_format, locale=lang)
+    return babel.dates.format_datetime(
+        datetime_in_timezone, datetime_format, locale=lang
+    )
 
 
-@aeroo_util('now')
+@aeroo_util("now")
 def format_datetime_now(report, datetime_format=None):
     str_timestamp = fields.Datetime.to_string(datetime.now())
     return format_datetime(report, value=str_timestamp, datetime_format=datetime_format)
 
 
-@aeroo_util('format_decimal')
-def format_decimal(report, amount, amount_format='#,##0.00'):
+@aeroo_util("format_decimal")
+def format_decimal(report, amount, amount_format="#,##0.00"):
     """Format an amount in the language of the user.
 
     :param report: the aeroo report
     :param amount: the amount to format
     :param amount_format: an optional format to use
     """
-    lang = report._context.get('lang') or 'en_US'
+    lang = report._context.get("lang") or "en_US"
     return babel.numbers.format_decimal(amount, format=amount_format, locale=lang)
 
 
-@aeroo_util('format_currency')
+@aeroo_util("format_currency")
 def format_currency(report, amount, currency, amount_format=None):
     """Format an amount into the given currency in the language of the user.
 
@@ -133,33 +140,40 @@ def format_currency(report, amount, currency, amount_format=None):
     :param currency: the currency object to use (o.currency_id)
     :param amount_format: the format to use
     """
-    lang = report._context.get('lang') or 'en_US'
-    return babel.numbers.format_currency(amount, currency.name, format=amount_format, locale=lang)
+    lang = report._context.get("lang") or "en_US"
+    return babel.numbers.format_currency(
+        amount, currency.name, format=amount_format, locale=lang
+    )
 
 
-@aeroo_util('asimage')
+@aeroo_util("asimage")
 def asimage(
-    report, field_value, rotate=None, size_x=None, size_y=None,
-    uom='px', hold_ratio=False
+    report,
+    field_value,
+    rotate=None,
+    size_x=None,
+    size_y=None,
+    uom="px",
+    hold_ratio=False,
 ):
     def size_by_uom(val, uom, dpi):
-        if uom == 'px':
-            result = str(val / dpi) + 'in'
-        elif uom == 'cm':
-            result = str(val / 2.54) + 'in'
-        elif uom == 'in':
-            result = str(val) + 'in'
+        if uom == "px":
+            result = str(val / dpi) + "in"
+        elif uom == "cm":
+            result = str(val / 2.54) + "in"
+        elif uom == "in":
+            result = str(val) + "in"
         return result
 
     if not field_value:
-        return BytesIO(), 'image/png'
+        return BytesIO(), "image/png"
 
     field_value = base64.decodestring(field_value)
     tf = BytesIO(field_value)
     tf.seek(0)
     im = Image.open(tf)
     format = im.format.lower()
-    dpi_x, dpi_y = map(float, im.info.get('dpi', (96, 96)))
+    dpi_x, dpi_y = map(float, im.info.get("dpi", (96, 96)))
 
     if rotate is not None:
         im = im.rotate(int(rotate))
@@ -180,36 +194,40 @@ def asimage(
             elif size_x2 > size_x:
                 size_y = size_y2
 
-    size_x = size_x and size_by_uom(size_x, uom, dpi_x) or str(im.size[0] / dpi_x) + 'in'
-    size_y = size_y and size_by_uom(size_y, uom, dpi_y) or str(im.size[1] / dpi_y) + 'in'
-    return tf, 'image/%s' % format, size_x, size_y
+    size_x = (
+        size_x and size_by_uom(size_x, uom, dpi_x) or str(im.size[0] / dpi_x) + "in"
+    )
+    size_y = (
+        size_y and size_by_uom(size_y, uom, dpi_y) or str(im.size[1] / dpi_y) + "in"
+    )
+    return tf, "image/%s" % format, size_x, size_y
 
 
-@aeroo_util('barcode')
-def barcode(report, code, code_type='ean13', rotate=None, height=50, xw=1):
+@aeroo_util("barcode")
+def barcode(report, code, code_type="ean13", rotate=None, height=50, xw=1):
     if code:
-        if code_type.lower() == 'ean13':
+        if code_type.lower() == "ean13":
             bar = EanBarCode()
             im = bar.getImage(code, height)
-        elif code_type.lower() == 'code128':
+        elif code_type.lower() == "code128":
             im = get_code(code, xw, height)
-        elif code_type.lower() == 'code39':
+        elif code_type.lower() == "code39":
             im = create_c39(height, xw, code)
     else:
-        return BytesIO(), 'image/png'
+        return BytesIO(), "image/png"
 
     tf = BytesIO()
 
     if rotate is not None:
         im = im.rotate(int(rotate))
 
-    im.save(tf, 'png')
-    size_x = str(im.size[0] / 96.0) + 'in'
-    size_y = str(im.size[1] / 96.0) + 'in'
-    return tf, 'image/png', size_x, size_y
+    im.save(tf, "png")
+    size_x = str(im.size[0] / 96.0) + "in"
+    size_y = str(im.size[1] / 96.0) + "in"
+    return tf, "image/png", size_x, size_y
 
 
-@aeroo_util('html2text')
+@aeroo_util("html2text")
 def format_html2text(report, html):
     """Convert the given HTML field value into text.
 
@@ -218,4 +236,21 @@ def format_html2text(report, html):
     :param html: the html string to format into raw text
     :return: the raw text
     """
-    return html2text(html or '', bodywidth=0)
+    return html2text(html or "", bodywidth=0)
+
+
+@aeroo_util("group_by")
+def group_by(report, records, func, sort=None):
+    """Iterate over records grouped by the given comparator function."""
+    sorted_records = records.sorted(key=func)
+    groupby_items = ((key, list(group)) for key, group in itertools.groupby(sorted_records, func))
+
+    sorted_groupby_items = (
+        groupby_items
+        if sort is None
+        else sorted(groupby_items, key=lambda item: sort(item[0]))
+    )
+
+    for key, group in sorted_groupby_items:
+        grouped_record_ids = [r.id for r in group]
+        yield key, records.browse(grouped_record_ids)

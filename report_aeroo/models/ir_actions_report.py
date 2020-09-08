@@ -23,6 +23,7 @@ from odoo.exceptions import ValidationError
 from odoo.tools import file_open, safe_eval
 from odoo.addons.mail.models.mail_template import mako_template_env
 
+from ..namespace import AerooNamespace
 from ..subprocess import run_subprocess
 from ..extra_functions import aeroo_function_registry
 
@@ -246,6 +247,7 @@ class IrActionsReport(models.Model):
 
         report_context = GenshiContext(**data)
         report_context.update(self._get_aeroo_extra_functions())
+        report_context['t'] = AerooNamespace()
 
         output = Template(source=template_io, serializer=serializer)\
             .generate(report_context).render().getvalue()

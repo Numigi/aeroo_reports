@@ -6,6 +6,7 @@
 import babel.numbers
 import babel.dates
 import base64
+import itertools
 import logging
 import time
 from babel.core import localedata
@@ -252,3 +253,20 @@ def format_html2text(report, html: str):
     :return: the raw text
     """
     return html2text(html or '', bodywidth=0)
+
+
+@aeroo_util("group_by")
+def group_by(report, records, func, sort=None):
+    """Iterate over records grouped by the given comparator function."""
+    sorted_records = records.sorted(key=func)
+    groupby_items = ((key, list(group)) for key, group in itertools.groupby(sorted_records, func))
+
+    sorted_groupby_items = (
+        groupby_items
+        if sort is None
+        else sorted(groupby_items, key=lambda item: sort(item[0]))
+    )
+
+    for key, group in sorted_groupby_items:
+        grouped_record_ids = [r.id for r in group]
+        yield key, records.browse(grouped_record_ids)

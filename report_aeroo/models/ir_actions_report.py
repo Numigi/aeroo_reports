@@ -47,43 +47,50 @@ class IrActionsReport(models.Model):
     report_type = fields.Selection(selection_add=[('aeroo', 'Aeroo Reports')])
     aeroo_in_format = fields.Selection(
         selection='_get_in_aeroo_mimetypes', string='Template Mime-type',
+        prefetch=False,
         default=lambda self: 'odt')
     aeroo_out_format_id = fields.Many2one(
         'aeroo.mimetype', 'Output Mime-type',
+        prefetch=False,
         default=_get_default_aeroo_out_format)
     aeroo_template_source = fields.Selection([
         ('database', 'Database'),
         ('file', 'File'),
         ('lines', 'Different Template per Language / Company'),
-    ], string='Template source', default='database')
-    aeroo_template_data = fields.Binary()
-    aeroo_template_path = fields.Char()
+    ], prefetch=False, string='Template source', default='database')
+    aeroo_template_data = fields.Binary(prefetch=False)
+    aeroo_template_path = fields.Char(prefetch=False)
     aeroo_template_line_ids = fields.One2many(
-        'aeroo.template.line', 'report_id', 'Templates by Language')
+        'aeroo.template.line', 'report_id', 'Templates by Language', prefetch=False)
     aeroo_lang_eval = fields.Char(
         'Language Evaluation',
         help="Python expression used to determine the language "
         "of the record being printed in the report.",
+        prefetch=False,
         default="o.partner_id.lang")
     aeroo_tz_eval = fields.Char(
         'Timezone Evaluation',
         help="Python expression used to determine the timezone "
         "used for formatting dates and timestamps.",
+        prefetch=False,
         default="user.tz")
     aeroo_company_eval = fields.Char(
         'Company Evaluation',
         help="Python expression used to determine the company "
         "of the record being printed in the report.",
+        prefetch=False,
         default="o.company_id")
     aeroo_country_eval = fields.Char(
         'Country Evaluation',
         help="Python expression used to determine the country "
         "of the record being printed in the report.",
+        prefetch=False,
         default="user.company_id.country_id")
     aeroo_currency_eval = fields.Char(
         'Currency Evaluation',
         help="Python expression used to determine the currency "
         "of the record being printed in the report.",
+        prefetch=False,
         default="o.currency_id")
 
     def _get_aeroo_template(self, record):
@@ -586,7 +593,7 @@ class AerooReportsWithAttachmentFilenamePerLang(models.Model):
 
     _inherit = 'ir.actions.report'
 
-    aeroo_filename_per_lang = fields.Boolean('Different Filename per Language')
+    aeroo_filename_per_lang = fields.Boolean('Different Filename per Language', prefetch=False,)
     aeroo_filename_line_ids = fields.One2many(
         'aeroo.filename.line', 'report_id', 'Filenames by Language')
 

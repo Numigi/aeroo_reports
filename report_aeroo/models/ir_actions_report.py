@@ -232,6 +232,7 @@ class IrActionsReport(models.Model):
             'tz': self._get_aeroo_timezone(record),
             'country': self._get_aeroo_country(record),
             'currency': self._get_aeroo_currency(record),
+            'company': self._get_aeroo_company(record),
         }
 
     def _get_aeroo_libreoffice_timeout(self):

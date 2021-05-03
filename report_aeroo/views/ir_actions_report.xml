@@ -54,6 +54,7 @@
                         </group>
                         <group string="Report Context">
                             <field name="aeroo_lang_eval"/>
+                            <field name="aeroo_tz_eval"/>
                             <field name="aeroo_company_eval"/>
                             <field name="aeroo_country_eval"/>
                             <field name="aeroo_currency_eval"/>

@@ -44,6 +44,8 @@ class TestAerooReport(common.SavepointCase):
         cls.report.write({
             'attachment': None,
             'attachment_use': False,
+            'aeroo_lang_eval': 'o.lang',
+            'aeroo_company_eval': 'o.company_id',
             'aeroo_out_format_id': cls.env.ref('report_aeroo.aeroo_mimetype_pdf_odt').id,
         })
 
@@ -59,7 +61,6 @@ class TestAerooReport(common.SavepointCase):
     def _create_report_line(self, lang, company=None):
         self.report.write({
             'aeroo_template_source': 'lines',
-            'aeroo_lang_eval': 'o.lang',
         })
         return self.env['aeroo.template.line'].create({
             'report_id': self.report.id,

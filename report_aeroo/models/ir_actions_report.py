@@ -67,7 +67,7 @@ class IrActionsReport(models.Model):
         help="Python expression used to determine the language "
         "of the record being printed in the report.",
         prefetch=False,
-        default="o.partner_id.lang")
+        default="user.lang")
     aeroo_tz_eval = fields.Char(
         'Timezone Evaluation',
         help="Python expression used to determine the timezone "
@@ -79,7 +79,7 @@ class IrActionsReport(models.Model):
         help="Python expression used to determine the company "
         "of the record being printed in the report.",
         prefetch=False,
-        default="o.company_id")
+        default="user.company_id")
     aeroo_country_eval = fields.Char(
         'Country Evaluation',
         help="Python expression used to determine the country "
@@ -91,7 +91,7 @@ class IrActionsReport(models.Model):
         help="Python expression used to determine the currency "
         "of the record being printed in the report.",
         prefetch=False,
-        default="o.currency_id")
+        default="user.company_id.currency_id")
 
     def _get_aeroo_template(self, record):
         """Get an aeroo template for the given record.
@@ -276,7 +276,7 @@ class IrActionsReport(models.Model):
 
         # Render the report
         current_report_data = dict(
-            data, o=record.with_context(**report_context))
+            data, o=record.with_context(**report_context), **report_context)
         output = self._render_aeroo(template, current_report_data, output_format)
 
         # Generate the attachment
@@ -576,7 +576,7 @@ class AerooReportsGeneratedFromListViews(models.Model):
 
         template = self._get_aeroo_template(records[0])
         report_context = self._get_aeroo_context(records[0])
-        report_data = dict(data, objects=records)
+        report_data = dict(data, objects=records, **report_context)
 
         # Render the report
         output = self.with_context(**report_context)._render_aeroo(

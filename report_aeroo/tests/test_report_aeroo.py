@@ -15,7 +15,7 @@ class TestAerooReport(common.SavepointCase):
 
     @classmethod
     def setUpClass(cls):
-        super(TestAerooReport, cls).setUpClass()
+        super().setUpClass()
         image_path = module.get_module_path('report_aeroo') + '/static/img/logo.png'
 
         cls.company = cls.env['res.company'].create({
@@ -24,6 +24,9 @@ class TestAerooReport(common.SavepointCase):
         cls.company_2 = cls.env['res.company'].create({
             'name': 'My Company 2',
         })
+
+        cls.user = cls.env.ref('base.user_demo')
+        cls.user.company_ids |= cls.company | cls.company_2
 
         cls.partner = cls.env['res.partner'].create({
             'name': 'My Partner',
@@ -56,7 +59,7 @@ class TestAerooReport(common.SavepointCase):
 
         :param partners: a res.partner recordset
         """
-        self.report.sudo(self.env.ref('base.user_demo').id).render(partners.ids, {})
+        self.report.sudo(self.user.id)._render(partners.ids, {})
 
     def _create_report_line(self, lang, company=None):
         self.report.write({
@@ -111,7 +114,7 @@ class TestAerooReport(common.SavepointCase):
         attachment = self.env['ir.attachment'].search([
             ('res_id', '=', self.partner.id),
             ('res_model', '=', 'res.partner'),
-            ('datas_fname', '=', 'My Partner.pdf'),
+            ('name', '=', 'My Partner.pdf'),
         ])
         self.assertEqual(len(attachment), 1)
 
@@ -144,7 +147,7 @@ class TestAerooReport(common.SavepointCase):
         self._render_report(self.partner)
 
         attachment = self._search_attachment()
-        self.assertEqual(attachment.datas_fname, 'Sample Report: My Partner.pdf')
+        self.assertEqual(attachment.name, 'Sample Report: My Partner.pdf')
 
     def test_ifReportHasSpecificLang_thenAttachmentNameIsRenderedInSpecificLang(self):
         filename = "Rapport de contact: ${today('d MMMM yyyy')}"
@@ -157,7 +160,7 @@ class TestAerooReport(common.SavepointCase):
             self._render_report(self.partner)
 
         attachment = self._search_attachment()
-        self.assertEqual(attachment.datas_fname, 'Rapport de contact: 6 avril 2018.pdf')
+        self.assertEqual(attachment.name, 'Rapport de contact: 6 avril 2018.pdf')
 
     def test_ifReportHasSpecificTimezone_thenAttachmentNameIsRenderedInSpecificTimezone(self):
         filename = "Sample Report: ${today('MMMM d, yyyy')}"
@@ -170,7 +173,7 @@ class TestAerooReport(common.SavepointCase):
             self._render_report(self.partner)
 
         attachment = self._search_attachment()
-        self.assertEqual(attachment.datas_fname, 'Sample Report: April 5, 2018.pdf')
+        self.assertEqual(attachment.name, 'Sample Report: April 5, 2018.pdf')
 
     def test_libreoffice_low_timeout(self):
         self.env['ir.config_parameter'].set_param(

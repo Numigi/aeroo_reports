@@ -21,5 +21,5 @@ class TestMailTemplateWithAerooReport(common.SavepointCase):
         )
 
     def test_generate_mail_template(self):
-        res = self.template.generate_email([self.partner_1.id], ["attachment_ids"])
-        self.assertEqual(len(res[self.partner_1.id]["attachment_ids"]), 1)
+        res = self.template.generate_email([self.partner_1.id], ["body_html"])
+        self.assertEqual(len(res[self.partner_1.id]["attachments"]), 1)

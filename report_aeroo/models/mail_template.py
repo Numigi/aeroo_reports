@@ -37,7 +37,7 @@ class MailTemplate(models.Model):
             values = results[res_id]
 
             for aeroo_report in self.aeroo_report_ids:
-                content, content_type = aeroo_report.render_aeroo([res_id], {})
+                content, content_type = aeroo_report._render_aeroo([res_id], {})
                 content = base64.b64encode(content)
 
                 record = self.env[self.model].browse(res_id)

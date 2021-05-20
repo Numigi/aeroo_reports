@@ -280,7 +280,7 @@ class IrActionsReport(models.Model):
         libreoffice_timeout = self._get_aeroo_config_parameter("libreoffice_timeout")
         return float(libreoffice_timeout)
 
-    def render_aeroo(self, doc_ids, data=None, force_output_format=None):
+    def _render_aeroo(self, doc_ids, data=None, force_output_format=None):
         """Render an aeroo report.
 
         If doc_ids contains more than one record id, the report will
@@ -315,7 +315,7 @@ class IrActionsReport(models.Model):
         current_report_data = dict(
             data, o=record.with_context(**report_context), **report_context
         )
-        output = self._render_aeroo(template, current_report_data, output_format)
+        output = self._render_aeroo_content(template, current_report_data, output_format)
 
         # Generate the attachment
         if self.attachment_use:
@@ -323,7 +323,7 @@ class IrActionsReport(models.Model):
 
         return output, output_format
 
-    def _render_aeroo(self, template, data, output_format):
+    def _render_aeroo_content(self, template, data, output_format):
         """Generate the aeroo report binary from the template.
 
         :param template: the Libreoffice template to use
@@ -413,7 +413,7 @@ class IrActionsReport(models.Model):
                 [
                     ("res_id", "=", record.id),
                     ("res_model", "=", record._name),
-                    ("datas_fname", "=", filename),
+                    ("name", "=", filename),
                 ],
                 limit=1,
             )
@@ -433,7 +433,6 @@ class IrActionsReport(models.Model):
             {
                 "name": filename,
                 "datas": base64.encodestring(file_data),
-                "datas_fname": filename,
                 "res_model": record._name,
                 "res_id": record.id,
             }
@@ -512,7 +511,7 @@ class IrActionsReport(models.Model):
         input_files = []
 
         for record_id in doc_ids:
-            report = self.render_aeroo([record_id], data)
+            report = self._render_aeroo([record_id], data)
             temp_file = generate_temporary_file(output_format, report[0])
             input_files.append(temp_file.name)
 
@@ -614,13 +613,13 @@ class AerooReportsGeneratedFromListViews(models.Model):
 
     _inherit = "ir.actions.report"
 
-    def render_aeroo(self, doc_ids, data=None, force_output_format=None):
+    def _render_aeroo(self, doc_ids, data=None, force_output_format=None):
         if self.multi:
             return self._render_aeroo_from_list_of_records(
                 doc_ids, data, force_output_format
             )
         else:
-            return super().render_aeroo(doc_ids, data, force_output_format)
+            return super()._render_aeroo(doc_ids, data, force_output_format)
 
     def _render_aeroo_from_list_of_records(
         self, doc_ids, data=None, force_output_format=None
@@ -651,7 +650,7 @@ class AerooReportsGeneratedFromListViews(models.Model):
         report_data = dict(data, objects=records, **report_context)
 
         # Render the report
-        output = self.with_context(**report_context)._render_aeroo(
+        output = self.with_context(**report_context)._render_aeroo_content(
             template, report_data, output_format
         )
 

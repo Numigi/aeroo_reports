@@ -181,7 +181,7 @@ def asimage(
     if not field_value:
         return BytesIO(), 'image/png'
 
-    field_value = base64.decodestring(field_value)
+    field_value = base64.decodebytes(field_value)
     tf = BytesIO(field_value)
     tf.seek(0)
     im = Image.open(tf)

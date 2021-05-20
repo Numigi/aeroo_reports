@@ -5,10 +5,10 @@ MAINTAINER numigi <contact@numigi.com>
 USER root
 # Install dependencies for aeroo reports
 RUN apt-get update && apt-get install -y --no-install-recommends \
+        default-jre \
+        libreoffice-java-common \
         libreoffice-writer \
-        openjdk-11-jre \
-        pdftk \
-    && rm -rf /var/lib/apt/lists/*
+        poppler-utils
 
 # we can't use `pip install --user` as the $HOME of odoo is a volume
 # so everything that is installed in $HOME will be overwritten by the mounting.

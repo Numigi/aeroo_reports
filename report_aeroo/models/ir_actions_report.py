@@ -6,6 +6,7 @@
 import base64
 import logging
 import os
+import subprocess
 import sys
 import traceback
 from aeroolib.plugins.opendocument import Template, OOSerializer
@@ -23,7 +24,6 @@ from odoo.tools import file_open
 from odoo.addons.mail.models.mail_render_mixin import jinja_template_env
 
 from ..namespace import AerooNamespace
-from ..subprocess import run_subprocess
 from ..extra_functions import aeroo_function_registry
 
 
@@ -44,8 +44,10 @@ class IrActionsReport(models.Model):
             else [("odt", "odt"), ("ods", "ods")]
         )
 
+    active = fields.Boolean(default=True)
     report_type = fields.Selection(
-        selection_add=[("aeroo", "Aeroo Reports")], ondelete={"aeroo": "cascade"},
+        selection_add=[("aeroo", "Aeroo Reports")],
+        ondelete={"aeroo": "cascade"},
     )
     aeroo_in_format = fields.Selection(
         selection="_get_in_aeroo_mimetypes",
@@ -269,16 +271,11 @@ class IrActionsReport(models.Model):
             "tz": self._get_aeroo_timezone(record),
             "country": self._get_aeroo_country(record),
             "currency": self._get_aeroo_currency(record),
-            "company": self._get_aeroo_company(record),
         }
 
     def _get_aeroo_libreoffice_timeout(self):
-        """Get the timeout of the Libreoffice process in seconds.
-
-        :rtype: float
-        """
-        libreoffice_timeout = self._get_aeroo_config_parameter("libreoffice_timeout")
-        return float(libreoffice_timeout)
+        """Get the timeout of the Libreoffice process in seconds."""
+        return 60
 
     def _render_aeroo(self, doc_ids, data=None, force_output_format=None):
         """Render an aeroo report.
@@ -313,9 +310,14 @@ class IrActionsReport(models.Model):
 
         # Render the report
         current_report_data = dict(
-            data, o=record.with_context(**report_context), **report_context
+            data,
+            o=record.with_context(**report_context),
+            company=self._get_aeroo_company(record),
+            **report_context
         )
-        output = self._render_aeroo_content(template, current_report_data, output_format)
+        output = self._render_aeroo_content(
+            template, current_report_data, output_format
+        )
 
         # Generate the attachment
         if self.attachment_use:
@@ -450,9 +452,8 @@ class IrActionsReport(models.Model):
         temp_file = generate_temporary_file(in_format, output)
         filedir, filename = os.path.split(temp_file.name)
 
-        libreoffice_location = self._get_aeroo_config_parameter("libreoffice_location")
-
-        cmd = libreoffice_location.split(" ") + [
+        cmd = [
+            "libreoffice",
             "--headless",
             "--convert-to",
             output_format,
@@ -464,7 +465,7 @@ class IrActionsReport(models.Model):
         timeout = self._get_aeroo_libreoffice_timeout()
 
         try:
-            run_subprocess(cmd, timeout)
+            subprocess.call(cmd, timeout=timeout)
         except Exception as exc:
             os.remove(temp_file.name)
             raise ValidationError(
@@ -540,20 +541,14 @@ class IrActionsReport(models.Model):
         :return: the content of the merged pdf reports
         :rtype: bytes
         """
-        pdftk_location = self._get_aeroo_config_parameter("pdftk_location")
-
         output_file = generate_temporary_file("pdf")
 
-        cmd = [pdftk_location]
-        cmd += input_files
-        cmd += ["cat", "output", output_file.name]
-
+        cmd = ["pdfunite", *input_files, output_file.name]
         timeout = self._get_aeroo_libreoffice_timeout()
 
         try:
-            run_subprocess(cmd, timeout)
+            subprocess.call(cmd, timeout=timeout)
         except:
-            traceback.print_exc()
             os.remove(output_file.name)
             raise
 
@@ -563,31 +558,6 @@ class IrActionsReport(models.Model):
         os.remove(output_file.name)
 
         return output
-
-    def _get_aeroo_config_parameter(self, parameter_name):
-        """Get a configuration parameter related to aeroo reports.
-
-        The sudo() is required because since Odoo version 11.0, all config parameters
-        are restricted in read access.
-
-        :param parameter_name: the name of the configuration parameter.
-        """
-        param = (
-            self.env["ir.config_parameter"]
-            .sudo()
-            .get_param(".".join(("report_aeroo", parameter_name)))
-        )
-
-        if not param:
-            raise ValidationError(
-                _(
-                    "Aeroo reports are wrongly configured. "
-                    "The global parameter report_aeroo.{parameter_name} "
-                    "must be defined."
-                ).format(parameter_name=parameter_name)
-            )
-
-        return param
 
 
 class IrActionsReportWithSudo(models.Model):
@@ -647,7 +617,12 @@ class AerooReportsGeneratedFromListViews(models.Model):
 
         template = self._get_aeroo_template(records[0])
         report_context = self._get_aeroo_context(records[0])
-        report_data = dict(data, objects=records, **report_context)
+        report_data = dict(
+            data,
+            objects=records,
+            company=self._get_aeroo_company(records[0]),
+            **report_context
+        )
 
         # Render the report
         output = self.with_context(**report_context)._render_aeroo_content(

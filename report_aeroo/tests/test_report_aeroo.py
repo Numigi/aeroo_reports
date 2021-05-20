@@ -175,43 +175,6 @@ class TestAerooReport(common.SavepointCase):
         attachment = self._search_attachment()
         self.assertEqual(attachment.name, 'Sample Report: April 5, 2018.pdf')
 
-    def test_libreoffice_low_timeout(self):
-        self.env['ir.config_parameter'].set_param(
-            'report_aeroo.libreoffice_timeout', '0.01')
-
-        with self.assertRaises(ValidationError):
-            self._render_report(self.partner)
-
-    def _set_libreoffice_location(self, filename):
-        dir_path = os.path.dirname(os.path.realpath(__file__))
-        file_location = 'sh ' + dir_path + '/' + filename
-        self.env['ir.config_parameter'].set_param(
-            'report_aeroo.libreoffice_location', file_location)
-
-    def test_fail_after_10ms(self):
-        self._set_libreoffice_location('./sleep_10ms_and_fail.sh')
-
-        with self.assertRaises(ValidationError):
-            self._render_report(self.partner)
-
-    def test_libreoffice_finish_after_100s(self):
-        self._set_libreoffice_location('./libreoffice_100s.sh')
-
-        self.env['ir.config_parameter'].set_param(
-            'report_aeroo.libreoffice_timeout', '5')
-
-        with self.assertRaises(ValidationError):
-            self._render_report(self.partner)
-
-    def test_libreoffice_fail(self):
-        self._set_libreoffice_location('./libreoffice_fail.sh')
-
-        self.env['ir.config_parameter'].set_param(
-            'report_aeroo.libreoffice_timeout', '5')
-
-        with self.assertRaises(ValidationError):
-            self._render_report(self.partner)
-
     def test_multicompany_context_with_lang_and_company(self):
         self._create_report_line(self.lang_en, self.company)
         self._render_report(self.partner)
@@ -233,13 +196,6 @@ class TestAerooReport(common.SavepointCase):
 
     def test_sample_report_pdf_with_multiple_export(self):
         self._render_report(self.partner | self.partner_2)
-
-    def test_pdf_low_timeout(self):
-        self.env['ir.config_parameter'].set_param(
-            'report_aeroo.libreoffice_timeout', '0.01')
-
-        with self.assertRaises(ValidationError):
-            self._render_report(self.partner | self.partner_2)
 
     def test_context_contains_evaluated_country(self):
         country = self.env.ref('base.ca')

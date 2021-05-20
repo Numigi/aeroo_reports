@@ -18,7 +18,7 @@ class TestAerooReportMulti(common.SavepointCase):
         cls.partner_1 = cls.env['res.partner'].create({
             'name': 'Partner 1',
             'lang': 'en_US',
-            'image': base64.b64encode(open(image_path, 'rb').read())
+            'image_1920': base64.b64encode(open(image_path, 'rb').read())
         })
 
         cls.partner_2 = cls.partner_1.copy()

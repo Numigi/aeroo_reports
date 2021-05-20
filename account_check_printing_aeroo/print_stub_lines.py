@@ -89,7 +89,7 @@ class AccountPaymentWithCheckStubLines(models.Model):
         """Return the dict used to display an invoice/refund in the stub.
 
         This method was adapted from the following method in odoo version 12.0
-        https://github.com/odoo/odoo/blob/12.0/addons/account_check_printing/models/account_payment.py
+        https://github.com/odoo/odoo/blob/14.0/addons/account_check_printing/models/account_payment.py
 
         It was also improved in order to:
             * work with invoices paid in different currencies.

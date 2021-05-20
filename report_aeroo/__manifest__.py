@@ -17,7 +17,7 @@
     },
     'data': [
         "security/security.xml",
-        "views/ir_actions_report.xml",
+        # "views/ir_actions_report.xml",
         "views/mail_template.xml",
         "views/report_aeroo_assets.xml",
         "data/ir_config_parameter.xml",

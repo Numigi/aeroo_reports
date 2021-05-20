@@ -1,4 +1,4 @@
-FROM quay.io/numigi/odoo-public:12.0
+FROM quay.io/numigi/odoo-public:14.latest
 MAINTAINER numigi <contact@numigi.com>
 
 ########
@@ -6,7 +6,7 @@ USER root
 # Install dependencies for aeroo reports
 RUN apt-get update && apt-get install -y --no-install-recommends \
         libreoffice-writer \
-        openjdk-8-jre \
+        openjdk-11-jre \
         pdftk \
     && rm -rf /var/lib/apt/lists/*
 

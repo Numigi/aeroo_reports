@@ -29,7 +29,7 @@ class TestAerooReport(common.SavepointCase):
             'name': 'My Partner',
             'lang': 'en_US',
             'company_id': cls.company.id,
-            'image': base64.b64encode(open(image_path, 'rb').read())
+            'image_1920': base64.b64encode(open(image_path, 'rb').read())
         })
 
         cls.lang_en = cls.env.ref('base.lang_en')

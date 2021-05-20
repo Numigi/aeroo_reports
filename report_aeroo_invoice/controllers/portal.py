@@ -23,7 +23,7 @@ class PortalAccountWithAerooInvoiceReport(PortalAccount):
                 download=download, **kw)
 
         try:
-            invoice = self._document_check_access('account.invoice', invoice_id, access_token)
+            invoice = self._document_check_access('account.move', invoice_id, access_token)
         except (AccessError, MissingError):
             return request.redirect('/my')
 

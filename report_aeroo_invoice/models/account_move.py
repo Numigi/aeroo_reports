@@ -4,11 +4,11 @@
 from odoo import models
 
 
-class InvoiceWithAerooReport(models.Model):
+class AccountMove(models.Model):
 
-    _inherit = 'account.invoice'
+    _inherit = 'account.move'
 
-    def invoice_print(self):
+    def action_invoice_print(self):
         """Print the invoice using the aeroo invoice template if it is defined.
 
         If the aeroo invoice report is not setup, fallback to the qweb template.

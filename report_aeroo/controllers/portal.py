@@ -7,7 +7,7 @@ from odoo.addons.portal.controllers.portal import CustomerPortal
 from odoo.http import content_disposition, request
 
 
-class PortalAccountWithAerooInvoiceReport(CustomerPortal):
+class Portal(CustomerPortal):
 
     def _show_aeroo_report(self, record, template, download=False):
         """Show the given aeroo in the portal.
@@ -19,7 +19,7 @@ class PortalAccountWithAerooInvoiceReport(CustomerPortal):
         :param template: the aeroo report template.
         :param download: whether the report is dowloaded or only shown to the screen.
         """
-        pdf = template.sudo().render_aeroo(doc_ids=[record.id], force_output_format='pdf')[0]
+        pdf = template.sudo()._render_aeroo(doc_ids=[record.id], force_output_format='pdf')[0]
 
         headers = [
             ('Content-Type', 'application/pdf'),

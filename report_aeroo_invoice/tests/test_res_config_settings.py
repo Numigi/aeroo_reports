@@ -17,7 +17,7 @@ class TestResConfigSettingsWithAerooReport(common.SavepointCase):
         self.assertEqual(self.wizard.aeroo_invoice_template_id, self.report)
 
         self.wizard.aeroo_invoice_template_id = None
-        self.wizard.set_values()
+        self.wizard.execute()
         self.wizard = self.env['res.config.settings'].create({})
         self.assertFalse(self.wizard.aeroo_invoice_template_id)
 
@@ -26,7 +26,7 @@ class TestResConfigSettingsWithAerooReport(common.SavepointCase):
 
         report_copy = self.report.copy({'report_name': 'new_aeroo_invoice_report'})
         self.wizard.aeroo_invoice_template_id = report_copy
-        self.wizard.set_values()
+        self.wizard.execute()
         self.wizard = self.env['res.config.settings'].create({})
 
         self.assertEqual(self.wizard.aeroo_invoice_template_id, report_copy)

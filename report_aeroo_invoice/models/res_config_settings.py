@@ -10,7 +10,7 @@ class ResConfigSettingsWithAerooInvoiceTemplate(models.TransientModel):
 
     aeroo_invoice_template_id = fields.Many2one(
         'ir.actions.report', 'Aeroo Invoice Report',
-        domain="[('report_type', '=', 'aeroo'), ('model', '=', 'account.invoice')]")
+        domain="[('report_type', '=', 'aeroo'), ('model', '=', 'account.move')]")
 
     @api.model
     def get_values(self):

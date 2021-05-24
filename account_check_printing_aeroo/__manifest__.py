@@ -21,9 +21,6 @@
     'demo': [
         'demo/report.xml',
     ],
-    'external_dependencies': {
-        'python': ['num2words'],
-    },
     'installable': True,
     'application': False,
 }

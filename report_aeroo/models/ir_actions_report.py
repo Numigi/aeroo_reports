@@ -112,6 +112,11 @@ class IrActionsReport(models.Model):
         default="user.company_id.currency_id",
     )
 
+    def report_action(self, docids, data=None, config=True):
+        res = super().report_action(docids, data=data, config=config)
+        res["id"] = self.id
+        return res
+
     def _get_aeroo_template(self, record):
         """Get an aeroo template for the given record.
 

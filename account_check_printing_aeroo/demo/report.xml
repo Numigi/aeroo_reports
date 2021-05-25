@@ -14,14 +14,4 @@
         <field name="aeroo_lang_eval">'en_US'</field>
     </record>
 
-    <ir_set>
-        <field eval="'action'" name="key"/>
-        <field eval="'client_print_multi'" name="key2"/>
-        <field eval="['res.partner']" name="models"/>
-        <field name="name">Check Sample</field>
-        <field eval="'ir.actions.report.xml,' + str(sample_report)" name="value"/>
-        <field eval="True" name="isobject"/>
-        <field eval="True" name="replace"/>
-    </ir_set>
-
 </odoo>

@@ -1,6 +1,6 @@
 git+https://d36234af6e7d4720b8d78d1457c6006f9cb58d7d@github.com/numigi/aeroolib@python3
 babel==2.5.3
-Genshi==0.7
+Genshi==0.7.5
 freezegun==0.3.10
 html2text==2018.1.9
 ddt==1.2.1

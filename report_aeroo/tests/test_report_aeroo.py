@@ -15,7 +15,7 @@ class TestAerooReport(common.SavepointCase):
 
     @classmethod
     def setUpClass(cls):
-        super(TestAerooReport, cls).setUpClass()
+        super().setUpClass()
         image_path = module.get_module_path('report_aeroo') + '/static/img/logo.png'
 
         cls.company = cls.env['res.company'].create({
@@ -25,11 +25,14 @@ class TestAerooReport(common.SavepointCase):
             'name': 'My Company 2',
         })
 
+        cls.user = cls.env.ref('base.user_demo')
+        cls.user.company_ids |= cls.company | cls.company_2
+
         cls.partner = cls.env['res.partner'].create({
             'name': 'My Partner',
             'lang': 'en_US',
             'company_id': cls.company.id,
-            'image': base64.b64encode(open(image_path, 'rb').read())
+            'image_1920': base64.b64encode(open(image_path, 'rb').read())
         })
 
         cls.lang_en = cls.env.ref('base.lang_en')
@@ -56,7 +59,7 @@ class TestAerooReport(common.SavepointCase):
 
         :param partners: a res.partner recordset
         """
-        self.report.sudo(self.env.ref('base.user_demo').id).render(partners.ids, {})
+        self.report.sudo(self.user.id)._render(partners.ids, {})
 
     def _create_report_line(self, lang, company=None):
         self.report.write({
@@ -111,7 +114,7 @@ class TestAerooReport(common.SavepointCase):
         attachment = self.env['ir.attachment'].search([
             ('res_id', '=', self.partner.id),
             ('res_model', '=', 'res.partner'),
-            ('datas_fname', '=', 'My Partner.pdf'),
+            ('name', '=', 'My Partner.pdf'),
         ])
         self.assertEqual(len(attachment), 1)
 
@@ -144,7 +147,7 @@ class TestAerooReport(common.SavepointCase):
         self._render_report(self.partner)
 
         attachment = self._search_attachment()
-        self.assertEqual(attachment.datas_fname, 'Sample Report: My Partner.pdf')
+        self.assertEqual(attachment.name, 'Sample Report: My Partner.pdf')
 
     def test_ifReportHasSpecificLang_thenAttachmentNameIsRenderedInSpecificLang(self):
         filename = "Rapport de contact: ${today('d MMMM yyyy')}"
@@ -157,7 +160,7 @@ class TestAerooReport(common.SavepointCase):
             self._render_report(self.partner)
 
         attachment = self._search_attachment()
-        self.assertEqual(attachment.datas_fname, 'Rapport de contact: 6 avril 2018.pdf')
+        self.assertEqual(attachment.name, 'Rapport de contact: 6 avril 2018.pdf')
 
     def test_ifReportHasSpecificTimezone_thenAttachmentNameIsRenderedInSpecificTimezone(self):
         filename = "Sample Report: ${today('MMMM d, yyyy')}"
@@ -170,44 +173,7 @@ class TestAerooReport(common.SavepointCase):
             self._render_report(self.partner)
 
         attachment = self._search_attachment()
-        self.assertEqual(attachment.datas_fname, 'Sample Report: April 5, 2018.pdf')
-
-    def test_libreoffice_low_timeout(self):
-        self.env['ir.config_parameter'].set_param(
-            'report_aeroo.libreoffice_timeout', '0.01')
-
-        with self.assertRaises(ValidationError):
-            self._render_report(self.partner)
-
-    def _set_libreoffice_location(self, filename):
-        dir_path = os.path.dirname(os.path.realpath(__file__))
-        file_location = 'sh ' + dir_path + '/' + filename
-        self.env['ir.config_parameter'].set_param(
-            'report_aeroo.libreoffice_location', file_location)
-
-    def test_fail_after_10ms(self):
-        self._set_libreoffice_location('./sleep_10ms_and_fail.sh')
-
-        with self.assertRaises(ValidationError):
-            self._render_report(self.partner)
-
-    def test_libreoffice_finish_after_100s(self):
-        self._set_libreoffice_location('./libreoffice_100s.sh')
-
-        self.env['ir.config_parameter'].set_param(
-            'report_aeroo.libreoffice_timeout', '5')
-
-        with self.assertRaises(ValidationError):
-            self._render_report(self.partner)
-
-    def test_libreoffice_fail(self):
-        self._set_libreoffice_location('./libreoffice_fail.sh')
-
-        self.env['ir.config_parameter'].set_param(
-            'report_aeroo.libreoffice_timeout', '5')
-
-        with self.assertRaises(ValidationError):
-            self._render_report(self.partner)
+        self.assertEqual(attachment.name, 'Sample Report: April 5, 2018.pdf')
 
     def test_multicompany_context_with_lang_and_company(self):
         self._create_report_line(self.lang_en, self.company)
@@ -230,13 +196,6 @@ class TestAerooReport(common.SavepointCase):
 
     def test_sample_report_pdf_with_multiple_export(self):
         self._render_report(self.partner | self.partner_2)
-
-    def test_pdf_low_timeout(self):
-        self.env['ir.config_parameter'].set_param(
-            'report_aeroo.libreoffice_timeout', '0.01')
-
-        with self.assertRaises(ValidationError):
-            self._render_report(self.partner | self.partner_2)
 
     def test_context_contains_evaluated_country(self):
         country = self.env.ref('base.ca')

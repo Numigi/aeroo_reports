@@ -5,7 +5,7 @@
 
 {
     'name': 'Aeroo Reports',
-    'version': '2.2.0',
+    'version': '1.0.0',
     'category': 'Generic Modules/Aeroo Reports',
     'summary': 'Enterprise grade reporting solution',
     'author': 'Alistek',
@@ -20,7 +20,6 @@
         "views/ir_actions_report.xml",
         "views/mail_template.xml",
         "views/report_aeroo_assets.xml",
-        "data/ir_config_parameter.xml",
         "data/report_aeroo_data.xml",
         "security/ir.model.access.csv",
     ],

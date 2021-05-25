@@ -1,7 +1,7 @@
 # © 2019 Numigi (tm) and all its contributors (https://bit.ly/numigiens)
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 
-from odoo import api, fields, models
+from odoo import fields, models
 
 
 class IrActionsReport(models.Model):
@@ -30,10 +30,9 @@ class IrActionsReport(models.Model):
         "by this Aeroo report. Only qweb-pdf reports are supported."
     )
 
-    @api.multi
-    def render_qweb_pdf(self, res_ids=None, data=None):
+    def _render_qweb_pdf(self, res_ids=None, data=None):
         if self.aeroo_report_id:
-            return self.aeroo_report_id.render_aeroo(
+            return self.aeroo_report_id._render_aeroo(
                 doc_ids=res_ids, data=data, force_output_format='pdf')
 
-        return super().render_qweb_pdf(res_ids, data)
+        return super()._render_qweb_pdf(res_ids, data)

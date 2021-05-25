@@ -7,7 +7,6 @@ odoo.define("report_aeroo.action_manager", function (require) {
 require("web.ReportActionManager");
 
 var ActionManager = require("web.ActionManager");
-var crashManager = require("web.crash_manager");
 var framework = require("web.framework");
 var session = require("web.session");
 var pyeval = require("web.py_utils");
@@ -46,21 +45,25 @@ ActionManager.include({
      * https://github.com/odoo/odoo/commit/4787bc75
      */
     _printAerooReport(action, options) {
+        var self = this;
         framework.blockUI();
 
         action = _.clone(action);
-        var evalContexts = ([session.user_context] || []).concat([action.context]);
-        action.context = pyeval.eval("contexts", evalContexts);
 
-        var self = this;
-        return $.Deferred((deferred) => {
+        const context = session.user_context
+
+        return new Promise(function (resolve, reject) {
             session.get_file({
                 url: "/web/report_aeroo",
-                data: {action: JSON.stringify(action)},
-                success: deferred.resolve.bind(deferred),
-                error(){
-                    crashManager.rpc_error.apply(crashManager, arguments);
-                    deferred.reject();
+                data: {
+                    report_id: action.id,
+                    record_ids: JSON.stringify(action.context.active_ids),
+                    context: JSON.stringify(context),
+                },
+                success: resolve,
+                error: (err) => {
+                    self.call('crash_manager', 'rpc_error', err);
+                    reject();
                 },
                 complete: framework.unblockUI,
             });

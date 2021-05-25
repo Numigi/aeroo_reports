@@ -137,13 +137,6 @@
         </field>
     </record>
 
-    <act_window name="Translations"
-        domain="[('type', '=', 'report'),('res_id', '=', active_id)]"
-        view_type="form"
-        res_model="ir.translation"
-        src_model="ir.actions.report"
-        id="act_translations"/>
-
     <!-- For the original views -->
     <record model="ir.actions.act_window.view" id="act_report_xml_tree_view">
         <field name="sequence" eval="1"/>
@@ -163,7 +156,6 @@
         <field name="name">Reports</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ir.actions.report</field>
-        <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
         <field name="domain">[('report_type', '=', 'aeroo')]</field>
         <field name="context">{'default_report_type': 'aeroo'}</field>

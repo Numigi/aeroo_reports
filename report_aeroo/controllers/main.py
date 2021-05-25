@@ -7,7 +7,6 @@ import time
 from odoo import api, http, _
 from odoo.modules import registry
 from odoo.http import request, content_disposition
-from odoo.tools.safe_eval import safe_eval
 from odoo.addons.web.controllers.main import serialize_exception
 from odoo.exceptions import ValidationError
 
@@ -26,30 +25,22 @@ class AerooReportController(http.Controller):
 
     @http.route('/web/report_aeroo', type='http', auth="user")
     @serialize_exception
-    def generate_aeroo_report(self, action, token, debug=False):
+    def generate_aeroo_report(self, report_id, record_ids, token, debug=False):
         """Generate an aeroo report.
 
         Add the filename of the generated report to the response headers.
         If the aeroo report is generated for multiple records, the
         file name is simply {report.name}.pdf.
         """
-        action_data = json.loads(action)
-        ids = action_data['context']['active_ids']
+        report_id = int(report_id)
+        record_ids = json.loads(record_ids)
 
-        action_id = action_data.get('id')
+        report = request.env['ir.actions.report'].browse(report_id)
+        content, out_format = report._render_aeroo(record_ids, {})
 
-        if action_id:
-            report = request.env['ir.actions.report'].browse(action_id)
-        elif 'report_name' in action_data:
-            report = self._get_aeroo_report_from_name(action_data['report_name'])
-        else:
-            raise ValidationError(
-                _('The report name is expected in order to generate an aeroo report.'))
 
-        content, out_format = report.render_aeroo(ids, {})
-
-        if len(ids) == 1:
-            record = request.env[report.model].browse(ids[0])
+        if len(record_ids) == 1:
+            record = request.env[report.model].browse(record_ids[0])
             file_name = report.get_aeroo_filename(record, out_format)
         else:
             file_name = '%s.%s' % (report.name, out_format)

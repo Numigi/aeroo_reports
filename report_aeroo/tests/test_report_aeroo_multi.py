@@ -18,7 +18,7 @@ class TestAerooReportMulti(common.SavepointCase):
         cls.partner_1 = cls.env['res.partner'].create({
             'name': 'Partner 1',
             'lang': 'en_US',
-            'image': base64.b64encode(open(image_path, 'rb').read())
+            'image_1920': base64.b64encode(open(image_path, 'rb').read())
         })
 
         cls.partner_2 = cls.partner_1.copy()
@@ -32,7 +32,7 @@ class TestAerooReportMulti(common.SavepointCase):
 
         :param partners: a res.partner recordset
         """
-        self.report.sudo(self.env.ref('base.user_demo').id).render(partners.ids, {})
+        self.report.sudo(self.env.ref('base.user_demo').id)._render(partners.ids, {})
 
     def test_generate_report_with_pdf_format_and_multiple_records(self):
         self.report.aeroo_out_format_id = self.env.ref('report_aeroo.aeroo_mimetype_pdf_odt')

@@ -93,6 +93,13 @@ class IrActionsReport(models.Model):
         prefetch=False,
         default="user.company_id.currency_id")
 
+    @api.multi
+    def read(self, fields=None, load='_classic_read'):
+        if not fields:
+            fields = [k for k, v in self._fields.items() if v.type != "binary"]
+
+        return super().read(fields, load)
+
     def _get_aeroo_template(self, record):
         """Get an aeroo template for the given record.
 

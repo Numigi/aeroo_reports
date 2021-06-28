@@ -117,6 +117,12 @@ class IrActionsReport(models.Model):
         res["id"] = self.id
         return res
 
+    def read(self, fields=None, load='_classic_read'):
+        if not fields:
+            fields = [k for k, v in self._fields.items() if v.type != "binary"]
+
+        return super().read(fields, load)
+
     def _get_aeroo_template(self, record):
         """Get an aeroo template for the given record.
 

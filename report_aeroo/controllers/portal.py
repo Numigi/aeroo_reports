@@ -7,7 +7,7 @@ from odoo.addons.portal.controllers.portal import CustomerPortal
 from odoo.http import content_disposition, request
 
 
-class PortalAccountWithAerooInvoiceReport(CustomerPortal):
+class Portal(CustomerPortal):
 
     def _show_aeroo_report(self, record, template, download=False):
         """Show the given aeroo in the portal.

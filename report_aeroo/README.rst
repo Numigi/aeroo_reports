@@ -158,6 +158,65 @@ Therefore, template lines with wildcards should be placed last.
 
 .. image:: static/description/report_template_multi_filled.png
 
+Report Context
+~~~~~~~~~~~~~~
+When formating numbers, currencies and dates in a report, the report engine needs to know
+for which language, timezone and localization to format these values.
+
+This section allows the engine to evaluate these values.
+
+.. image:: static/description/report_context.png
+
+Typically, the values will be inherited from the user generating the report.
+
+.. image:: static/description/report_context_user.png
+
+Or linked to the partner related to the document.
+
+.. image:: static/description/report_context_partner.png
+
+List Views
+~~~~~~~~~~
+By default, aeroo reports can be generated from a list view.
+
+.. image:: static/description/list_view_standard_report.png
+
+The result is a merged ``PDF`` document containing the combined reports for all selected records.
+
+.. image:: static/description/list_view_standard_report_pdf.png
+
+However, it is sometime required to have a single report that takes as input a list of records.
+
+One typical example is a report based on a selection of timesheet lines.
+
+You can define such report by checking the box ``Generate Report From Record List``.
+
+.. image:: static/description/report_from_record_list.png
+
+When printing the report, the template is rendered only one time with the given list of records.
+
+.. image:: static/description/list_view_report.png
+
+.. image:: static/description/list_view_report_pdf.png
+
+Inside the Libreoffice template, instead of using the variable ``o``, you must iterate over the variable ``objects``.
+
+.. image:: static/description/report_from_record_list_template.png
+
+Attachments / Filename
+~~~~~~~~~~~~~~~~~~~~~~
+By default, when printing a report, the name of the file is the name of the report.
+
+.. image:: static/description/default_filename.png
+
+This can be customized.
+
+.. image:: static/description/report_attachment_filename.png
+
+You can also customize the file name per language.
+
+
+
 Contributors
 ============
 * Alistek

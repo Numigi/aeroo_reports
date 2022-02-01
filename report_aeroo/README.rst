@@ -111,6 +111,53 @@ However, for testing a report, rendering as ``ODT`` can be useful.
 Otherwise, rendering as ``Microsoft Word`` can be useful in case you
 need to edit the document manually before printing it as ``PDF``.
 
+Template
+--------
+There are 3 options for defining the report template.
+
+.. image:: static/description/report_template_options.png
+
+Database
+~~~~~~~~
+This option allows to upload a template file from your computer.
+
+.. image:: static/description/report_template_database.png
+
+File
+~~~~
+This option allows to use a file defined in a module.
+
+.. image:: static/description/report_template_file.png
+
+The given path must start with the name of the module,
+followed by the path of the file inside that module.
+
+This option is mostly intended for demo reports.
+
+Multiple Templates
+~~~~~~~~~~~~~~~~~~
+The third option is ``Different Template per Language / Company``.
+
+.. image:: static/description/report_template_multi.png
+
+This option allows to define a specific template to use per company and / or language.
+
+When managing a report that needs to be printed in the language of a partner,
+it is easier to maintain completely separate templates for each language.
+
+Also, mainting separate templates per company is useful if you want the look of the report
+to be different per company.
+
+.. image:: static/description/report_template_multi_form.png
+
+Both the language and the company are optional fields.
+Letting the field empty is a wildcard.
+
+The first matching template is always used when printing a report.
+Therefore, template lines with wildcards should be placed last.
+
+.. image:: static/description/report_template_multi_filled.png
+
 Contributors
 ============
 * Alistek

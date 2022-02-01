@@ -215,7 +215,12 @@ This can be customized.
 
 You can also customize the file name per language.
 
+.. image:: static/description/report_attachment_filename_multi.png
 
+..
+
+    A line with the field Language empty is interpreted as a wildcard.
+    Such line must be placed last.
 
 Contributors
 ============

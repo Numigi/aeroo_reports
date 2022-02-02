@@ -159,7 +159,7 @@ Therefore, template lines with wildcards should be placed last.
 .. image:: static/description/report_template_multi_filled.png
 
 Report Context
-~~~~~~~~~~~~~~
+--------------
 When formating numbers, currencies and dates in a report, the report engine needs to know
 for which language, timezone and localization to format these values.
 
@@ -176,7 +176,7 @@ Or linked to the partner related to the document.
 .. image:: static/description/report_context_partner.png
 
 List Views
-~~~~~~~~~~
+----------
 By default, aeroo reports can be generated from a list view.
 
 .. image:: static/description/list_view_standard_report.png
@@ -204,7 +204,7 @@ Inside the Libreoffice template, instead of using the variable ``o``, you must i
 .. image:: static/description/report_from_record_list_template.png
 
 Attachments / Filename
-~~~~~~~~~~~~~~~~~~~~~~
+----------------------
 By default, when printing a report, the name of the file is the name of the report.
 
 .. image:: static/description/default_filename.png
@@ -221,6 +221,101 @@ You can also customize the file name per language.
 
     A line with the field Language empty is interpreted as a wildcard.
     Such line must be placed last.
+
+Reload From Attachment
+----------------------
+When this box is checked, the report will be saved as attachment to the document when printed.
+
+.. image:: static/description/report_reload_from_attachment.png
+
+Then, when printing again the report, the same file is returned instead of rerendering the report.
+
+The report is rerendered if the file name changes.
+
+This feature is typically used for invoices.
+Once sent to a customer, the PDF of an invoice may not be changed.
+
+Add To Print Menu
+-----------------
+The button ``Add in the Print menu`` adds an item in the print menu of the form view of the related model.
+
+.. image:: static/description/report_add_print_menu.png
+
+.. image:: static/description/form_print_menu.png
+
+Editing a Template
+==================
+
+Fields
+------
+To display the value of a field inside a template, you must insert a field of type ``Placeholder``.
+
+.. image:: static/description/libreoffice_insert_field.png
+
+.. image:: static/description/libreoffice_insert_field_placeholder.png
+
+In ``Placeholder``, you can define the expression to evaluate.
+
+.. image:: static/description/libreoffice_placeholder_filled.png
+
+Then click on insert.
+
+.. image:: static/description/libreoffice_placeholder_insert.png
+
+In this example, we are printing the name of the partner related to the document.
+
+The variable ``o`` represents the document being printed (for example, an invoice or a sales order).
+
+If Statements
+-------------
+It is possible to display a section of the report based on a condition.
+
+.. image:: static/description/libreoffice_if_statement.png
+
+For this to work, you need to insert two fields of type ``Input Field``.
+
+.. image:: static/description/libreoffice_insert_input_field.png
+
+Inside ``Reference``, you can write your condition.
+
+.. image:: static/description/libreoffice_if_statement_reference.png
+
+The condition must be formatted like an xml node.
+The attribute test contains the expression to evaluate.
+
+..
+
+    <if test="place_your_condition_here">
+
+The second input field contains the end statement.
+
+.. image:: static/description/libreoffice_if_statement_end.png
+
+For Loops
+---------
+It is possible to iterate over a list of records inside a table.
+
+.. image:: static/description/libreoffice_for_loop.png
+
+For this to work, the beginning and ending clauses of the loop must be placed in rows of the table.
+The rows containing these clauses are removed when rendering the report.
+
+The beginning clause must contain the code of the loop.
+The format is similar to ``if statements``.
+
+.. image:: static/description/libreoffice_for_loop_reference.png
+
+The attribute each must contain the loop.
+
+..
+
+    <for each="line in o.invoice_line_ids">
+
+1. The first part ``line`` is the name of the variable for the iteratee. It can be a variable name of your choice.
+
+2. The second part ``o.invoice_line_ids`` is the iterator.
+
+
 
 Contributors
 ============

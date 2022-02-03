@@ -1,7 +1,7 @@
 =============
 Aeroo Reports
 =============
-This module is the main module required for using Aeroo reports.
+This is the main module required for using Aeroo reports.
 
 .. contents:: Table of Contents
 
@@ -315,7 +315,263 @@ The attribute each must contain the loop.
 
 2. The second part ``o.invoice_line_ids`` is the iterator.
 
+Images
+------
+The engine allows to render images in reports.
 
+To do so, you must insert a frame.
+
+.. image:: static/description/libreoffice_insert_frame.png
+
+In the ``Options`` tab, enter the technical value in ``Name``.
+
+.. image:: static/description/libreoffice_frame_options.png
+
+The technical value is:
+
+..
+
+    image: asimage(your_expression)
+
+Where ``your_expression`` is the python expression to get the content of your image.
+
+In the ``Type`` tab, make sure that your image is sized relative to the paragraph.
+
+.. image:: static/description/libreoffice_frame_type.png
+
+Then, you may resize the frame to get the desired width and height.
+
+.. image:: static/description/libreoffice_image_resize.png
+
+Barcodes
+--------
+Barcodes can be inserted the same way as other images.
+
+However, the technical value is a bit different.
+
+.. image:: static/description/libreoffice_frame_barcode_options.png
+
+..
+
+    image: barcode(your_barcode, barcode_type, height)
+
+For now, the available types of barcode are:
+
+* ean13
+* code128
+* code39
+
+Numbers
+-------
+When inserting a field that renders a number, you must use a utility function
+to format the number properly.
+
+.. image:: static/description/libreoffice_number_utilities.png
+
+Aeroo defines 2 helpers for formatting numbers.
+
+* format_decimal
+* format_currency
+
+Example for format_decimal
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+This function takes a number.
+It returns the amount formatted in the context of the report.
+
+.. code-block:: python
+
+    format_decimal(o.amount_total)
+
+If the report is printed in Canada French, the output will look like:
+
+.. code-block::
+
+    1 500,00
+
+Exemple for format_currency
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This function takes a number and a currency object.
+It returns the amount and currency symbol formatted in the context of the report.
+
+.. code-block:: python
+
+    format_currency(o.amount_total, o.currency_id)
+
+If the report is printed in Canada French, the output will look like:
+
+.. code-block::
+
+    1 500,00 $US
+
+
+Force a number format
+~~~~~~~~~~~~~~~~~~~~~
+Both format_decimal and format_currency functions accept an optional `amount_format` parameter.
+
+This parameter accepts a number format using the variables documented on the babel website:
+
+http://babel.pocoo.org/en/latest/numbers.html#pattern-syntax
+
+Forcing a Country
+~~~~~~~~~~~~~~~~~
+Languages in Odoo are very complex to maintain.
+For example, having all ``en_CA``, ``en_US``, ``fr_CA``, ``fr_FR`` loaded in Odoo would lead to a lot of maintainance effort.
+
+Depending on the country, the amount in currency should be formatted differently:
+
+* If you have a customer in United-States, he might expect the default ``$`` symbol to represent ``USD``, and ``CA$`` to represent ``CAD``.
+* If your customer is in Canada, he might however expect ``$`` to represent ``CAD``, and ``US$`` to represent ``USD``.
+
+Aeroo mitigates this issue by combining the contextual Odoo language and country together.
+
+If your Odoo language is ``fr_FR`` and your country is Canada, you get the locale ``fr_CA``.
+
+To use this feature, you may call the ``format_currency`` with an optional ``country`` parameter.
+
+.. code-block:: python
+
+    format_currency(o.amount_total, o.currency_id, country=o.partner_id.country_id)
+
+
+Default Countries and Currencies
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Since version ``2.2.0`` of ``report_aeroo``, it is possible to define a default country and currency on the report.
+
+.. image:: static/description/report_context_country_and_currency.png
+
+These fields are evaluated at rendering, like ``Language Evaluation`` and ``Company Evaluation``.
+
+The values are used by default in the ``format_currency`` function.
+Therefore, in your template, each time you need to show an amount in currency, you only need to pass the amount as parameter:
+
+.. code-block:: python
+
+    format_currency(o.amount_total)
+
+Suppose the language is evaluated to ``fr_FR``, the country is ``Canada`` and the currency is ``USD``,
+you would get an amount format as follow:
+
+.. code-block::
+
+    1 500,00 $US
+
+Date and Time
+-------------
+Similarly to numbers, you can format a date field.
+
+.. image:: static/description/libreoffice_date_field.png
+
+Aeroo defines the following helpers for formatting dates and time.
+
+* format_date
+* format_datetime
+* today
+* now
+
+The variables that you can use in these functions are documented on the babel website:
+
+http://babel.pocoo.org/en/latest/dates.html#date-fields
+
+Exemple for format_date
+~~~~~~~~~~~~~~~~~~~~~~~
+This function formats a date object into a string.
+
+.. code-block:: python
+
+    format_date(o.date_invoice, 'dd MMMM yyyy')
+
+If the report is printed in French, the output will look like:
+
+.. code-block::
+
+    06 avril 2018
+
+Exemple for format_datetime
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This function formats a datetime object into a string.
+
+.. code-block:: python
+
+    format_datetime(o.confirmation_date, 'dd MMMM yyyy hh:mm a')
+
+If the report is printed in French, the output will look like:
+
+.. code-block::
+
+    6 avril 2018 10:34 AM
+
+Exemple for today
+~~~~~~~~~~~~~~~~~
+The function ``today`` is the same as ``format_date``, but with the current date in the user's timezone.
+
+.. code-block:: python
+
+    today('dd MMMM yyyy')
+
+Suppose we are on the 6 of April 2018 and the report is printed in French, the output will look like:
+
+.. code-block::
+
+    06 avril 2018
+
+Exemple for now
+~~~~~~~~~~~~~~~
+The function ``now`` is the same as ``format_datetime``, but with the current time in the user's timezone.
+
+.. code-block:: python
+
+    now('dd MMMM yyyy hh:mm a')
+
+Suppose we are on the 6 of April 2018, 10:34 AM and the report is printed in French, the output will look like:
+
+.. code-block::
+
+    06 avril 2018 10:34 AM
+
+Grouping Rows
+-------------
+It is possible to group rows to display in a table.
+
+In the following example, the invoice lines are grouped by per product category:
+
+.. code-block:: xml
+
+    <for each="(month, lines) in group_by(objects, lambda line: (line.date).replace(day=1))">
+
+Each tuple contains:
+
+1. The groupment key
+2. The records matching this groupment key
+
+Example
+~~~~~~~
+Here is a preview on how to organize the for/each statements in your libreoffice template.
+
+.. image:: static/description/libreoffice_group_by.png
+
+In this example, we define two nested ``For Each`` loops.
+
+The outer loop groups the records by month.
+
+Inside the outer loop, the month is printed in one line, followed by one line
+per record for this month.
+
+Grouping Rows in a Particular Order
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+By default, the groupment keys are sorted in natural order.
+If the groupment key is a string, it will be sorted alphabetically.
+
+Usually, we will require to sort the grouped records by some criteria.
+This can be done using the argument ``sort`` of the ``group_by`` function.
+
+The ``sort`` argument expects a function.
+This function takes as argument the groupment key.
+
+In the following example, the groupment keys (the products) are sorted by their ``Display Name``.
+
+.. code-block:: xml
+
+    <for each="(product, lines) in group_by(objects, lambda line: line.product_id, lambda product: product.display_name)">
 
 Contributors
 ============

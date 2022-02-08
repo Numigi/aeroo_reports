@@ -217,8 +217,8 @@ def barcode(
     report,
     code: str,
     code_type: str = 'ean13',
-    rotate: bool = None,
     height: int = 50,
+    rotate: bool = None,
     xw: int = 1,
 ):
     if code:

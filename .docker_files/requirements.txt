@@ -1,4 +1,4 @@
-git+https://d36234af6e7d4720b8d78d1457c6006f9cb58d7d@github.com/numigi/aeroolib@python3
+git+https://github.com/numigi/aeroolib@master
 babel==2.5.3
 Genshi==0.7.5
 freezegun==0.3.10

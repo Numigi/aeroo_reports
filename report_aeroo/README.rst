@@ -573,6 +573,40 @@ In the following example, the groupment keys (the products) are sorted by their 
 
     <for each="(product, lines) in group_by(objects, lambda line: line.product_id, lambda product: product.display_name)">
 
+Spreadsheets
+------------
+The module allows to use a spreadsheet (ods) as template.
+
+.. image:: static/description/report_ods.png
+
+In a spreadsheet, you must insert hyperlinks in order to display data dynamically.
+
+Go to: Insert -> Hyperlink, then in the field URL, write python://your-python-expression
+
+.. image:: static/description/libreoffice_calc_insert_link.png
+
+.. image:: static/description/libreoffice_calc_insert_link_2.png
+
+Here is an example for a list of partner names and emails.
+
+.. image:: static/description/libreoffice_calc_with_links.png
+
+When rendered the report looks like this.
+
+.. image:: static/description/report_ods_rendered.png
+
+Email Templates
+===============
+The module adds an easy way to attach reports to an email template.
+
+.. image:: static/description/email_template_form.png
+
+The difference between this feature and a report attachment from `Advanced Settings / Optional report to print and attach` is:
+
+1. You may attach more than one aeroo reports.
+2. You do not need to redefine the name of the attachment in the email template.
+   The attachment name will be the one defined on the report.
+
 Contributors
 ============
 * Alistek

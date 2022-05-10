@@ -361,6 +361,25 @@ For now, the available types of barcode are:
 * code128
 * code39
 
+QR Codes
+--------
+QR codes can also be inserted the same way as images.
+
+.. image:: static/description/libreoffice_writer_qrcode.png
+
+.. image:: static/description/libreoffice_frame_qrcode_options.png
+
+..
+
+    image: qrcode(your_code, size='x.xin')
+
+The parameter size must contain the desired size of the image.
+It should be the same as the width and height defined on the frame.
+
+.. image:: static/description/libreoffice_frame_qrcode_type.png
+
+.. image:: static/description/libreoffice_writer_qrcode_rendered.png
+
 Numbers
 -------
 When inserting a field that renders a number, you must use a utility function

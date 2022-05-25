@@ -26,6 +26,7 @@ from odoo.tools import (
 from .barcode.code128 import get_code
 from .barcode.code39 import create_c39
 from .barcode.EANBarCode import EanBarCode
+from .barcode.qr import make_qr_code
 
 logger = logging.getLogger(__name__)
 
@@ -232,15 +233,41 @@ def barcode(
     else:
         return BytesIO(), 'image/png'
 
-    tf = BytesIO()
+    stream = _stream_image(im)
 
     if rotate is not None:
         im = im.rotate(int(rotate))
 
-    im.save(tf, 'png')
-    size_x = str(im.size[0] / 96.0) + 'in'
-    size_y = str(im.size[1] / 96.0) + 'in'
-    return tf, 'image/png', size_x, size_y
+    size_x, size_y = _get_image_size(im)
+    return stream, 'image/png', size_x, size_y
+
+
+@aeroo_util('qrcode')
+def qrcode(report, code, size=None):
+    image = make_qr_code(code)
+
+    if size is None:
+        size_x, size_y = _get_image_size(image)
+    else:
+        size_x, size_y = size, size
+
+    return _stream_image(image), 'image/png', size_x, size_y
+
+
+def _stream_image(image):
+    stream = BytesIO()
+    image.save(stream, 'png')
+    return stream
+
+
+def _get_image_size(image):
+    size_x = _to_inches(image.size[0])
+    size_y = _to_inches(image.size[1])
+    return size_x, size_y
+
+
+def _to_inches(pixels):
+    return str(pixels / 96.0) + 'in'
 
 
 @aeroo_util('html2text')

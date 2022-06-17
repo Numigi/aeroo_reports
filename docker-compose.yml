@@ -6,7 +6,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - odoo-web-data:/var/lib/odoo
-      - ./.log:/var/log/odoo
+      - ./log:/var/log/odoo
       - ./report_aeroo:/mnt/extra-addons/report_aeroo
     ports:
       - "8069:8069"

@@ -48,10 +48,11 @@ The language used for printing the template must be parametrized in the field 'L
 
 ## Numbers and Currencies
 
-Aeroo defines 2 helpers for formatting number field values in the language of the report.
+Aeroo defines helpers for formatting number field values in the language of the report.
 
 * format_decimal
 * format_currency
+* format_hours
 
 ### Exemple for format_decimal
 
@@ -126,6 +127,16 @@ you would get an amount format as follow:
 ```
 1 500,00 $US
 ```
+
+### Example for format_hours
+
+This function formats an amount into hours and minutes.
+
+```python
+format_hours(o.amount)
+```
+
+Suppose the amount is ``1.25``, the formatted amount will be ``01:15``.
 
 ## Date and Time
 

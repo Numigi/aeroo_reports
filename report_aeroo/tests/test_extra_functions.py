@@ -17,6 +17,7 @@ from ..extra_functions import (
     format_datetime_now,
     format_decimal,
     format_currency,
+    format_hours,
     format_html2text,
     group_by,
 )
@@ -27,6 +28,16 @@ class TestAerooReport(common.TransactionCase):
     def setUp(self):
         super().setUp()
         self.report = self.env.ref("report_aeroo.aeroo_sample_report")
+
+    @data(
+        (0, "00:00"),
+        (2.25, "02:15"),
+        (-2.25, "-02:15"),
+        (100, "100:00"),
+    )
+    @unpack
+    def test_format_hours(self, number, result):
+        self.assertEqual(format_hours(self.report, number), result)
 
     def test_format_date_fr(self):
         report = self.report.with_context(lang="fr_CA")

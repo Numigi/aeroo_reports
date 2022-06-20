@@ -68,6 +68,20 @@ def aeroo_util(function_name):
     return decorator
 
 
+@aeroo_util('format_hours')
+def format_hours(report, value):
+    hours = str(int(abs(value) // 1))
+    minutes = str(int((abs(value) * 60) % 60))
+    padded_hours = _with_padding_zero(hours)
+    padded_minutes = _with_padding_zero(minutes)
+    sign = "-" if value < 0 else ""
+    return f"{sign}{padded_hours}:{padded_minutes}"
+
+
+def _with_padding_zero(value):
+    return f"0{value}" if len(value) == 1 else value
+
+
 @aeroo_util('format_date')
 def format_date(report, value: date, date_format: str):
     """Format a date field value into the given format.

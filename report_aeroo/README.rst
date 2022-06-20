@@ -387,10 +387,11 @@ to format the number properly.
 
 .. image:: static/description/libreoffice_number_utilities.png
 
-Aeroo defines 2 helpers for formatting numbers.
+Aeroo defines helpers for formatting numbers.
 
 * format_decimal
 * format_currency
+* format_hours
 
 Example for format_decimal
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -422,6 +423,15 @@ If the report is printed in Canada French, the output will look like:
 
     1 500,00 $US
 
+Example for format_hours
+~~~~~~~~~~~~~~~~~~~~~~~~
+This function formats an amount into hours and minutes.
+
+.. code-block:: python
+
+    format_hours(o.amount)
+
+Suppose the amount is ``1.25``, the formatted amount will be ``01:15``.
 
 Force a number format
 ~~~~~~~~~~~~~~~~~~~~~

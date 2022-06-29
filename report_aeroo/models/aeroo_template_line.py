@@ -18,7 +18,7 @@ class AerooTemplateLine(models.Model):
     company_id = fields.Many2one('res.company', 'Company')
     lang_id = fields.Many2one('res.lang', 'Language')
     template_data = fields.Binary('Template', required=True)
-    template_filename = fields.Binary('File Name')
+    template_filename = fields.Char('File Name')
 
     def get_aeroo_template(self, record):
         return base64.b64decode(self.template_data)

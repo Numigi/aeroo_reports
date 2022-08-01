@@ -496,6 +496,7 @@ Aeroo defines the following helpers for formatting dates and time.
 * format_datetime
 * today
 * now
+* relativedelta
 
 The variables that you can use in these functions are documented on the babel website:
 
@@ -556,6 +557,27 @@ Suppose we are on the 6 of April 2018, 10:34 AM and the report is printed in Fre
 .. code-block::
 
     06 avril 2018 10:34 AM
+
+Time Delta
+~~~~~~~~~~
+You may use the function relativedelta to add an interval to a date to be printed in a report.
+
+For example, suppose your invoice is issued on ``2022-08-01``
+and you want to print a date 2 months in the future (relative to the invoice date).
+
+.. code-block:: python
+
+    format_date(o.date_invoice + relativedelta(months=2), 'dd MMMM yyyy')
+
+
+The result is:
+
+.. code-block::
+
+    01 octobre 2022
+
+The function relativedelta can be used with different types of intervals (days, months, weeks, years, etc).
+The documentation can be found `here <https://dateutil.readthedocs.io/en/stable/relativedelta.html>`_.
 
 Grouping Rows
 -------------

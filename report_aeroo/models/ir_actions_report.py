@@ -11,6 +11,7 @@ import sys
 import traceback
 from aeroolib.plugins.opendocument import Template, OOSerializer
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 from functools import wraps
 from io import BytesIO
 from genshi.template.eval import StrictLookup
@@ -240,6 +241,7 @@ class IrActionsReport(models.Model):
             'country': self._get_aeroo_country(record),
             'currency': self._get_aeroo_currency(record),
             'company': self._get_aeroo_company(record),
+            'relativedelta': relativedelta,
         }
 
     def _get_aeroo_libreoffice_timeout(self):

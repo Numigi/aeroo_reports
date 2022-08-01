@@ -222,7 +222,7 @@ The result is:
 ```
 
 The function relativedelta can be used with different types of intervals (days, months, weeks, years, etc).
-The documentation ca be found at https://dateutil.readthedocs.io/en/stable/relativedelta.html.
+The documentation can be found at https://dateutil.readthedocs.io/en/stable/relativedelta.html.
 
 
 ## Grouping Rows

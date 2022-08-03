@@ -544,6 +544,14 @@ Suppose we are on the 6 of April 2018 and the report is printed in French, the o
 
     06 avril 2018
 
+The function accepts an optional parameter ``delta`` allowing to pass a time delta to apply to the current date.
+
+Here is an example for printing the current date plus 2 months.
+
+.. code-block:: python
+
+    today('dd MMMM yyyy', delta=relativedelta(months=2))
+
 Exemple for now
 ~~~~~~~~~~~~~~~
 The function ``now`` is the same as ``format_datetime``, but with the current time in the user's timezone.
@@ -557,6 +565,14 @@ Suppose we are on the 6 of April 2018, 10:34 AM and the report is printed in Fre
 .. code-block::
 
     06 avril 2018 10:34 AM
+
+The function accepts an optional parameter ``delta`` allowing to pass a time delta to apply to the current time.
+
+Here is an example for printing the current time plus 2 months.
+
+.. code-block:: python
+
+    now('dd MMMM yyyy hh:mm a', delta=relativedelta(months=2))
 
 Time Delta
 ~~~~~~~~~~

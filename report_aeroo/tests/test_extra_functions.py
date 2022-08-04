@@ -4,6 +4,7 @@
 import io
 import pytest
 from datetime import datetime, date
+from dateutil.relativedelta import relativedelta
 from ddt import data, ddt, unpack
 from freezegun import freeze_time
 from odoo.exceptions import ValidationError
@@ -61,6 +62,13 @@ class TestAerooReport(common.TransactionCase):
             result = format_date_today(report, "d MMMM yyyy")
             self.assertEqual(result, "5 avril 2018")  # Canada/Eastern = UTC - 4 hours
 
+    def test_format_date_today_with_delta(self):
+        delta = relativedelta(months=1)
+        with freeze_time("2018-04-06 00:00:00"):
+            report = self.report.with_context(lang="fr_CA", tz="UTC")
+            result = format_date_today(report, "d MMMM yyyy", delta=delta)
+            self.assertEqual(result, "6 mai 2018")
+
     def test_format_datetime_fr(self):
         report = self.report.with_context(lang="fr_CA", tz="UTC")
         result = format_datetime(
@@ -97,6 +105,13 @@ class TestAerooReport(common.TransactionCase):
             self.assertEqual(
                 result, "6 avril 2018 06:34 AM"
             )  # Canada/Eastern = UTC - 4 hours
+
+    def test_format_datetime_now_with_delta(self):
+        delta = relativedelta(months=1)
+        with freeze_time(datetime(2018, 4, 6, 10, 34)):
+            report = self.report.with_context(lang="fr_CA", tz="UTC")
+            result = format_datetime_now(report, "d MMMM yyyy hh:mm a", delta)
+            self.assertEqual(result, "6 mai 2018 10:34 AM")
 
     def test_format_decimal_fr(self):
         report = self.report.with_context(lang="fr_CA")

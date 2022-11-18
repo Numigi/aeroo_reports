@@ -6,7 +6,7 @@ USER root
 # Install dependencies for aeroo reports
 RUN apt-get update && apt-get install -y --no-install-recommends \
         libreoffice-writer \
-        openjdk-8-jre \
+        openjdk-11-jre \
         pdftk \
     && rm -rf /var/lib/apt/lists/*
 

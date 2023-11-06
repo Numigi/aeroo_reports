@@ -3,7 +3,7 @@
 
 {
     'name': 'Aeroo Reports Replace Qweb',
-    'version': '2.1.0',
+    'version': '2.1.1',
     'category': 'Generic Modules/Aeroo Reports',
     'summary': 'Replace an aeroo report with a Qweb report',
     'author': 'Numigi',

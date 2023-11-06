@@ -14,7 +14,8 @@ class PortalAccountWithAerooInvoiceReport(CustomerPortal):
         but with the filename defined on the qweb report.
         """
         report = request.env.ref(report_ref)
-        if report_type == "pdf" and report.aeroo_report_id:
-            return self._show_aeroo_report(model, report.aeroo_report_id, download=download)
+        report_id = report.sudo().aeroo_report_id
+        if report_type == "pdf" and report_id:
+            return self._show_aeroo_report(model, report_id, download=download)
         else:
             return super()._show_report(model, report_type, report_ref, download=download)

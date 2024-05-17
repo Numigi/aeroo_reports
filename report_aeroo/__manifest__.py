@@ -13,7 +13,7 @@
     'website': 'https://bit.ly/numigi-com',
     'depends': ['mail'],
     'external_dependencies': {
-        'python': ['aeroolib', 'babel', 'genshi'],
+        'python': ['aeroolib', 'babel', 'currency2text', 'genshi'],
     },
     'data': [
         "security/security.xml",

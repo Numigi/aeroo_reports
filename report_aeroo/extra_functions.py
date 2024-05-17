@@ -71,6 +71,8 @@ def aeroo_util(function_name):
         return func
 
     return decorator
+
+
 @aeroo_util("currency_to_text")
 def currency_to_text(report, sum, currency, language = None):
     lang = report._context.get("lang") or "en_US"

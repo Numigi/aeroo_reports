@@ -10,6 +10,7 @@ import subprocess
 import sys
 import traceback
 from aeroolib.plugins.opendocument import Template, OOSerializer
+from currency2text import supported_language
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from functools import wraps

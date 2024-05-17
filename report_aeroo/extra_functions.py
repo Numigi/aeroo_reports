@@ -10,6 +10,7 @@ import itertools
 import logging
 import time
 from babel.core import localedata
+from currency2text import supported_language
 from datetime import datetime, date, timedelta
 from html2text import html2text
 from io import BytesIO
@@ -70,7 +71,12 @@ def aeroo_util(function_name):
         return func
 
     return decorator
-
+@aeroo_util("currency_to_text")
+def currency_to_text(report, sum, currency, language = None):
+    lang = report._context.get("lang") or "en_US"
+    s_lang = supported_language.get(language or lang)
+    return str(s_lang.currency_to_text(sum, currency), "UTF-8")
+    
 
 @aeroo_util("format_hours")
 def format_hours(report, value):

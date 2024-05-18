@@ -10,6 +10,7 @@ import itertools
 import logging
 import time
 from babel.core import localedata
+from currency2text import supported_language
 from datetime import datetime, date, timedelta
 from html2text import html2text
 from io import BytesIO
@@ -71,6 +72,23 @@ def aeroo_util(function_name):
 
     return decorator
 
+
+@aeroo_util("currency_to_text")
+def currency_to_text(report, sum, currency = None, language = None):
+    lang = report._context.get("lang") or "en_US"
+    s_lang = supported_language.get(language or lang)
+    context = report._context
+    currency = currency or context.get("currency")
+    if currency is None:
+        raise ValidationError(
+            _(
+                "The function `currency_to_text` can not be evaluated without a currency. "
+                "You must either define a currency in the field `Currency Evaluation` of the "
+                "Aeroo report or call the function with a currency explicitely."
+            )
+        )
+    return str(s_lang.currency_to_text(sum, currency), "UTF-8")
+    
 
 @aeroo_util("format_hours")
 def format_hours(report, value):

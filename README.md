@@ -1,6 +1,6 @@
 # Aeroo Reports
 
-Aeroo Reports for Odoo v14.0
+Aeroo Reports related module
 
 More information
 ----------------

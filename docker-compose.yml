@@ -1,13 +1,11 @@
-version: '3'
 services:
   odoo:
     build:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - odoo-web-data:/var/lib/odoo
+      - konvergo16-web-data:/var/lib/odoo
       - ./.log:/var/log/odoo
-      - ./report_aeroo:/mnt/extra-addons/report_aeroo
     ports:
       - "8069:8069"
       - "8071:8071"
@@ -17,16 +15,16 @@ services:
     environment:
       - LOG_ODOO=/var/log/odoo
   db:
-    image: postgres:9.6
+    image: postgres:16.0
     environment:
       - POSTGRES_PASSWORD=odoo
       - POSTGRES_USER=odoo
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
-      - odoo-db-data:/var/lib/postgresql/data/pgdata
+      - konvergo16-db-data:/var/lib/postgresql/data/pgdata
     expose:
       - 5432
 
 volumes:
-  odoo-web-data:
-  odoo-db-data:
+  konvergo16-web-data:
+  konvergo16-db-data:

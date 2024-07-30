@@ -1,7 +1,5 @@
-# © 2018 Numigi (tm) and all its contributors (https://bit.ly/numigiens)
+# Copyright 2018 Numigi (tm) and all its contributors (https://bit.ly/numigiens)
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/gpl).
-
-import re
 
 from odoo.addons.portal.controllers.portal import CustomerPortal
 from odoo.http import content_disposition, request
@@ -19,15 +17,17 @@ class Portal(CustomerPortal):
         :param template: the aeroo report template.
         :param download: whether the report is dowloaded or only shown to the screen.
         """
-        pdf = template.sudo()._render_aeroo(doc_ids=[record.id], force_output_format='pdf')[0]
+        pdf = template.sudo()._render_aeroo(
+            doc_ids=[record.id], force_output_format="pdf"
+        )[0]
 
         headers = [
-            ('Content-Type', 'application/pdf'),
-            ('Content-Length', len(pdf)),
+            ("Content-Type", "application/pdf"),
+            ("Content-Length", len(pdf)),
         ]
 
         if download:
             filename = template.sudo().get_aeroo_filename(record, "pdf")
-            headers.append(('Content-Disposition', content_disposition(filename)))
+            headers.append(("Content-Disposition", content_disposition(filename)))
 
         return request.make_response(pdf, headers=headers)

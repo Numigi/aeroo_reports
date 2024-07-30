@@ -1,3 +1,4 @@
+====================
 Report Aeroo Invoice
 ====================
 This module allows printing a customer invoice using Aeroo reports.

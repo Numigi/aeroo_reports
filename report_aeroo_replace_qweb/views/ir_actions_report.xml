@@ -4,7 +4,7 @@
     <record id="act_report_xml_view1" model="ir.ui.view">
         <field name="name">Aeroo Report Form: add Qweb tab</field>
         <field name="model">ir.actions.report</field>
-        <field name="inherit_id" ref="report_aeroo.act_report_xml_view1"/>
+        <field name="inherit_id" ref="report_aeroo.act_report_xml_view1" />
         <field name="arch" type="xml">
             <notebook position="inside">
                 <page string="Qweb">
@@ -32,7 +32,7 @@
     <record id="qweb_report_form_with_aeroo_replacement" model="ir.ui.view">
         <field name="name">Qweb Reports: add replacement Aeroo report</field>
         <field name="model">ir.actions.report</field>
-        <field name="inherit_id" ref="base.act_report_xml_view"/>
+        <field name="inherit_id" ref="base.act_report_xml_view" />
         <field name="arch" type="xml">
             <field name="paperformat_id" position="after">
                 <field name="aeroo_report_id"

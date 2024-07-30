@@ -1,4 +1,4 @@
-# © 2018 Numigi (tm) and all its contributors (https://bit.ly/numigiens)
+# Copyright 2018 Numigi (tm) and all its contributors (https://bit.ly/numigiens)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from odoo.tests import common
@@ -9,25 +9,33 @@ class TestAerooReportCompanyEval(common.SavepointCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.company = cls.env['res.company'].create({
-            'name': 'My Company',
-        })
+        cls.company = cls.env["res.company"].create(
+            {
+                "name": "My Company",
+            }
+        )
 
-        cls.company_2 = cls.env['res.company'].create({
-            'name': 'My Company 2',
-        })
+        cls.company_2 = cls.env["res.company"].create(
+            {
+                "name": "My Company 2",
+            }
+        )
 
-        cls.env.user.write({
-            'company_id': cls.company.id,
-            'company_ids': [(4, cls.company.id)],
-        })
+        cls.env.user.write(
+            {
+                "company_id": cls.company.id,
+                "company_ids": [(4, cls.company.id)],
+            }
+        )
 
-        cls.partner = cls.env['res.partner'].create({
-            'name': 'My Partner',
-            'company_id': cls.company_2.id,
-        })
+        cls.partner = cls.env["res.partner"].create(
+            {
+                "name": "My Partner",
+                "company_id": cls.company_2.id,
+            }
+        )
 
-        cls.report = cls.env.ref('report_aeroo.aeroo_sample_report')
+        cls.report = cls.env.ref("report_aeroo.aeroo_sample_report")
 
     def test_eval_company_using_the_company_defined_on_the_partner(self):
         self.report.aeroo_company_eval = "o.company_id"

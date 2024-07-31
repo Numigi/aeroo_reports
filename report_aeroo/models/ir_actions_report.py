@@ -1,20 +1,16 @@
-# © 2008-2014 Alistek
-# © 2016-2018 Savoir-faire Linux
-# © 2018 Numigi (tm) and all its contributors (https://bit.ly/numigiens)
+# Copyright 2008-2014 Alistek
+# Copyright 2016-2018 Savoir-faire Linux
+# Copyright 2018 Numigi (tm) and all its contributors (https://bit.ly/numigiens)
 # License GPL-3.0 or later (http://www.gnu.org/licenses/gpl).
 
 import base64
-import logging
 import os
 import subprocess
-import sys
 import traceback
 from aeroolib.plugins.opendocument import Template, OOSerializer
-from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from functools import wraps
 from io import BytesIO
-from genshi.template.eval import StrictLookup
 from genshi.template.base import Context as GenshiContext
 from tempfile import NamedTemporaryFile
 
@@ -118,7 +114,7 @@ class IrActionsReport(models.Model):
         res["id"] = self.id
         return res
 
-    def read(self, fields=None, load='_classic_read'):
+    def read(self, fields=None, load="_classic_read"):
         if not fields:
             fields = [k for k, v in self._fields.items() if v.type != "binary"]
 
@@ -174,14 +170,17 @@ class IrActionsReport(models.Model):
         lang = self._get_aeroo_lang(record)
         company = self._get_aeroo_company(record)
 
-        line_matches_lang = lambda l: not l.lang_id or l.lang_id.code == lang
-        line_matches_company = lambda l: not l.company_id or l.company_id == company
+        def line_matches_lang(line):
+            return not line.lang_id or line.lang_id.code == lang
+
+        def line_matches_company(line):
+            return not line.company_id or line.company_id == company
 
         line = next(
             (
-                l
-                for l in self.aeroo_template_line_ids
-                if line_matches_lang(l) and line_matches_company(l)
+                line
+                for line in self.aeroo_template_line_ids
+                if line_matches_lang(line) and line_matches_company(line)
             ),
             None,
         )
@@ -561,7 +560,7 @@ class IrActionsReport(models.Model):
 
         try:
             subprocess.call(cmd, timeout=timeout)
-        except:
+        except BaseException:
             os.remove(output_file.name)
             raise
 
@@ -682,10 +681,13 @@ class AerooReportsWithAttachmentFilenamePerLang(models.Model):
         :return: the filename mako template
         """
         lang = self._get_aeroo_lang(record)
-        line_matches_lang = lambda l: l.lang_id.code == lang
+
+        def line_matches_lang(line):
+            return line.lang_id.code == lang
 
         line = next(
-            (l for l in self.aeroo_filename_line_ids if line_matches_lang(l)), None
+            (line for line in self.aeroo_filename_line_ids if line_matches_lang(line)),
+            None,
         )
 
         if line is None:

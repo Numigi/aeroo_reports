@@ -1,9 +1,8 @@
-# © 2016-2018 Savoir-faire Linux
-# © 2018 Numigi (tm) and all its contributors (https://bit.ly/numigiens)
+# Copyright 2016-2018 Savoir-faire Linux
+# Copyright 2018 Numigi (tm) and all its contributors (https://bit.ly/numigiens)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 import base64
-import os
 from freezegun import freeze_time
 
 from odoo.exceptions import ValidationError
@@ -16,41 +15,53 @@ class TestAerooReport(common.SavepointCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        image_path = module.get_module_path('report_aeroo') + '/static/img/logo.png'
+        image_path = module.get_module_path("report_aeroo") + "/static/img/logo.png"
 
-        cls.company = cls.env['res.company'].create({
-            'name': 'My Company',
-        })
-        cls.company_2 = cls.env['res.company'].create({
-            'name': 'My Company 2',
-        })
+        cls.company = cls.env["res.company"].create(
+            {
+                "name": "My Company",
+            }
+        )
+        cls.company_2 = cls.env["res.company"].create(
+            {
+                "name": "My Company 2",
+            }
+        )
 
-        cls.user = cls.env.ref('base.user_demo')
+        cls.user = cls.env.ref("base.user_demo")
         cls.user.company_ids |= cls.company | cls.company_2
 
-        cls.partner = cls.env['res.partner'].create({
-            'name': 'My Partner',
-            'lang': 'en_US',
-            'company_id': cls.company.id,
-            'image_1920': base64.b64encode(open(image_path, 'rb').read())
-        })
+        cls.partner = cls.env["res.partner"].create(
+            {
+                "name": "My Partner",
+                "lang": "en_US",
+                "company_id": cls.company.id,
+                "image_1920": base64.b64encode(open(image_path, "rb").read()),
+            }
+        )
 
-        cls.lang_en = cls.env.ref('base.lang_en')
-        cls.lang_fr = cls.env.ref('base.lang_fr')
+        cls.lang_en = cls.env.ref("base.lang_en")
+        cls.lang_fr = cls.env.ref("base.lang_fr")
 
-        cls.partner_2 = cls.env['res.partner'].create({
-            'name': 'My Partner 2',
-            'lang': 'en_US',
-        })
+        cls.partner_2 = cls.env["res.partner"].create(
+            {
+                "name": "My Partner 2",
+                "lang": "en_US",
+            }
+        )
 
-        cls.report = cls.env.ref('report_aeroo.aeroo_sample_report')
-        cls.report.write({
-            'attachment': None,
-            'attachment_use': False,
-            'aeroo_lang_eval': 'o.lang',
-            'aeroo_company_eval': 'o.company_id',
-            'aeroo_out_format_id': cls.env.ref('report_aeroo.aeroo_mimetype_pdf_odt').id,
-        })
+        cls.report = cls.env.ref("report_aeroo.aeroo_sample_report")
+        cls.report.write(
+            {
+                "attachment": None,
+                "attachment_use": False,
+                "aeroo_lang_eval": "o.lang",
+                "aeroo_company_eval": "o.company_id",
+                "aeroo_out_format_id": cls.env.ref(
+                    "report_aeroo.aeroo_mimetype_pdf_odt"
+                ).id,
+            }
+        )
 
     def _render_report(self, partners):
         """Render the demo aeroo report for the given partners.
@@ -62,20 +73,26 @@ class TestAerooReport(common.SavepointCase):
         self.report.sudo(self.user.id)._render(partners.ids, {})
 
     def _create_report_line(self, lang, company=None):
-        self.report.write({
-            'aeroo_template_source': 'lines',
-        })
-        return self.env['aeroo.template.line'].create({
-            'report_id': self.report.id,
-            'lang_id': lang.id if lang else False,
-            'company_id': company.id if company else False,
-            'template_data': base64.b64encode(
-                self.report._get_aeroo_template_from_file()),
-        })
+        self.report.write(
+            {
+                "aeroo_template_source": "lines",
+            }
+        )
+        return self.env["aeroo.template.line"].create(
+            {
+                "report_id": self.report.id,
+                "lang_id": lang.id if lang else False,
+                "company_id": company.id if company else False,
+                "template_data": base64.b64encode(
+                    self.report._get_aeroo_template_from_file()
+                ),
+            }
+        )
 
     def test_sample_report_doc(self):
         self.report.aeroo_out_format_id = self.env.ref(
-            'report_aeroo.aeroo_mimetype_doc_odt')
+            "report_aeroo.aeroo_mimetype_doc_odt"
+        )
         self._render_report(self.partner)
 
     def test_sample_report_pdf_by_lang(self):
@@ -105,38 +122,50 @@ class TestAerooReport(common.SavepointCase):
         self._render_report(self.partner)
 
     def test_sample_report_pdf_with_attachment(self):
-        self.report.write({
-            'attachment_use': True,
-            'attachment': "${o.name}",
-        })
+        self.report.write(
+            {
+                "attachment_use": True,
+                "attachment": "${o.name}",
+            }
+        )
         self._render_report(self.partner)
 
-        attachment = self.env['ir.attachment'].search([
-            ('res_id', '=', self.partner.id),
-            ('res_model', '=', 'res.partner'),
-            ('name', '=', 'My Partner.pdf'),
-        ])
+        attachment = self.env["ir.attachment"].search(
+            [
+                ("res_id", "=", self.partner.id),
+                ("res_model", "=", "res.partner"),
+                ("name", "=", "My Partner.pdf"),
+            ]
+        )
         self.assertEqual(len(attachment), 1)
 
         self._render_report(self.partner)
 
     def _create_filename_line(self, lang, filename):
-        self.report.write({
-            'attachment_use': True,
-            'aeroo_filename_per_lang': True,
-            'aeroo_filename_line_ids': [
-                (0, 0, {
-                    'lang_id': lang.id,
-                    'filename': filename,
-                }),
-            ]
-        })
+        self.report.write(
+            {
+                "attachment_use": True,
+                "aeroo_filename_per_lang": True,
+                "aeroo_filename_line_ids": [
+                    (
+                        0,
+                        0,
+                        {
+                            "lang_id": lang.id,
+                            "filename": filename,
+                        },
+                    ),
+                ],
+            }
+        )
 
     def _search_attachment(self):
-        return self.env['ir.attachment'].search([
-            ('res_id', '=', self.partner.id),
-            ('res_model', '=', 'res.partner'),
-        ])
+        return self.env["ir.attachment"].search(
+            [
+                ("res_id", "=", self.partner.id),
+                ("res_model", "=", "res.partner"),
+            ]
+        )
 
     def test_ifPartnerHasNoLang_thenAttachmentNameIsRenderedInEnglish(self):
         self.report.aeroo_lang_eval = "None"
@@ -147,7 +176,7 @@ class TestAerooReport(common.SavepointCase):
         self._render_report(self.partner)
 
         attachment = self._search_attachment()
-        self.assertEqual(attachment.name, 'Sample Report: My Partner.pdf')
+        self.assertEqual(attachment.name, "Sample Report: My Partner.pdf")
 
     def test_ifReportHasSpecificLang_thenAttachmentNameIsRenderedInSpecificLang(self):
         filename = "Rapport de contact: ${today('d MMMM yyyy')}"
@@ -156,24 +185,26 @@ class TestAerooReport(common.SavepointCase):
         self.report.aeroo_lang_eval = "'fr_FR'"
         self.report.aeroo_tz_eval = "'UTC'"
 
-        with freeze_time('2018-04-06 00:00:00'):
+        with freeze_time("2018-04-06 00:00:00"):
             self._render_report(self.partner)
 
         attachment = self._search_attachment()
-        self.assertEqual(attachment.name, 'Rapport de contact: 6 avril 2018.pdf')
+        self.assertEqual(attachment.name, "Rapport de contact: 6 avril 2018.pdf")
 
-    def test_ifReportHasSpecificTimezone_thenAttachmentNameIsRenderedInSpecificTimezone(self):
+    def test_ifReportHasSpecificTimezone_thenAttachmentNameIsRenderedInSpecificTimezone(
+        self,
+    ):
         filename = "Sample Report: ${today('MMMM d, yyyy')}"
         self._create_filename_line(self.lang_en, filename)
 
         self.report.aeroo_lang_eval = "'en_US'"
         self.report.aeroo_tz_eval = "'Canada/Eastern'"
 
-        with freeze_time('2018-04-06 00:00:00'):
+        with freeze_time("2018-04-06 00:00:00"):
             self._render_report(self.partner)
 
         attachment = self._search_attachment()
-        self.assertEqual(attachment.name, 'Sample Report: April 5, 2018.pdf')
+        self.assertEqual(attachment.name, "Sample Report: April 5, 2018.pdf")
 
     def test_multicompany_context_with_lang_and_company(self):
         self._create_report_line(self.lang_en, self.company)
@@ -181,7 +212,7 @@ class TestAerooReport(common.SavepointCase):
 
     def test_multicompany_context_company_not_available(self):
         self._create_report_line(self.lang_en, self.company)
-        self.partner.write({'company_id': self.company_2.id})
+        self.partner.write({"company_id": self.company_2.id})
         with self.assertRaises(ValidationError):
             self._render_report(self.partner)
 
@@ -198,15 +229,15 @@ class TestAerooReport(common.SavepointCase):
         self._render_report(self.partner | self.partner_2)
 
     def test_context_contains_evaluated_country(self):
-        country = self.env.ref('base.ca')
+        country = self.env.ref("base.ca")
         self.company.country_id = country
         self.report.aeroo_country_eval = "o.company_id.country_id"
         context = self.report._get_aeroo_context(self.partner)
-        assert context['country'] == country
+        assert context["country"] == country
 
     def test_context_contains_evaluated_currency(self):
-        currency = self.env.ref('base.CAD')
+        currency = self.env.ref("base.CAD")
         self.company.currency_id = currency
         self.report.aeroo_currency_eval = "o.company_id.currency_id"
         context = self.report._get_aeroo_context(self.partner)
-        assert context['currency'] == currency
+        assert context["currency"] == currency

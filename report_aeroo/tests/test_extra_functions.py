@@ -1,4 +1,4 @@
-# © 2018 Numigi (tm) and all its contributors (https://bit.ly/numigiens)
+# Copyright 2018 Numigi (tm) and all its contributors (https://bit.ly/numigiens)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 import io
@@ -278,7 +278,8 @@ class TestGroupBy(common.SavepointCase):
             | self.invoice_2
         )
 
-        groupby = lambda p: p.type
+        def groupby(p):
+            return p.type
 
         groups = list(group_by(self.report, partners, groupby))
         assert len(groups) == 3
@@ -298,7 +299,8 @@ class TestGroupBy(common.SavepointCase):
             | self.invoice_2
         )
 
-        groupby = lambda p: p.type
+        def groupby(p):
+            return p.type
 
         def custom_sort(partner_type):
             if partner_type == "invoice":

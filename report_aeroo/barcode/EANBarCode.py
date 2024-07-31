@@ -1,8 +1,8 @@
-# Copyright (c) 2009-2011 Alistek Ltd (http://www.alistek.com) All Rights
-# Reserved.
+# Copyright (c) 2009-2011 Alistek Ltd (http://www.alistek.com) All Rights Reserved.
 #                    General contacts <info@alistek.com>
 
 from odoo.tools import config, ustr
+
 fontsize = 12
 
 """
@@ -12,16 +12,15 @@ installed.
 If the code has not checksum (12 digits), it added automatically.
 
 Create bar code sample :
-   from EANBarCode import EanBarCode
-   bar = EanBarCode()
-   bar.getImage("9782212110708",50,"gif")
+    from EANBarCode import EanBarCode
+    bar = EanBarCode()
+    bar.getImage("9782212110708",50,"gif")
 
 """
 
 
 class EanBarCode:
-
-    """ Compute the EAN bar code """
+    """Compute the EAN bar code"""
 
     def __init__(self):
         A = {
@@ -34,7 +33,8 @@ class EanBarCode:
             6: "0101111",
             7: "0111011",
             8: "0110111",
-            9: "0001011"}
+            9: "0001011",
+        }
         B = {
             0: "0100111",
             1: "0110011",
@@ -45,7 +45,8 @@ class EanBarCode:
             6: "0000101",
             7: "0010001",
             8: "0001001",
-            9: "0010111"}
+            9: "0010111",
+        }
         C = {
             0: "1110010",
             1: "1100110",
@@ -56,25 +57,31 @@ class EanBarCode:
             6: "1010000",
             7: "1000100",
             8: "1001000",
-            9: "1110100"}
+            9: "1110100",
+        }
         self.groupC = C
 
         self.family = {
-            0: (
-                A, A, A, A, A, A), 1: (
-                A, A, B, A, B, B), 2: (
-                A, A, B, B, A, B), 3: (
-                    A, A, B, B, B, A), 4: (
-                        A, B, A, A, B, B), 5: (
-                            A, B, B, A, A, B), 6: (
-                                A, B, B, B, A, A), 7: (
-                                    A, B, A, B, A, B), 8: (
-                                        A, B, A, B, B, A), 9: (
-                                            A, B, B, A, B, A)}
+            0: (A, A, A, A, A, A),
+            1: (A, A, B, A, B, B),
+            2: (A, A, B, B, A, B),
+            3: (A, A, B, B, B, A),
+            4: (A, B, A, A, B, B),
+            5: (A, B, B, A, A, B),
+            6: (A, B, B, B, A, A),
+            7: (A, B, A, B, A, B),
+            8: (A, B, A, B, B, A),
+            9: (A, B, B, A, B, A),
+        }
 
     def makeCode(self, code):
-        """ Create the binary code
-        return a string which contains "0" for white bar, "1" for black bar, "L" for long bar """
+        """
+        Create the binary code
+        return a string which contains :
+            "0" for white bar,
+            "1" for black bar,
+            "L" for long bar.
+        """
 
         # Convert code string in integer list
         self.EAN13 = []
@@ -94,32 +101,32 @@ class EanBarCode:
         left = self.family[self.EAN13[0]]
 
         # Add start separator
-        strCode = 'L0L'
+        strCode = "L0L"
 
         # Compute the left part of bar code
         for i in range(0, 6):
             strCode += left[i][self.EAN13[i + 1]]
 
         # Add middle separator
-        strCode += '0L0L0'
+        strCode += "0L0L0"
 
         # Compute the right codage class
         for i in range(7, 13):
             strCode += self.groupC[self.EAN13[i]]
 
         # Add stop separator
-        strCode += 'L0L'
+        strCode += "L0L"
 
         return strCode
 
     def computeChecksum(self, arg):
-        """ Compute the checksum of bar code """
+        """Compute the checksum of bar code"""
         # UPCA/EAN13
         weight = [1, 3] * 6
         magic = 10
         sum = 0
 
-        for i in range(12):         # checksum based on first 12 digits.
+        for i in range(12):  # checksum based on first 12 digits.
             sum = sum + int(arg[i]) * weight[i]
         z = (magic - (sum % magic)) % magic
         if z < 0 or z >= magic:
@@ -127,17 +134,18 @@ class EanBarCode:
         return z
 
     def verifyChecksum(self, bits):
-        """ Verify the checksum """
+        """Verify the checksum"""
         computedChecksum = self.computeChecksum(bits[:12])
         codeBarChecksum = bits[12]
 
         if codeBarChecksum != computedChecksum:
             raise Exception(
-                "Bad checksum is %s and should be %s" %
-                (codeBarChecksum, computedChecksum))
+                "Bad checksum is %s and should be %s"
+                % (codeBarChecksum, computedChecksum)
+            )
 
     def getImage(self, value, height=50, xw=1, rotate=None, extension="PNG"):
-        """ Get an image with PIL library
+        """Get an image with PIL library
         value code barre value
         height height in pixel of the bar code
         extension image file extension"""
@@ -157,19 +165,25 @@ class EanBarCode:
         im = Image.new("L", (len(bits) + position, height + 2))
 
         # Load font
-        ad = os.path.abspath(
-            os.path.join(
-                ustr(
-                    config['root_path']),
-                u'addons'))
-        mod_path_list = list(map(
-            lambda m: os.path.abspath(ustr(m.strip())), config['addons_path'].split(',')
-        ))
+        ad = os.path.abspath(os.path.join(ustr(config["root_path"]), "addons"))
+        mod_path_list = list(
+            map(
+                lambda m: os.path.abspath(ustr(m.strip())),
+                config["addons_path"].split(","),
+            )
+        )
         mod_path_list.append(ad)
 
         for mod_path in mod_path_list:
-            font_file = mod_path + os.path.sep + "report_aeroo" + os.path.sep + \
-                "barcode" + os.path.sep + "FreeMonoBold.ttf"  # "courB08.pil"
+            font_file = (
+                mod_path
+                + os.path.sep
+                + "report_aeroo"
+                + os.path.sep
+                + "barcode"
+                + os.path.sep
+                + "FreeMonoBold.ttf"
+            )  # "courB08.pil"
             if os.path.lexists(font_file):
                 font = ImageFont.truetype(font_file, fontsize)
 
@@ -187,27 +201,21 @@ class EanBarCode:
 
         # Draw second part of number
         draw.text(
-            (len(bits) /
-             2 +
-             2 +
-             position,
-             height -
-             9),
-            code[
-                7:],
-            font=font,
-            fill=0)
+            (len(bits) / 2 + 2 + position, height - 9), code[7:], font=font, fill=0
+        )
 
         # Draw the bar codes
         for bit in range(len(bits)):
             # Draw normal bar
-            if bits[bit] == '1':
+            if bits[bit] == "1":
                 draw.rectangle(
-                    ((bit + position, 0), (bit + position, height - 10)), fill=0)
+                    ((bit + position, 0), (bit + position, height - 10)), fill=0
+                )
             # Draw long bar
-            elif bits[bit] == 'L':
+            elif bits[bit] == "L":
                 draw.rectangle(
-                    ((bit + position, 0), (bit + position, height - 3)), fill=0)
+                    ((bit + position, 0), (bit + position, height - 3)), fill=0
+                )
 
         # Save the result image
         return im

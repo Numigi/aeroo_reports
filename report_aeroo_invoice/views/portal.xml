@@ -9,7 +9,7 @@
                 style="min-height: 800px"
                 />
         </xpath>
-        <xpath expr="//div[hasclass('o_portal_html_loader')]" position="replace"/>
+        <xpath expr="//div[hasclass('o_portal_html_loader')]" position="replace" />
     </template>
 
 </odoo>

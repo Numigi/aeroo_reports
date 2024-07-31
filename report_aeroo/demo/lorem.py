@@ -1,12 +1,18 @@
 # -*- coding: utf8 -*-
 
+from optparse import OptionParser
+from string import join
+
 shortname = "lorem"
 program = "Lorem Ipsum Generator (%s)" % shortname
 version = "0.6"
-copyright = "Copyright (C) 2007 Per Erik Strandberg"
-license = """This is free software, and you are welcome to redistribute it
-under the GNU General Public License <http://www.gnu.org/licenses/gpl.html>
-%s comes with NO WARRANTY, to the extent permitted by law.""" % shortname
+copyright_text = "Copyright (C) 2007 Per Erik Strandberg"
+license_text = (
+    """This is free software, and you are welcome to redistribute it
+    under the GNU General Public License <http://www.gnu.org/licenses/gpl.html>
+    %s comes with NO WARRANTY, to the extent permitted by law."""
+    % shortname
+)
 
 # Copyright 2007 Per Erik Strandberg: per at pererikstrandberg dot se
 #
@@ -135,7 +141,7 @@ tells the user that there is no warranty for the work (except to the
 extent that warranties are provided), that licensees may convey the
 work under this License, and how to view a copy of this License. If
 the interface presents a list of user commands or options, such as a
-menu, a prominent item in the list meets this criterion.  
+menu, a prominent item in the list meets this criterion.
 
 1. Source Code.
 
@@ -176,7 +182,7 @@ The Corresponding Source need not include anything that users can
 regenerate automatically from other parts of the Corresponding Source.
 
 The Corresponding Source for a work in source code form is that same
-work.  
+work.
 
 2. Basic Permissions.
 
@@ -265,7 +271,7 @@ in or on a volume of a storage or distribution medium, is called an
 used to limit the access or legal rights of the compilation's users
 beyond what the individual works permit. Inclusion of a covered work
 in an aggregate does not cause this License to apply to the other
-parts of the aggregate.  
+parts of the aggregate.
 
 6. Conveying Non-Source Forms.
 
@@ -360,7 +366,7 @@ Corresponding Source conveyed, and Installation Information provided,
 in accord with this section must be in a format that is publicly
 documented (and with an implementation available to the public in
 source code form), and must require no special password or key for
-unpacking, reading or copying.  
+unpacking, reading or copying.
 
 7. Additional Terms.
 
@@ -419,7 +425,7 @@ where to find the applicable terms.
 
 Additional terms, permissive or non-permissive, may be stated in the
 form of a separately written license, or stated as exceptions the
-above requirements apply either way.  
+above requirements apply either way.
 
 8. Termination.
 
@@ -561,7 +567,7 @@ consequence you may not convey it at all. For example, if you agree to
 terms that obligate you to collect a royalty for further conveying
 from those to whom you convey the Program, the only way you could
 satisfy both those terms and this License would be to refrain entirely
-from conveying the Program.  
+from conveying the Program.
 
 13. Use with the GNU Affero General Public License.
 
@@ -596,7 +602,7 @@ choose that version for the Program.
 Later license versions may give you additional or different
 permissions. However, no additional obligations are imposed on any
 author or copyright holder as a result of your choosing to follow a
-later version.  
+later version.
 
 15. Disclaimer of Warranty.
 
@@ -608,7 +614,7 @@ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
 A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND
 PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE
 DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR
-CORRECTION.  
+CORRECTION.
 
 16. Limitation of Liability.
 
@@ -693,17 +699,15 @@ please read <http://www.gnu.org/philosophy/why-not-lgpl.html>."""
 #  * http://lipsum.sourceforge.net/whatis.php for source lorems and inspiration
 
 
-from string import join
-
-def get_lorem(q = 0):
+def get_lorem(q=0):
     i = -1
 
     i += 1
-    if q == i: 
-        #This text is under public domain
-        #Lorem ipsum
-        #Cicero
-        return u"""lorem ipsum dolor sit amet consetetur sadipscing elitr sed diam nonumy
+    if q == i:
+        # This text is under public domain
+        # Lorem ipsum
+        # Cicero
+        return """lorem ipsum dolor sit amet consetetur sadipscing elitr sed diam nonumy
 eirmod tempor invidunt ut labore et dolore magna aliquyam erat sed diam
 voluptua at vero eos et accusam et justo duo dolores et ea rebum stet clita
 kasd gubergren no sea takimata sanctus est lorem ipsum dolor sit amet lorem
@@ -767,11 +771,11 @@ et ea rebum stet clita kasd gubergren no sea takimata sanctus est lorem
 ipsum dolor sit amet"""
 
     i += 1
-    if q == i: 
-        #This text is under public domain
-        #Childe Harold's Pilgrimage - Canto the first (I.-X.)
-        #Lord Byron
-        return u"""oh thou in hellas deemed of heavenly birth
+    if q == i:
+        # This text is under public domain
+        # Childe Harold's Pilgrimage - Canto the first (I.-X.)
+        # Lord Byron
+        return """oh thou in hellas deemed of heavenly birth
 muse formed or fabled at the minstrels will
 since shamed full oft by later lyres on earth
 mine dares not call thee from thy sacred hill
@@ -855,7 +859,7 @@ and none did love him  though to hall and bower
 he gathered revellers from far and near
 he knew them flatterers of the festal hour
 the heartless parasites of present cheer
-yea none did love himnot his lemans dear 
+yea none did love himnot his lemans dear
 but pomp and power alone are womans care
 and where these are light eros finds a feere
 maidens like moths are ever caught by glare
@@ -872,12 +876,12 @@ a few dear objects will in sadness feel
 such partings break the heart they fondly hope to heal"""
 
     i += 1
-    if q == i: 
-        #This text is under public domain
-        #Decameron - Novella Prima
-        #Giovanni Boccaccio
-        return u"""convenevole cosa e carissime donne che ciascheduna cosa la quale l'uomo fa
-dallo ammirabile e santo nome di colui il quale di tutte fu facitore le dea
+    if q == i:
+        # This text is under public domain
+        # Decameron - Novella Prima
+        # Giovanni Boccaccio
+        return """convenevole cosa e carissime donne che ciascheduna cosa la quale
+l'uomo fa dallo ammirabile e santo nome di colui il quale di tutte fu facitore le dea
 principio per che dovendo io al vostro novellare sí come primo dare
 cominciamento intendo da una delle sue maravigliose cose incominciare accio
 che quella udita la nostra speranza in lui sí come in cosa impermutabile si
@@ -905,11 +909,11 @@ novella la quale di raccontare intendo manifestamente dico non il giudicio
 di dio ma quel degli uomini seguitando"""
 
     i += 1
-    if q == i: 
-        #This text is under public domain
-        #Faust: Der Tragödie erster Teil
-        #Johann Wolfgang von Goethe
-        return u"""ihr naht euch wieder schwankende gestalten
+    if q == i:
+        # This text is under public domain
+        # Faust: Der Tragödie erster Teil
+        # Johann Wolfgang von Goethe
+        return """ihr naht euch wieder schwankende gestalten
 die früh sich einst dem trüben blick gezeigt
 versuch ich wohl euch diesmal festzuhalten
 fühl ich mein herz noch jenem wahn geneigt
@@ -946,11 +950,11 @@ was ich besitze seh ich wie im weiten
 und was verschwand wird mir zu wirklichkeiten"""
 
     i += 1
-    if q == i: 
-        #This text is under public domain
-        #In der Fremde
-        #Heinrich Heine
-        return u"""es treibt dich fort von ort zu ort
+    if q == i:
+        # This text is under public domain
+        # In der Fremde
+        # Heinrich Heine
+        return """es treibt dich fort von ort zu ort
 du weißt nicht mal warum
 im winde klingt ein sanftes wort
 schaust dich verwundert um
@@ -1001,12 +1005,12 @@ ankleiden muß ich mich nun schnelle
 und in gesellschaft gehn o weh"""
 
     i += 1
-    if q == i: 
-        #This text is under public domain
-        #Le Bateau Ivre
-        #Arthur Baudelaire
-        return u"""comme je descendais des fleuves impassibles
-je ne me sentis plus guidé par les haleurs 
+    if q == i:
+        # This text is under public domain
+        # Le Bateau Ivre
+        # Arthur Baudelaire
+        return """comme je descendais des fleuves impassibles
+je ne me sentis plus guidé par les haleurs
 des peaux-rouges criards les avaient pris pour cibles
 les ayant cloués nus aux poteaux de couleurs
 
@@ -1023,7 +1027,7 @@ n'ont pas subi tohu-bohus plus triomphants
 la tempete a béni mes éveils maritimes
 plus léger qu'un bouchon j'ai dansé sur les flots
 qu'on appelle rouleurs éternels de victimes
-dix nuits sans regretter l'oeil niais des falots 
+dix nuits sans regretter l'oeil niais des falots
 
 plus douce qu'aux enfants la chair des pommes sures
 l'eau verte pénétra ma coque de sapin
@@ -1033,47 +1037,47 @@ me lava dispersant gouvernail et grappin
 et des lors je me suis baigné dans le poeme
 de la mer infusé d'astres et lactescent
 dévorant les azurs verts  ou flottaison bleme
-et ravie un noyé pensif parfois descend 
+et ravie un noyé pensif parfois descend
 
 ou teignant tout a coup les bleuités délires
 et rythmes lents sous les rutilements du jour
 plus fortes que l'alcool plus vastes que nos lyres
-fermentent les rousseurs ameres de l'amour 
+fermentent les rousseurs ameres de l'amour
 
 je sais les cieux crevant en éclairs et les trombes
 et les ressacs et les courants  je sais le soir
 l'aube exaltée ainsi qu'un peuple de colombes
-et j'ai vu quelque fois ce que l'homme a cru voir 
+et j'ai vu quelque fois ce que l'homme a cru voir
 
 j'ai vu le soleil bas taché d'horreurs mystiques
 illuminant de longs figements violets
 pareils a des acteurs de drames tres-antiques
-les flots roulant au loin leurs frissons de volets 
+les flots roulant au loin leurs frissons de volets
 
 j'ai revé la nuit verte aux neiges éblouies
 baiser montant aux yeux des mers avec lenteurs
 la circulation des seves inouies
-et l'éveil jaune et bleu des phosphores chanteurs 
+et l'éveil jaune et bleu des phosphores chanteurs
 
 j'ai suivi des mois pleins pareille aux vacheries
 hystériques la houle a l'assaut des récifs
 sans songer que les pieds lumineux des maries
-pussent forcer le mufle aux océans poussifs 
+pussent forcer le mufle aux océans poussifs
 
 j'ai heurté savez-vous d'incroyables florides
 melant aux fleurs des yeux de pantheres a peaux
 d'hommes  des arcs-en-ciel tendus comme des brides
-sous l'horizon des mers a de glauques troupeaux 
+sous l'horizon des mers a de glauques troupeaux
 
 j'ai vu fermenter les marais énormes nasses
-ou pourrit dans les joncs tout un léviathan 
+ou pourrit dans les joncs tout un léviathan
 des écroulement d'eau au milieu des bonaces
-et les lointains vers les gouffres cataractant 
+et les lointains vers les gouffres cataractant
 
-glaciers soleils d'argent flots nacreux cieux de braises 
+glaciers soleils d'argent flots nacreux cieux de braises
 échouages hideux au fond des golfes bruns
 ou les serpents géants dévorés de punaises
-choient des arbres tordus avec de noirs parfums 
+choient des arbres tordus avec de noirs parfums
 
 j'aurais voulu montrer aux enfants ces dorades
 du flot bleu ces poissons d'or ces poissons chantants
@@ -1088,12 +1092,12 @@ et je restais ainsi qu'une femme a genoux
 presque île balottant sur mes bords les querelles
 et les fientes d'oiseaux clabaudeurs aux yeux blonds
 et je voguais lorsqu'a travers mes liens freles
-des noyés descendaient dormir a reculons 
+des noyés descendaient dormir a reculons
 
 or moi bateau perdu sous les cheveux des anses
 jeté par l'ouragan dans l'éther sans oiseau
 moi dont les monitors et les voiliers des hanses
-n'auraient pas repeché la carcasse ivre d'eau 
+n'auraient pas repeché la carcasse ivre d'eau
 
 libre fumant monté de brumes violettes
 moi qui trouais le ciel rougeoyant comme un mur
@@ -1103,22 +1107,22 @@ des lichens de soleil et des morves d'azur
 qui courais taché de lunules électriques
 planche folle escorté des hippocampes noirs
 quand les juillets faisaient crouler a coups de triques
-les cieux ultramarins aux ardents entonnoirs 
+les cieux ultramarins aux ardents entonnoirs
 
 moi qui tremblais sentant geindre a cinquante lieues
 le rut des béhémots et les maelstroms épais
 fileur éternel des immobilités bleues
-je regrette l'europe aux anciens parapets 
+je regrette l'europe aux anciens parapets
 
 j'ai vu des archipels sidéraux  et des îles
-dont les cieux délirants sont ouverts au vogueur 
+dont les cieux délirants sont ouverts au vogueur
 - est-ce en ces nuits sans fond que tu dors et t'exiles
 million d'oiseaux d'or ô future vigueur  -
 
 mais vrai j'ai trop pleuré  les aubes sont navrantes
-toute lune est atroce et tout soleil amer 
+toute lune est atroce et tout soleil amer
 l'âcre amour m'a gonflé de torpeurs enivrantes
-ô que ma quille éclate  ô que j'aille a la mer 
+ô que ma quille éclate  ô que j'aille a la mer
 
 si je désire une eau d'europe c'est la flache
 noire et froide ou vers le crépuscule embaumé
@@ -1131,11 +1135,11 @@ ni traverser l'orgueil des drapeaux et des flammes
 ni nager sous les yeux horribles des pontons"""
 
     i += 1
-    if q == i: 
-        #This text is under public domain
-        #Le Masque
-        #Arthur Rembaud
-        return u"""contemplons ce trésor de grâces florentines
+    if q == i:
+        # This text is under public domain
+        # Le Masque
+        # Arthur Rembaud
+        return """contemplons ce trésor de grâces florentines
 dans l'ondulation de ce corps musculeux
 l'elégance et la force abondent soeurs divines
 cette femme morceau vraiment miraculeux
@@ -1178,11 +1182,11 @@ c'est que demain hélas il faudra vivre encore
 demain apres-demain et toujours  comme nous"""
 
     i += 1
-    if q == i: 
-        #This text is under public domain
-        #Nagyon fáj
-        #József Attila
-        return u"""kivül belõl
+    if q == i:
+        # This text is under public domain
+        # Nagyon fáj
+        # József Attila
+        return """kivül belõl
 leselkedõ halál elõl
 mint lukba megriadt egérke
 
@@ -1295,12 +1299,12 @@ menekülõ élõ elõl
 a legutolsó menedéket"""
 
     i += 1
-    if q == i: 
-        #This text is under public domain
-        #Ómagyar-Mária siralom
-        #Ismeretlen
-        return u"""volek syrolm thudothlon syrolmol sepedyk buol ozuk epedek walasth vylagumtul
-sydou fyodumtul ezes urumemtuul o en eses urodum eggen yg fyodum syrou aniath
+    if q == i:
+        # This text is under public domain
+        # Ómagyar-Mária siralom
+        # Ismeretlen
+        return """volek syrolm thudothlon syrolmol sepedyk buol ozuk epedek walasth
+vylagumtul sydou fyodumtul ezes urumemtuul o en eses urodum eggen yg fyodum syrou aniath
 thekunched buabeleul kyniuhhad scemem kunuel arad en iunhum buol farad the
 werud hullothya en iunhum olelothya vylag uilaga viragnac uiraga keseruen
 kynzathul uos scegegkel werethul vh nequem en fyon ezes mezuul scegenul
@@ -1313,11 +1317,11 @@ wklelue kethwe ulud keguggethuk fyomnok ne leg kegulm mogomnok owog halal
 kynaal anyath ezes fyaal egembelu ullyetuk"""
 
     i += 1
-    if q == i: 
-        #This text is under public domain
-        #Robinsono Kruso (Esperanto)
-        #Daniel Defoe
-        return u"""mi naskigxis en jorko anglujo je marto kiu estas la
+    if q == i:
+        # This text is under public domain
+        # Robinsono Kruso (Esperanto)
+        # Daniel Defoe
+        return """mi naskigxis en jorko anglujo je marto kiu estas la
 sesjarrego de la regxo karolo la unua infane mi sentadis grandan
 deziron por pasigi mian vivon sur la maro kaj pliagxante la deziro
 plifortigxis gxis fine mi forlasis mian lernejon kaj hejmon kaj
@@ -1627,128 +1631,128 @@ acxetis sklavon por mi intertempe mi jam acxetis sklavon tial mi nun
 havas du kaj cxio prosperis dum la sekvanta jaro"""
 
     i += 1
-    if q == i: 
-        #This text is under public domain
-        #The Raven
-        #Edgar Allan Poe
-        return u"""once upon a midnight dreary while i pondered weak and weary
+    if q == i:
+        # This text is under public domain
+        # The Raven
+        # Edgar Allan Poe
+        return """once upon a midnight dreary while i pondered weak and weary
 over many a quaint and curious volume of forgotten lore
 while i nodded nearly napping suddenly there came a tapping
 as of some one gently rapping rapping at my chamber door
 tis some visiter i muttered tapping at my chamber door
-only this and nothing more 
+only this and nothing more
 
 ah distinctly i remember it was in the bleak december
 and each separate dying ember wrought its ghost upon the floor
 eagerly i wished the morrow vainly i had sought to borrow
 from my books surcease of sorrowsorrow for the lost lenore
 for the rare and radiant maiden whom the angels name lenore
-nameless here for evermore 
+nameless here for evermore
 
 and the silken sad uncertain rustling of each purple curtain
 thrilled mefilled me with fantastic terrors never felt before
 so that now to still the beating of my heart i stood repeating
 tis some visiter entreating entrance at my chamber door
 some late visiter entreating entrance at my chamber door
-this it is and nothing more 
+this it is and nothing more
 
 presently my soul grew stronger hesitating then no longer
 sir said i or madam truly your forgiveness i implore
 but the fact is i was napping and so gently you came rapping
 and so faintly you came tapping tapping at my chamber door
 that i scarce was sure i heard youhere i opened wide the door
-darkness there and nothing more 
+darkness there and nothing more
 
 deep into that darkness peering long i stood there wondering fearing
 doubting dreaming dreams no mortals ever dared to dream before
 but the silence was unbroken and the stillness gave no token
 and the only word there spoken was the whispered word lenore
 this i whispered and an echo murmured back the word lenore
-merely this and nothing more 
+merely this and nothing more
 
 back into the chamber turning all my soul within me burning
 soon again i heard a tapping something louder than before
 surely said i surely that is something at my window lattice
 let me see then what thereat is and this mystery explore
 let my heart be still a moment and this mystery explore
-tis the wind and nothing more 
+tis the wind and nothing more
 
 open here i flung the shutter when with many a flirt and flutter
 in there stepped a stately raven of the saintly days of yore
 not the least obeisance made he not a minute stopped or stayed he
 but with mien of lord or lady perched above my chamber door
 perched upon a bust of pallas just above my chamber door
-perched and sat and nothing more 
+perched and sat and nothing more
 
 then the ebony bird beguiling my sad fancy into smiling
 by the grave and stern decorum of the countenance it wore
 though thy crest be shorn and shaven thou i said art sure no craven
 ghastly grim and ancient raven wandering from the nightly shore
 tell me what thy lordly name is on the nights plutonian shore
-quoth the raven nevermore 
+quoth the raven nevermore
 
 much i marvelled this ungainly fowl to hear discourse so plainly
 though its answer little meaninglittle relevancy bore
 for we cannot help agreeing that no living human being
 ever yet was blessed with seeing bird above his chamber door
 bird or beast upon the sculptured bust above his chamber door
-with such name as nevermore 
+with such name as nevermore
 
 but the raven sitting lonely on that placid bust spoke only
 that one word as if its soul in that one word he did outpour
 nothing farther then he uttered not a feather then he fluttered
 till i scarcely more than muttered other friends have flown before
 on the morrow he will leave me as my hopes have flown before
-then the bird said nevermore 
+then the bird said nevermore
 
 startled at the stillness broken by reply so aptly spoken
 doubtless said i what it utters is its only stock and store
 caught from some unhappy master whom unmerciful disaster
 followed fast and followed faster till his songs one burden bore
 till the dirges of his hope that melancholy burden bore
-of nevernevermore 
+of nevernevermore
 
 but the raven still beguiling all my sad soul into smiling
 straight i wheeled a cushioned seat in front of bird and bust and door
 then upon the velvet sinking i betook myself to linking
 fancy unto fancy thinking what this ominous bird of yore
 what this grim ungainly ghastly gaunt and ominous bird of yore
-meant in croaking nevermore 
+meant in croaking nevermore
 
 this i sat engaged in guessing but no syllable expressing
 to the fowl whose fiery eyes now burned into my bosoms core
 this and more i sat divining with my head at ease reclining
 on the cushions velvet lining that the lamplight gloated oer
 but whose velvet violet lining with the lamplight gloating oer
-she shall press ah nevermore 
+she shall press ah nevermore
 
 then methought the air grew denser perfumed from an unseen censer
 swung by seraphim whose footfalls tinkled on the tufted floor
 wretch i cried thy god hath lent theeby these angels he hath sent thee
 respiterespite and nepenthe from thy memories of lenore
 quaff oh quaff this kind nepenthe and forget this lost lenore
-quoth the raven nevermore 
+quoth the raven nevermore
 
 prophet said i thing of evilprophet still if bird or devil
 whether tempter sent or whether tempest tossed thee here ashore
 desolate yet all undaunted on this desert land enchanted
 on this home by horror hauntedtell me truly i implore
 is thereis there balm in gileadtell metell me i implore
-quoth the raven nevermore 
+quoth the raven nevermore
 
 prophet said i thing of evilprophet still if bird or devil
 by that heaven that bends above usby that god we both adore
 tell this soul with sorrow laden if within the distant aidenn
 it shall clasp a sainted maiden whom the angels name lenore
 clasp a rare and radiant maiden whom the angels name lenore
-quoth the raven nevermore 
+quoth the raven nevermore
 
 be that our sign of parting bird or fiend i shrieked upstarting
 get thee back into the tempest and the nights plutonian shore
 leave no black plume as a token of that lie thy soul has spoken
 leave my loneliness unbrokenquit the bust above my door
 take thy beak from out my heart and take thy form from off my door
-quoth the raven nevermore 
+quoth the raven nevermore
 
 and the raven never flitting still is sitting still is sitting
 on the pallid bust of pallas just above my chamber door
@@ -1758,11 +1762,11 @@ and my soul from out that shadow that lies floating on the floor
 shall be lifted nevermore"""
 
     i += 1
-    if q == i: 
-        #This text is under public domain
-        #Tierra y Luna
-        #Federico García Lorca
-        return u"""me quedo con el transparente hombrecillo
+    if q == i:
+        # This text is under public domain
+        # Tierra y Luna
+        # Federico García Lorca
+        return """me quedo con el transparente hombrecillo
 que come los huevos de la golondrina
 me quedo con el nino desnudo
 que pisotean los borrachos de brooklyn
@@ -1811,13 +1815,13 @@ pero la luna subía y bajaba las escaleras
 repartiendo lentejas desangradas en los ojos
 dando escobazos de plata a los ninos de los muelles
 y borrando mi apariencia por el término del aire"""
-    
+
     i += 1
-    if q == i: 
-        #This text is under public domain
-        #Hemsöborna
-        #August Strindberg (1912-1921)
-        return u"""han kom som ett yrväder en aprilafton och hade
+    if q == i:
+        # This text is under public domain
+        # Hemsöborna
+        # August Strindberg (1912-1921)
+        return """han kom som ett yrväder en aprilafton och hade
 ett höganäskrus i en svångrem om halsen clara
 och lotten voro inne med skötekan att hämta
 honom på dalarö brygga men det dröjde evigheter
@@ -1851,100 +1855,102 @@ han inte alls och han var också kallad ut till
 hemsö för att ta hand om åker och kreatur som
 ingen annan ville ta befattning med sedan gubben
 flod gått ur livet och änkan satt ensam vid gården"""
-    
+
     # if we got this far - let's return this crap (instead of throwing)
-    return u"""fubar1 fubar2 fubar3
+    return """fubar1 fubar2 fubar3
 foobar1 foobar2 foobar3 foobar4 foobar5
 baroba1
 
 raboof1"""
 
 
-from optparse import OptionParser
-
 def do_parse():
 
     usage = """Usage:    lorem [-n|-l|-c] N [-q M]?
-          where
-          N and M are integers
+            where
+            N and M are integers
 
 Note:     If -n -l and/or -c are combined -l has priority over -c that has
-          priority over -n.
+            priority over -n.
 
 Examples: lorem -n 10
-          Get 10 words of lorem.
+            Get 10 words of lorem.
 
-          lorem -l 5
-          Get 5 lines of lorem
+            lorem -l 5
+            Get 5 lines of lorem
 
-          lorem -c 79
-          Get 79 characters of lorem
+            lorem -c 79
+            Get 79 characters of lorem
 
-          lorem -l 5 -q 11
-          Get 5 lines of lorem from quote 11
+            lorem -l 5 -q 11
+            Get 5 lines of lorem from quote 11
 
 License:  Copyright (C) 2007 Per Erik Strandberg
-          This program comes with ABSOLUTELY NO WARRANTY.
+            This program comes with ABSOLUTELY NO WARRANTY.
 
-          This is free software, and you are welcome to redistribute it
-          under the GNU GENERAL PUBLIC LICENSE Version 3.  
-"""    
+            This is free software, and you are welcome to redistribute it
+            under the GNU GENERAL PUBLIC LICENSE Version 3.
+"""
 
-    versioninfo = "%s version %s\n%s\n\n%s" % (program, version, #
-        copyright, license) 
+    versioninfo = "%s version %s\n%s\n\n%s" % (
+        program,
+        version,
+        copyright_text,
+        license_text,
+    )
 
-    parser = OptionParser(usage=usage, version = versioninfo)
+    parser = OptionParser(usage=usage, version=versioninfo)
 
-    parser.add_option('-n', dest='n', help="Number of Words", default=0)
-    parser.add_option('-l', dest='l', help="Number of Lines", default=0)
-    parser.add_option('-c', dest='c', help="Number of Chars", default=0)
-    parser.add_option('-q', dest='q', help="Quote index (0+)", default=0)
+    parser.add_option("-n", dest="n", help="Number of Words", default=0)
+    parser.add_option("-l", dest="l", help="Number of Lines", default=0)
+    parser.add_option("-c", dest="c", help="Number of Chars", default=0)
+    parser.add_option("-q", dest="q", help="Quote index (0+)", default=0)
     (options, args) = parser.parse_args()
 
     try:
         options.n = int(options.n)
-        options.l = int(options.l)
+        options.l = int(options.l)  # noqa E741
         options.c = int(options.c)
         options.q = int(options.q)
-    except:
+    except BaseException:
         parser.error("At least one of the arguments is not an integer.")
 
     for m in [options.n, options.l, options.c, options.q]:
         if m < 0:
             parser.error("Negative argument.")
-            
-    if options.n == 0 and options.l == 0 and options.c == 0:
+
+    if options.n == 0 and options.l == 0 and options.c == 0:  # noqa E741
         parser.error("No arguments, try 'lorem -n 25'.")
 
     return (options, args)
 
 
-def do_lorem(n=0, l=0, c=0, q=0):
+def do_lorem(n=0, line=0, c=0, q=0):
 
     lorem = get_lorem(q)
 
-    res = ''
-    if l!=0:
-        #do lines
-        lorem = lorem.replace('\n\n','\n')
-        lines = lorem.split('\n')
+    res = ""
+    if line != 0:
+        # Do lines
+        lorem = lorem.replace("\n\n", "\n")
+        lines = lorem.split("\n")
 
-        while l:
-            if l > len(lines):
+        while line:
+            if line > len(lines):
                 l1 = len(lines)
-                l -= l1
+                line -= l1
             else:
-                l1 = l
-                l = 0
+                l1 = line
+                line = 0
 
-            for i in xrange(l1):
-                res += lines[i].strip()+'\n'
+            for i in range(l1):
+                res += lines[i].strip() + "\n"
 
-    elif c!=0:
-        # do chars
+    elif c != 0:
+        # Do chars
         chars = lorem
-        chars = chars.replace('\n', ' ')
-        chars = chars.replace('  ', ' ')
+        chars = chars.replace("\n", " ")
+        chars = chars.replace("  ", " ")
 
         outchars = []
 
@@ -1958,14 +1964,14 @@ def do_lorem(n=0, l=0, c=0, q=0):
                 c = 0
                 outchars.append(chars[0:c1])
 
-        res += join(outchars,'')+'\n'
+        res += join(outchars, "") + "\n"
 
     else:
-        # do words
-        words = lorem.replace('\n\n','\n')
-        words = words.replace('\n', ' ')
-        words = words.replace('  ', ' ')
-        words = words.split(' ')
+        # Do words
+        words = lorem.replace("\n\n", "\n")
+        words = words.replace("\n", " ")
+        words = words.replace("  ", " ")
+        words = words.split(" ")
 
         while n:
             if n > len(words):
@@ -1975,8 +1981,7 @@ def do_lorem(n=0, l=0, c=0, q=0):
                 n1 = n
                 n = 0
 
-            for i in xrange(n1):
-                res += words[i]+' '
+            for i in range(n1):
+                res += words[i] + " "
 
     return res
-

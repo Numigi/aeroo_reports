@@ -1,6 +1,6 @@
-# © 2008-2014 Alistek
-# © 2016-2018 Savoir-faire Linux
-# © 2018 Numigi (tm) and all its contributors (https://bit.ly/numigiens)
+# Copyright 2008-2014 Alistek
+# Copyright 2016-2018 Savoir-faire Linux
+# Copyright 2018 Numigi (tm) and all its contributors (https://bit.ly/numigiens)
 # License GPL-3.0 or later (http://www.gnu.org/licenses/gpl).
 
 import babel.numbers
@@ -8,7 +8,6 @@ import babel.dates
 import base64
 import itertools
 import logging
-import time
 from babel.core import localedata
 from datetime import datetime, date, timedelta
 from html2text import html2text
@@ -17,11 +16,6 @@ from PIL import Image
 
 from odoo import fields, _
 from odoo.exceptions import ValidationError
-from odoo.tools import (
-    DEFAULT_SERVER_DATE_FORMAT,
-    DEFAULT_SERVER_DATETIME_FORMAT,
-    DEFAULT_SERVER_TIME_FORMAT,
-)
 
 from .barcode.code128 import get_code
 from .barcode.code39 import create_c39
@@ -45,9 +39,8 @@ class AerooFunctionRegistry(object):
         """
         if func_name in self._functions:
             raise RuntimeError(
-                "A function named {func_name} is already registered in the Aeroo registry.".format(
-                    func_name=func_name
-                )
+                "A function named {func_name} is already registered "
+                "in the Aeroo registry.".format(func_name=func_name)
             )
         self._functions[func_name] = func
 
@@ -183,9 +176,10 @@ def format_currency(
     if currency is None:
         raise ValidationError(
             _(
-                "The function `format_currency` can not be evaluated without a currency. "
-                "You must either define a currency in the field `Currency Evaluation` of the "
-                "Aeroo report or call the function with a currency explicitely."
+                "The function `format_currency` can not be evaluated "
+                "without a currency. You must either define a currency"
+                " in the field `Currency Evaluation` of the Aeroo report "
+                "or call the function with a currency explicitely."
             )
         )
 

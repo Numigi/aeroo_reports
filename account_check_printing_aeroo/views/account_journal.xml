@@ -4,10 +4,10 @@
     <record id="view_account_journal_form" model="ir.ui.view">
         <field name="name">account.journal.form</field>
         <field name="model">account.journal</field>
-        <field name="inherit_id" ref="account_check_printing.view_account_journal_form_inherited"/>
+        <field name="inherit_id" ref="account_check_printing.view_account_journal_form_inherited" />
         <field name="arch" type="xml">
             <field name="check_next_number" position="after">
-                <field name="check_report_id"/>
+                <field name="check_report_id" />
             </field>
         </field>
     </record>

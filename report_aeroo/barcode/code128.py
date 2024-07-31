@@ -1,5 +1,4 @@
-# Copyright (c) 2009-2011 Alistek Ltd (http://www.alistek.com) All Rights
-# Reserved.
+# Copyright (c) 2009-2011 Alistek Ltd (http://www.alistek.com) All Rights Reserved.
 #                    General contacts <info@alistek.com>
 # This list was cut'n'pasted verbatim from the "Code 128 Specification Page"
 # at http://www.adams1.com/pub/russadam/128code.html
@@ -120,25 +119,25 @@ other = """103 (Hex 87) 	START (Code A) 	2 1 1 4 1 2
 
 codes = {}
 values = {}
-for l in codelist.split('\n'):
-    l.strip()
-    num, a1, b1, c1, code = l.split('\t')
-    num = int(num.split(' ')[0])
+for element in codelist.split("\n"):
+    element.strip()
+    num, a1, b1, c1, code = element.split("\t")
+    num = int(num.split(" ")[0])
     values[num] = [int(x) for x in code.split()]
     codes[b1.strip()] = num
 
-codes[' '] = codes['SP']
+codes[" "] = codes["SP"]
 
-for l in other.split('\n'):
-    l.strip()
-    num, name, code = l.split('\t')
-    num = int(num.split(' ')[0])
+for element in other.split("\n"):
+    element.strip()
+    num, name, code = element.split("\t")
+    num = int(num.split(" ")[0])
     values[num] = [int(x) for x in code.split()]
     codes[name.strip()] = num
 
 
 def encode_message(msg):
-    startnum = codes['START (Code B)']
+    startnum = codes["START (Code B)"]
     message = values[startnum][:]
     chksum = startnum
     mult = 1
@@ -152,17 +151,17 @@ def encode_message(msg):
     chksum = chksum % 103
 
     message = message + values[chksum]
-    message = message + values[codes['STOP']]
+    message = message + values[codes["STOP"]]
 
     return message
 
 
 def get_code(message, xw=1, h=100, rotate=None):
-    """ message is message to code.
-        xw is horizontal multiplier (in pixels width of narrowest bar)
-        h is height in pixels.
+    """message is message to code.
+    xw is horizontal multiplier (in pixels width of narrowest bar)
+    h is height in pixels.
 
-        Returns a Python Imaging Library object."""
+    Returns a Python Imaging Library object."""
 
     widths = [xw * 20] + encode_message(message) + [xw * 20]
 
@@ -175,7 +174,7 @@ def get_code(message, xw=1, h=100, rotate=None):
     # print len(bits)
     # print bits
 
-    i = Image.new('1', (len(bits), h), 1)
+    i = Image.new("1", (len(bits), h), 1)
 
     for b in range(len(bits)):
         for y in range(h):

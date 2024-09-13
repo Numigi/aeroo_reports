@@ -2,7 +2,6 @@
 # Copyright 2018 - Brain-tec AG - Carlos Jesus Cebrian
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl)
 import json
-import mimetypes
 from werkzeug.urls import url_decode
 
 from odoo import http
@@ -53,7 +52,8 @@ class ReportController(report.ReportController):
             report = report.sudo()
         context['report_name'] = reportname
         context['return_filename'] = True
-        res, extension, filename = report.with_context(context)._render_aeroo(reportname, docids, data=data)
+        res, extension, filename = report.with_context(context)._render_aeroo(
+            reportname, docids, data=data)
         mimetype = self.MIMETYPES.get(res, 'application/octet-stream')
         httpheaders = [
             ('Content-Disposition', content_disposition(filename)),
@@ -82,11 +82,13 @@ class ReportController(report.ReportController):
                 reportname, docids = reportname.split('/')
             # on aeroo we support docids + data
             data = url_decode(url.split('?')[1]).items()
-            # TODO deberiamos ver si podemos mejorar esto que va de la mano con algo que comentamos en js
-            # y no parece ser lo que hacen otros. Basicamente estamos obteniendo lo que mandamos en context al imprimir
+            # TODO deberiamos ver si podemos mejorar esto que va de la mano con algo
+            # que comentamos en js y no parece ser lo que hacen otros. Basicamente
+            # estamos obteniendo lo que mandamos en context al imprimir
             # el reporte, desde la URl
             context = dict(data).get('context', context)
-            response = self.report_routes(reportname, docids=docids, converter='aeroo', context=context)
+            response = self.report_routes(reportname, docids=docids, converter='aeroo',
+                                          context=context)
             # if docids:
             #     # Generic report:
             #     response = self.report_routes(

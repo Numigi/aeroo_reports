@@ -33,9 +33,10 @@
 # without prior notice
 
 import json
+import os
 import requests
 from base64 import b64encode, b64decode
-CHUNK_LENGTH = 32*1024
+CHUNK_LENGTH = 32 * 1024
 HEADERS = {'content-type': 'application/json'}
 DOCSHOST = 'localhost'
 DOCSPORT = 8989
@@ -44,8 +45,9 @@ DOCSPORT = 8989
 class ServerException(Exception):
     pass
 
+
 class DOCSConnection():
-    
+
     def __init__(self, host=DOCSHOST, port=DOCSPORT, username=None, password=None):
         assert isinstance(host, str) and isinstance(port, (str, int))
         self.host = host
@@ -55,26 +57,23 @@ class DOCSConnection():
         self.url = 'http://%s:%s/' % (self.host, self.port)
         self.username = username
         self.password = password
-    
+
     def _initpack(self, method):
         return {
-                "jsonrpc": "2.0",
-                "method": method,
-                "id": 1,
-                "params": {
-                           'username': self.username,
-                           'password': self.password
-                          },
-                }
-    
+            "jsonrpc": "2.0",
+            "method": method,
+            "id": 1,
+            "params": {'username': self.username, 'password': self.password},
+        }
+
     def test(self, ctd=None):
         # ctd stands for crash test dummy file
         path = ctd or os.path.join('report_aeroo', 'test_temp.odt')
         with open(path, "r") as testfile:
-            data=testfile.read()
+            data = testfile.read()
         identifier = self.upload(data)
         if not identifier:
-            raise ServerException('Upload failded, no upload identifier '\
+            raise ServerException('Upload failded, no upload identifier '
                                   'returned from server.')
         conv_result = self.convert(identifier)
         if not conv_result:
@@ -83,7 +82,7 @@ class DOCSConnection():
         if not join_result:
             raise ServerException("Document join error.")
         return True
-        
+
     def upload(self, data, filename=False):
         assert len(data) > 0
         data = b64encode(data).decode('utf8')
@@ -91,13 +90,15 @@ class DOCSConnection():
         data_size = len(data)
         upload_complete = False
         for i in range(0, data_size, CHUNK_LENGTH):
-            chunk = data[i:i+CHUNK_LENGTH]
-            is_last = (i+CHUNK_LENGTH) >= data_size
+            chunk = data[i: i + CHUNK_LENGTH]
+            is_last = (i + CHUNK_LENGTH) >= data_size
             payload = self._initpack('upload')
-            payload['params'].update({'data':chunk, 'identifier':identifier,
-                                       'is_last': is_last})
+            payload['params'].update(
+                {'data': chunk, 'identifier': identifier, 'is_last': is_last}
+            )
             response = requests.post(
-                self.url, data = json.dumps(payload), headers=HEADERS).json()
+                self.url, data=json.dumps(payload), headers=HEADERS
+            ).json()
             self._checkerror(response)
             if 'result' not in response:
                 break
@@ -107,7 +108,6 @@ class DOCSConnection():
                 upload_complete = True
             identifier = identifier or response['result']['identifier']
         return identifier or False
-
 
     def convert(self, data=False, identifier=False, in_mime=False, out_mime=False):
         payload = self._initpack('convert')
@@ -122,22 +122,22 @@ class DOCSConnection():
         if out_mime:
             payload['params'].update({'out_mime': out_mime})
         response = requests.post(
-            self.url, data = json.dumps(payload), headers=HEADERS).json()
+            self.url, data=json.dumps(payload), headers=HEADERS).json()
         self._checkerror(response)
         return 'result' in response and b64decode(response['result']) or False
-        
+
     def join(self, idents, in_mime=False, out_mime=False):
         payload = self._initpack('join')
         payload['params'].update({'idents': idents})
         if in_mime:
-            payload['params'].update({'in_mime':in_mime})
+            payload['params'].update({'in_mime': in_mime})
         if out_mime:
-            payload['params'].update({'out_mime':out_mime})
+            payload['params'].update({'out_mime': out_mime})
         response = requests.post(
-            self.url, data = json.dumps(payload), headers=HEADERS).json()
+            self.url, data=json.dumps(payload), headers=HEADERS).json()
         self._checkerror(response)
         return 'result' in response and b64decode(response['result']) or False
-        
+
     def _checkerror(self, response):
         if 'error' in response:
             raise ServerException(response['error']['message'])

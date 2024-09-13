@@ -1,6 +1,6 @@
 ################################################################################
 #
-#  This file is part of Aeroo Reports software - for license refer LICENSE file  
+#  This file is part of Aeroo Reports software - for license refer LICENSE file
 #
 ################################################################################
 
@@ -15,7 +15,7 @@ from odoo.tools import file_open
 
 _logger = logging.getLogger(__name__)
 
-# ------------------------------------------------------------------------------
+
 class ReportStylesheets(models.Model):
     '''
     Aeroo Report Stylesheets
@@ -23,23 +23,19 @@ class ReportStylesheets(models.Model):
     _name = 'report.stylesheets'
     _description = 'Report Stylesheets'
 
-    ### Fields
     name = fields.Char('Name', size=64, required=True)
     report_styles = fields.Binary('Template Stylesheet',
-        help='OpenOffice.org / LibreOffice stylesheet (.odt)')
-    ### ends Fields
+                                  help='OpenOffice.org / LibreOffice stylesheet (.odt)')
 
-# ------------------------------------------------------------------------------
+
 class ResCompany(models.Model):
     _name = 'res.company'
     _inherit = 'res.company'
 
-    ### Fields
-    stylesheet_id = fields.Many2one('report.stylesheets', 
-        'Aeroo Reports Global Stylesheet')
-    ### ends Fields
+    stylesheet_id = fields.Many2one('report.stylesheets',
+                                    'Aeroo Reports Global Stylesheet')
 
-# ------------------------------------------------------------------------------
+
 class ReportMimetypes(models.Model):
     '''
     Aeroo Report Mime-Type
@@ -47,15 +43,12 @@ class ReportMimetypes(models.Model):
     _name = 'report.mimetypes'
     _description = 'Report Mime-Types'
 
-    ### Fields
     name = fields.Char('Name', size=64, required=True, readonly=True)
     code = fields.Char('Code', size=16, required=True, readonly=True)
-    compatible_types = fields.Char('Compatible Mime-Types', size=128, 
-        readonly=True)
+    compatible_types = fields.Char('Compatible Mime-Types', size=128, readonly=True)
     filter_name = fields.Char('Filter Name', size=128, readonly=True)
-    ### ends Fields
 
-# ------------------------------------------------------------------------------
+
 class ReportAeroo(models.Model):
     _inherit = 'ir.actions.report'
 
@@ -64,7 +57,8 @@ class ReportAeroo(models.Model):
         report = self._get_report(report_ref)
         report_parser = self.env[report.parser_model or 'report.report_aeroo.abstract']
         return report_parser.with_context(
-            active_model=report.model, report_name=report.report_name).aeroo_report(docids, data)
+            active_model=report.model, report_name=report.report_name
+        ).aeroo_report(docids, data)
 
     @api.model
     def _get_report_from_name(self, report_name):
@@ -92,7 +86,7 @@ class ReportAeroo(models.Model):
                     "Error in '_read_template' method", exc_info=True)
         except Exception as e:
             _logger.exception(
-                "Error in '_read_template' method", exc_info=True)
+                "Error in '_read_template' method \n %s" % str(e), exc_info=True)
             fp = False
             data = False
         finally:
@@ -102,26 +96,26 @@ class ReportAeroo(models.Model):
 
     @api.model
     def _get_encodings(self):
-        l = list(set(encodings._aliases.values()))
-        l.sort()
-        return zip(l, l)
+        lst = list(set(encodings._aliases.values()))
+        lst.sort()
+        return zip(lst, lst)
 
     @api.model
     def _get_default_outformat(self):
-        res = self.env['report.mimetypes'].search([('code','=','oo-odt')])
+        res = self.env['report.mimetypes'].search([('code', '=', 'oo-odt')])
         return res and res[0].id or False
 
     def _get_extras(recs):
         result = []
         if recs.aeroo_docs_enabled():
             result.append('aeroo_ooo')
-        ##### Check deferred_processing module #####
+        # Check deferred_processing module
         recs.env.cr.execute("SELECT id, state FROM ir_module_module WHERE \
                              name='deferred_processing'")
         deferred_proc_module = recs.env.cr.dictfetchone()
-        if deferred_proc_module and deferred_proc_module['state'] in ('installed', 'to upgrade'):
+        if (deferred_proc_module and deferred_proc_module['state'] in
+                ('installed', 'to upgrade')):
             result.append('deferred_processing')
-        ############################################
         result = ','.join(result)
         for rec in recs:
             rec.extras = result
@@ -138,42 +132,61 @@ class ReportAeroo(models.Model):
     @api.model
     def _get_in_mimetypes(self):
         mime_obj = self.env['report.mimetypes']
-        domain = self.env.context.get('allformats') and [] or [('filter_name','=',False)]
+        domain = (
+            self.env.context.get('allformats') and [] or [('filter_name', '=', False)]
+        )
         res = mime_obj.search(domain).read(['code', 'name'])
         return [(r['code'], r['name']) for r in res]
 
-    ### Fields
     charset = fields.Selection('_get_encodings', string='Charset',
-        required=True, default='utf_8')
+                               required=True, default='utf_8')
     styles_mode = fields.Selection([
-        ('default','Not used'),
-        ('global','Global'),
-        ('specified','Specified'),
-        ], string='Stylesheet', default='default')
+        ('default', 'Not used'),
+        ('global', 'Global'),
+        ('specified', 'Specified'),
+    ], string='Stylesheet', default='default')
     stylesheet_id = fields.Many2one('report.stylesheets', 'Template Stylesheet')
     preload_mode = fields.Selection([
-        ('static',_('Static')),
-        ('preload',_('Preload')),
-        ], string='Preload Mode', default='static')
+        ('static', _('Static')),
+        ('preload', _('Preload')),
+    ], string='Preload Mode', default='static')
     tml_source = fields.Selection([
-        ('database','Database'),
-        ('file','File'),
-        ('parser','Parser'),
-        ('attachment','Attachment'),
-        ], string='Template source', default='database', index=True)
-    attachment_id = fields.Many2one('ir.attachment', domain=[("res_model", "=", "report.aeroo")], ondelete='set null')
+        ('database', 'Database'),
+        ('file', 'File'),
+        ('parser', 'Parser'),
+        ('attachment', 'Attachment'),
+    ], string='Template source', default='database', index=True)
+    attachment_id = fields.Many2one(
+        'ir.attachment',
+        domain=[("res_model", "=", "report.aeroo")],
+        ondelete='set null'
+    )
     parser_model = fields.Char(
-        help='Optional model to be used as parser, if not configured "report.report_aeroo.abstract" will be used')
-    report_type = fields.Selection(selection_add=[('aeroo', _('Aeroo Reports'))], ondelete={'aeroo': 'cascade'})
-    process_sep = fields.Boolean('Process Separately',
+        help="Optional model to be used as parser, \
+        if not configured 'report.report_aeroo.abstract' will be used"
+    )
+    report_type = fields.Selection(
+        selection_add=[('aeroo', _('Aeroo Reports'))],
+        ondelete={'aeroo': 'cascade'}
+    )
+    process_sep = fields.Boolean(
+        'Process Separately',
         help='Generate the report for each object separately, \
-              then merge reports.')
-    in_format = fields.Selection(selection='_get_in_mimetypes',
-        string='Template Mime-type',)
-    out_format = fields.Many2one('report.mimetypes', 'Output Mime-type',
-        default=_get_default_outformat)
-    report_wizard = fields.Boolean('Report Wizard',
-        help='Adds a standard wizard when the report gets invoked.')
+              then merge reports.'
+    )
+    in_format = fields.Selection(
+        selection='_get_in_mimetypes',
+        string='Template Mime-type'
+    )
+    out_format = fields.Many2one(
+        'report.mimetypes',
+        'Output Mime-type',
+        default=_get_default_outformat
+    )
+    report_wizard = fields.Boolean(
+        'Report Wizard',
+        help='Adds a standard wizard when the report gets invoked.'
+    )
     copies = fields.Integer(
         string='Number of Copies',
         default=1,
@@ -181,37 +194,44 @@ class ReportAeroo(models.Model):
     copies_intercalate = fields.Boolean(
         help='If true, then page order will be like "1, 2, 3; 1, 2, 3", if '
         'not it will be like "1, 1; 2, 2; 3, 3"')
-    disable_fallback = fields.Boolean('Disable Format Fallback',
+    disable_fallback = fields.Boolean(
+        'Disable Format Fallback',
         help='Raises error on format convertion failure. Prevents returning \
-              original report file type if no convertion is available.')
-    extras = fields.Char('Extra options', compute='_get_extras',
-        size=256)
-    deferred = fields.Selection([
-        ('off',_('Off')),
-        ('adaptive',_('Adaptive')),
-        ],'Deferred',
-        help='Deferred (aka Batch) reporting, for reporting on large amount \
-              of data.',
-        default='off')
-    deferred_limit = fields.Integer('Deferred Records Limit',
-        help='Records limit at which you are invited to start the deferred \
-              process.',
+              original report file type if no convertion is available.'
+    )
+    extras = fields.Char('Extra options', compute='_get_extras', size=256)
+    deferred = fields.Selection(
+        [('off', _('Off')),
+         ('adaptive', _('Adaptive'))],
+        'Deferred',
+        help='Deferred (aka Batch) reporting, for reporting on large amount of data.',
+        default='off'
+    )
+    deferred_limit = fields.Integer(
+        'Deferred Records Limit',
+        help='Records limit at which you are invited to start the deferred process.',
         default=80
-        )
-    replace_report_id = fields.Many2one('ir.actions.report', 'Replace Report',
-        help='Select a report that should be replaced.')
+    )
+    replace_report_id = fields.Many2one(
+        'ir.actions.report',
+        'Replace Report',
+        help='Select a report that should be replaced.'
+    )
     wizard_id = fields.Many2one('ir.actions.act_window', 'Wizard Action')
     report_data = fields.Binary(string='Template Content', attachment=True)
-    ### ends Fields
 
     @api.constrains('parser_model')
     def _check_parser_model(self):
         for rec in self.filtered('parser_model'):
-            if not rec.env['ir.model'].search([('name', '=', rec.parser_model)], limit=1):
-                raise UserError(_('Parser model %s not found on database.') % (rec.parser_model))
+            if not rec.env['ir.model'].search(
+                    [('name', '=', rec.parser_model)], limit=1):
+                raise UserError(
+                    _('Parser model %s not found on database.') % (rec.parser_model)
+                )
 
     def read(self, fields=None, load='_classic_read'):
-        # ugly hack to avoid report being read when we enter a view with report added on print menu
+        # ugly hack to avoid report being read when
+        # we enter a view with report added on print menu
         if not fields:
             fields = list(self._fields)
             fields.remove('report_data')

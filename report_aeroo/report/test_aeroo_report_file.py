@@ -7,7 +7,6 @@ class TestAerooReport(models.AbstractModel):
     _name = 'report.product_template_printer'
     _description = 'report.product_template_printer'
 
-#===============================================================================
     @api.model
     def get_report_values(self, docids, data=None):
         report = self.env['ir.actions.report']._get_report_from_name(self._name)

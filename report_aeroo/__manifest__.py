@@ -1,6 +1,6 @@
 ################################################################################
 #
-#  This file is part of Aeroo Reports software - for license refer LICENSE file  
+#  This file is part of Aeroo Reports software - for license refer LICENSE file
 #
 ################################################################################
 
@@ -14,16 +14,16 @@
     'complexity': "easy",
     'depends': ['base', 'web', 'mail'],
     'data': [
-             "views/report_view.xml",
-             "data/report_aeroo_data.xml",
-             "wizard/installer.xml",
-             "security/ir.model.access.csv",
-             "demo/report_sample.xml",
-             ],
+        "views/report_view.xml",
+        "data/report_aeroo_data.xml",
+        "wizard/installer.xml",
+        "security/ir.model.access.csv",
+        "demo/report_sample.xml",
+    ],
     'assets': {
         'web.assets_backend': [
             'report_aeroo/static/src/js/report/reportactionmanager.js',
-           ],
+        ],
     },
     "license": "GPL-3 or any later version",
     'installable': True,

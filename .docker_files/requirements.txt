@@ -1,5 +1,9 @@
-git+https://github.com/numigi/aeroolib@master
-Genshi==0.7.5
+# git+https://github.com/aeroo/aeroolib.git
+# waiting for PR https://github.com/aeroo/aeroolib/pull/12
+git+https://github.com/adhoc-dev/aeroolib@master-fix-ods
+git+https://github.com/aeroo/currency2text.git
+# use this genshi version to fix error when, for eg, you send arguments like "date=True" check this https://genshi.edgewall.org/ticket/600
+genshi==0.7.7
 freezegun==0.3.10
 html2text==2018.1.9
 ddt==1.2.1

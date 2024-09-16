@@ -12,6 +12,7 @@
     "summary": "Install all addons required for testing.",
     "depends": [
         "account",
+        "report_aeroo",
     ],
     "installable": True,
 }

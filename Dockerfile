@@ -11,5 +11,7 @@ RUN mkdir -p "${THIRD_PARTY_ADDONS}" && chown -R odoo "${THIRD_PARTY_ADDONS}"
 
 USER odoo
 
+COPY report_aeroo /mnt/extra-addons/report_aeroo
+
 COPY .docker_files/main /mnt/extra-addons/main
 COPY .docker_files/odoo.conf /etc/odoo

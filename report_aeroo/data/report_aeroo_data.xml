@@ -20,11 +20,11 @@
             <field name="compatible_types">odt</field>
         </record>
 
-        <record model="aeroo.mimetype" id="aeroo_mimetype_pdf_ods" >
-            <field name="name">PDF - Portable Document Format (.pdf)</field>
-            <field name="code">pdf</field>
-            <field name="compatible_types">ods</field>
-        </record>
+<!--        <record model="aeroo.mimetype" id="aeroo_mimetype_pdf_ods" >-->
+<!--            <field name="name">PDF - Portable Document Format (.pdf)</field>-->
+<!--            <field name="code">pdf</field>-->
+<!--            <field name="compatible_types">ods</field>-->
+<!--        </record>-->
 
         <record model="aeroo.mimetype" id="aeroo_mimetype_doc_odt" >
             <field name="name">Microsoft Word 97/2000/XP (.doc)</field>

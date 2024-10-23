@@ -5,7 +5,10 @@
 from . import (
     test_email_template,
     test_extra_functions,
+    test_load_views,
     test_report_aeroo,
+    test_report_aeroo_access,
     test_report_aeroo_company_eval,
     test_report_aeroo_lang_eval,
+    test_report_aeroo_multi
 )

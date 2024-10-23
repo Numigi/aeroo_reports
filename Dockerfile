@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         default-jre \
         libreoffice-java-common \
         libreoffice-writer \
-        poppler-utils \
+        poppler-utils
 
 # we can't use `pip install --user` as the $HOME of odoo is a volume
 # so everything that is installed in $HOME will be overwritten by the mounting.

@@ -4,6 +4,8 @@
 # License GPL-3.0 or later (http://www.gnu.org/licenses/gpl).
 
 import base64
+import datetime
+import logging
 import os
 import subprocess
 import traceback
@@ -22,6 +24,40 @@ from odoo.tools.rendering_tools import template_env_globals
 
 from ..namespace import AerooNamespace
 from ..extra_functions import aeroo_function_registry
+_logger = logging.getLogger(__name__)
+
+try:
+    # We use a jinja2 sandboxed environment to render mako templates.
+    # Note that the rendering does not cover all the mako syntax, in particular
+    # arbitrary Python statements are not accepted, and not all expressions are
+    # allowed: only "public" attributes (not starting with '_') of objects may
+    # be accessed.
+    # This is done on purpose: it prevents incidental or malicious execution of
+    # Python code that may break the security of the server.
+    from jinja2.sandbox import SandboxedEnvironment
+
+    mako_template_env = SandboxedEnvironment(
+        variable_start_string="${",
+        variable_end_string="}",
+        line_statement_prefix="%",
+        trim_blocks=True,  # do not output newline after blocks
+    )
+    mako_template_env.globals.update(
+        {
+            "str": str,
+            "datetime": datetime,
+            "len": len,
+            "abs": abs,
+            "min": min,
+            "max": max,
+            "sum": sum,
+            "filter": filter,
+            "map": map,
+            "round": round,
+        }
+    )
+except ImportError:
+    _logger.warning("jinja2 not available, templating features will not work!")
 
 
 class IrActionsReport(models.Model):
@@ -392,9 +428,8 @@ class IrActionsReport(models.Model):
         :return: the filename
         """
         if self.attachment:
-            # filename = self._eval_aeroo_attachment_filename(self.attachment, record)
-            filename = safe_eval(self.attachment, {'o': record})
-            return "%s.%s" % (filename, output_format)
+            filename = self._eval_aeroo_attachment_filename(self.attachment, record)
+            return ".".join((filename, output_format))
         else:
             return ".".join((self.name, output_format))
 
@@ -405,7 +440,7 @@ class IrActionsReport(models.Model):
         :param record: the record for which to evaluate the filename
         :return: the rendered attachment filename
         """
-        template = template_env_globals.from_string(tools.ustr(filename))
+        template = mako_template_env.from_string(tools.ustr(filename))
         context = {"o": record.with_context()}
         context.update(self._get_aeroo_extra_functions())
         return template.render(context)

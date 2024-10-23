@@ -4,10 +4,10 @@
 
 import base64
 from odoo.modules import module
-from odoo.tests import common
+from odoo.tests.common import TransactionCase
 
 
-class TestAerooReportMulti(common.SavepointCase):
+class TestAerooReportMulti(TransactionCase):
     """Test generating an aeroo report from a list of records."""
 
     @classmethod

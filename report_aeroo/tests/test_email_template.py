@@ -1,10 +1,10 @@
 # Copyright 2018 Numigi (tm) and all its contributors (https://bit.ly/numigiens)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo.tests import common
+from odoo.tests.common import TransactionCase
 
 
-class TestMailTemplateWithAerooReport(common.SavepointCase):
+class TestMailTemplateWithAerooReport(TransactionCase):
     """Test generating an aeroo report from a list of records."""
 
     @classmethod

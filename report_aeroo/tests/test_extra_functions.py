@@ -8,7 +8,7 @@ from dateutil.relativedelta import relativedelta
 from ddt import data, ddt, unpack
 from freezegun import freeze_time
 from odoo.exceptions import ValidationError
-from odoo.tests import common
+from odoo.tests.common import TransactionCase
 from ..extra_functions import (
     barcode,
     qrcode,
@@ -25,7 +25,7 @@ from ..extra_functions import (
 
 
 @ddt
-class TestAerooReport(common.TransactionCase):
+class TestAerooReport(TransactionCase):
     def setUp(self):
         super().setUp()
         self.report = self.env.ref("report_aeroo.aeroo_sample_report")
@@ -243,7 +243,7 @@ class TestAerooReport(common.TransactionCase):
         assert result[3] == "4.31cm"
 
 
-class TestGroupBy(common.SavepointCase):
+class TestGroupBy(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

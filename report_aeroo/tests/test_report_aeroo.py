@@ -7,10 +7,10 @@ from freezegun import freeze_time
 
 from odoo.exceptions import ValidationError
 from odoo.modules import module
-from odoo.tests import common
+from odoo.tests.common import TransactionCase
 
 
-class TestAerooReport(common.SavepointCase):
+class TestAerooReport(TransactionCase):
 
     @classmethod
     def setUpClass(cls):

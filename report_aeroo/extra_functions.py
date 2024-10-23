@@ -119,9 +119,12 @@ def format_datetime(report, value: datetime, datetime_format: str):
         return ""
     lang = report._context.get("lang") or "en_US"
     datetime_in_timezone = fields.Datetime.context_timestamp(report, value)
-    return babel.dates.format_datetime(
+    format_datetime = babel.dates.format_datetime(
         datetime_in_timezone, datetime_format, locale=lang
     )
+    format_datetime = format_datetime.replace("a.m.", "AM").replace(
+        "p.m.", "PM")
+    return format_datetime
 
 
 @aeroo_util("now")
@@ -130,8 +133,12 @@ def format_datetime_now(report, datetime_format: str = None, delta: timedelta = 
 
     if delta is not None:
         timestamp += delta
+    formatted_datetime_now = format_datetime(report, value=timestamp,
+        datetime_format=datetime_format)
+    formatted_datetime_now = formatted_datetime_now.replace("a.m.", "AM"
+    ).replace("p.m.", "PM")
 
-    return format_datetime(report, value=timestamp, datetime_format=datetime_format)
+    return formatted_datetime_now
 
 
 @aeroo_util("format_decimal")
@@ -143,7 +150,9 @@ def format_decimal(report, amount: float, amount_format="#,##0.00"):
     :param amount_format: an optional format to use
     """
     lang = report._context.get("lang") or "en_US"
-    return babel.numbers.format_decimal(amount, format=amount_format, locale=lang)
+    res = babel.numbers.format_decimal(amount, format=amount_format, locale=lang)
+    res = res.replace('\u202f', '\xa0')
+    return res
 
 
 def get_locale_from_odoo_lang_and_country(lang: str, country: "res.country"):
@@ -182,10 +191,11 @@ def format_currency(
                 "or call the function with a currency explicitely."
             )
         )
-
-    return babel.numbers.format_currency(
+    res = babel.numbers.format_currency(
         amount, currency.name, format=amount_format, locale=locale
     )
+    res =  res.replace('\u202f', '\xa0')
+    return res
 
 
 @aeroo_util("asimage")

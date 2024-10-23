@@ -1,5 +1,5 @@
 git+https://github.com/numigi/aeroolib@master
-babel==2.5.3
+Babel==2.9.1
 genshi==0.7.7
 freezegun==1.5.1
 html2text==2024.2.26

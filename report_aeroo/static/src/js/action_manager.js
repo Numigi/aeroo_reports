@@ -1,74 +1,49 @@
-odoo.define("report_aeroo.action_manager", function (require) {
-"use strict";
+/** @odoo-module **/
 
-// Need to load qweb reports (report.report) before loading aeroo.
-// The method ActionManager.ir_actions_report defined in report.report
-// prevents generating reports other than qweb.
-require("web.ReportActionManager");
+import {download} from "@web/core/network/download"
+import {registry} from "@web/core/registry"
 
-var ActionManager = require("web.ActionManager");
-var framework = require("web.framework");
-var session = require("web.session");
-var pyeval = require("web.py_utils");
-
-ActionManager.include({
-    /**
-     * Dispatch aeroo reports.
-     */
-    _executeReportAction(action, options) {
-        if (action.report_type === "aeroo") {
-            return this._printAerooReport(action, options).then(() => {
-                return this._afterAerooReportDownloaded(action, options);
-            });
+async function aerooReportHandler (action, options, env){
+    let cloned_action = _.clone(action);
+    if (action.report_type === "aeroo"){
+        const type = "aeroo";
+        let url_ = `/report/${type}/${action.report_name}`;
+        const actionContext = action.context || {};
+        if (cloned_action.context.active_ids) {
+            url_ += "/" + cloned_action.context.active_ids.join(',');
+            // odoo does not send context if no data, but I find it quite useful to send it regardless data or no data
+            url_ += "?context=" + encodeURIComponent(JSON.stringify(cloned_action.context));
         } else {
-            return this._super(action, options);
+            url_ += "?options=" + encodeURIComponent(JSON.stringify(cloned_action.data));
+            url_ += "&context=" + encodeURIComponent(JSON.stringify(cloned_action.context));
         }
-    },
-    /**
-     * After the aeroo report is downloaded, execute post actions.
-     *
-     * This code is equivalent to the callback defined method _triggerDownload
-     * at odoo/addons/web/static/src/js/chrome/action_manager_report.js
-     */
-    _afterAerooReportDownloaded(action, options){
-        if (action.close_on_report_download) {
-            var closeAction = {type: "ir.actions.act_window_close"};
-            return this.doAction(closeAction, _.pick(options, "on_close"));
-        } else {
-            return options.on_close();
-        }
-    },
-    /**
-     * Print an aeroo report.
-     *
-     * This function was taken from code removed by the editor and adapted.
-     * https://github.com/odoo/odoo/commit/4787bc75
-     */
-    _printAerooReport(action, options) {
-        var self = this;
-        framework.blockUI();
-
-        action = _.clone(action);
-
-        const context = session.user_context
-
-        return new Promise(function (resolve, reject) {
-            session.get_file({
+        env.services.ui.block();
+        try {
+            await download({
                 url: "/web/report_aeroo",
                 data: {
-                    report_id: action.id,
-                    record_ids: JSON.stringify(action.context.active_ids),
-                    context: JSON.stringify(context),
+                    report_id : cloned_action.id,
+                    record_ids: JSON.stringify(cloned_action.context.active_ids),
+                    context: JSON.stringify(env.services.user.context),
                 },
-                success: resolve,
-                error: (err) => {
-                    self.call('crash_manager', 'rpc_error', err);
-                    reject();
-                },
-                complete: framework.unblockUI,
             });
-        });
-    },
-});
+        } finally {
+            env.services.ui.unblock();
+        }
+        const onClose = options.onClose;
+        if (action.close_on_report_download) {
+            return env.services.action.doAction(
+                {type: "ir.actions.act_window_close"},
+                {onClose}
+            );
+        } else if (onClose) {
+            onClose();
+        }
+        // DIFF: need to inform success to the original method. Otherwise it
+        // will think our hook function did nothing and run the original
+        // method.
+        return Promise.resolve(true);
+    }
+}
 
-});
+registry.category("ir.actions.report handlers").add("aeroo_handler", aerooReportHandler);

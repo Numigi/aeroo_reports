@@ -392,8 +392,9 @@ class IrActionsReport(models.Model):
         :return: the filename
         """
         if self.attachment:
-            filename = self._eval_aeroo_attachment_filename(self.attachment, record)
-            return ".".join((filename, output_format))
+            # filename = self._eval_aeroo_attachment_filename(self.attachment, record)
+            filename = safe_eval(self.attachment, {'o': record})
+            return "%s.%s" % (filename, output_format)
         else:
             return ".".join((self.name, output_format))
 

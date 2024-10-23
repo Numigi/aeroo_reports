@@ -20,7 +20,6 @@ from odoo import models, fields, api, tools, _
 from odoo.exceptions import ValidationError
 from odoo.tools.safe_eval import safe_eval
 from odoo.tools import file_open
-from odoo.tools.rendering_tools import template_env_globals
 
 from ..namespace import AerooNamespace
 from ..extra_functions import aeroo_function_registry

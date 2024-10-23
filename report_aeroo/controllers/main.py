@@ -59,7 +59,6 @@ class AerooReportController(http.Controller):
             error = {'code': 200, 'message': "Odoo Server Error", 'data': se}
             return request.make_response(html_escape(json.dumps(error)))
 
-
     @staticmethod
     def _get_aeroo_report_from_name(report_name):
         """Get an aeroo report template from the given report name."""

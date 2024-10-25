@@ -10,8 +10,10 @@
 # Usage example:
 # code39.py 100 2 "Hello World" barcode.png
 #
-# This creates a PNG image "barcode.png" containing a barcode of the height of 100px
-# a min line width of 2px with "Hello World" encoded as "*HELLO WORLD*" in Code 39
+# This creates a PNG image "barcode.png" containing a barcode of the height
+# of 100px
+# a min line width of 2px with "Hello World" encoded as "*HELLO WORLD*" in
+# Code 39
 
 from PIL import Image, ImageDraw, ImageFont
 from odoo.tools import config, ustr
@@ -69,7 +71,7 @@ charmap = {
 }
 
 
-def create_c39(height, smallest, text):
+def create_c39(height, smallest, text):  # noqa C901
     pixel_length = 0
     i = 0
     newtext = ""
@@ -82,23 +84,28 @@ def create_c39(height, smallest, text):
             cmap = charmap[char]
             if len(cmap) != 9:
                 continue
+
             j = 0
             while j < 9:
                 seg = int(cmap[j])
+
                 if seg == 0 or seg == 1:
                     pixel_length = pixel_length + smallest
                     seglist.append(seg)
                 elif seg == 2 or seg == 3:
                     pixel_length = pixel_length + smallest * 3
                     seglist.append(seg)
+
                 j = j + 1
+
             newtext += char
         except BaseException:
             continue
+
     pixel_length = pixel_length + 2 * marginx + len(newtext) * smallest
     pixel_height = height + 2 * marginy + fontsize
 
-    barcode_img = Image.new('RGB', [pixel_length, pixel_height], "white")
+    barcode_img = Image.new("RGB", [pixel_length, pixel_height], "white")
 
     if len(seglist) == 0:
         return barcode_img
@@ -135,25 +142,44 @@ def create_c39(height, smallest, text):
         if ((i + 1) % 9) == 0:
             j = 1
             while j <= smallest:
-                draw.line((current_x, marginy, current_x, marginy + height),
-                          fill=(255, 255, 255))
+                draw.line(
+                    (current_x, marginy, current_x, marginy + height),
+                    fill=(255, 255, 255),
+                )
                 current_x = current_x + 1
                 j = j + 1
         i = i + 1
 
-    ad = os.path.abspath(os.path.join(ustr(config['root_path']), u'addons'))
-    mod_path_list = map(lambda m: os.path.abspath(ustr(m.strip())),
-                        config['addons_path'].split(','))
+    ad = os.path.abspath(os.path.join(ustr(config["root_path"]), "addons"))
+    mod_path_list = list(
+        map(
+            lambda m: os.path.abspath(ustr(m.strip())), config["addons_path"].split(",")
+        )
+    )
     mod_path_list.append(ad)
 
     for mod_path in mod_path_list:
-        font_file = (mod_path + os.path.sep + "report_aeroo" + os.path.sep
-                     + "barcode" + os.path.sep + "FreeMonoBold.ttf")
+        font_file = (
+            mod_path
+            + os.path.sep
+            + "report_aeroo"
+            + os.path.sep
+            + "barcode"
+            + os.path.sep
+            + "FreeMonoBold.ttf"
+        )
         if os.path.lexists(font_file):
             font = ImageFont.truetype(font_file, fontsize)
 
-    draw.text((pixel_length / 2 - len(newtext) * (fontsize / 2) / 2 - len(newtext),
-               height + fontsize), newtext, font=font, fill=0)
+    draw.text(
+        (
+            pixel_length / 2 - len(newtext) * (fontsize / 2) / 2 - len(newtext),
+            height + fontsize,
+        ),
+        newtext,
+        font=font,
+        fill=0,
+    )
 
     del draw
 

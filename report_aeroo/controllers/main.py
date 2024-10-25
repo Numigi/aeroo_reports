@@ -1,110 +1,87 @@
-# Copyright 2017 ACSONE SA/NV
-# Copyright 2018 - Brain-tec AG - Carlos Jesus Cebrian
-# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl)
+# Copyright 2017 Savoir-faire Linux
+# Copyright 2018 Numigi (tm) and all its contributors (https://bit.ly/numigiens)
+# License GPL-3.0 or later (http://www.gnu.org/licenses/gpl).
+
 import json
-from werkzeug.urls import url_decode
-
-from odoo import http
-from odoo.http import route, request, content_disposition
-
-from odoo.addons.web.controllers import report
+from odoo import http, _
+from odoo.http import request, content_disposition
 from odoo.tools import html_escape
+from odoo.exceptions import ValidationError
+
+MIMETYPES_MAPPING = {
+    "doc": "application/vnd.ms-word",
+    "ods": "application/vnd.oasis.opendocument.spreadsheet",
+    "odt": "application/vnd.oasis.opendocument.text",
+    "pdf": "application/pdf",
+    "xls": "application/vnd.ms-excel",
+}
+
+DEFAULT_MIMETYPE = "octet-stream"
 
 
-class ReportController(report.ReportController):
+class AerooReportController(http.Controller):
 
-    MIMETYPES = {
-        'txt': 'text/plain',
-        'html': 'text/html',
-        'doc': 'application/vnd.ms-word',
-        'odt': 'application/vnd.oasis.opendocument.text',
-        'ods': 'application/vnd.oasis.opendocument.spreadsheet',
-        'pdf': 'application/pdf',
-        'sxw': 'application/vnd.sun.xml.writer',
-        'xls': 'application/vnd.ms-excel',
-    }
+    @http.route("/web/report_aeroo", type="http", auth="user")
+    def generate_aeroo_report(self, report_id, record_ids, token, debug=False):
+        """Generate an aeroo report.
 
-    @route()
-    def report_routes(self, reportname, docids=None, converter=None, **data):
-        if converter != 'aeroo':
-            return super(ReportController, self).report_routes(
-                reportname=reportname, docids=docids, converter=converter,
-                **data)
-        context = dict(request.env.context)
-
-        if docids:
-            docids = [int(i) for i in docids.split(',')]
-        if data.get("options"):
-            data.update(json.loads(data.pop("options")))
-        if data.get("context"):
-            # Ignore 'lang' here, because the context in data is the
-            # one from the webclient *but* if the user explicitely wants to
-            # change the lang, this mechanism overwrites it.
-            data["context"] = json.loads(data["context"])
-            if data["context"].get("lang"):
-                del data["context"]["lang"]
-            context.update(data["context"])
-
-        # Aeroo Reports starts here
-        report_obj = request.env['ir.actions.report']
-        report = report_obj._get_report_from_name(reportname)
-        if context.get('print_with_sudo'):
-            report = report.sudo()
-        context['report_name'] = reportname
-        context['return_filename'] = True
-        res, extension, filename = report.with_context(context)._render_aeroo(
-            reportname, docids, data=data)
-        mimetype = self.MIMETYPES.get(res, 'application/octet-stream')
-        httpheaders = [
-            ('Content-Disposition', content_disposition(filename)),
-            ('Content-Type', mimetype),
-            ('Content-Length', len(res))
-        ]
-        return request.make_response(res, headers=httpheaders)
-
-    @route()
-    def report_download(self, data, context=None):
-        """This function is used by 'qwebactionmanager.js' in order to trigger
-        the download of a py3o/controller report.
-
-        :param data: a javascript array JSON.stringified containg report
-        internal url ([0]) and type [1]
-        :returns: Response with a filetoken cookie and an attachment header
+        Add the filename of the generated report to the response headers.
+        If the aeroo report is generated for multiple records, the
+        file name is simply {report.name}.pdf.
         """
-        requestcontent = json.loads(data)
-        url, type = requestcontent[0], requestcontent[1]
-        if type != 'aeroo':
-            return super(ReportController, self).report_download(data, context=context)
+        report_id = int(report_id)
+        record_ids = json.loads(record_ids)
+
+        report = request.env["ir.actions.report"].browse(report_id)
+        content, out_format = report._render_aeroo(record_ids, {})
+
+        if len(record_ids) == 1:
+            record = request.env[report.model].browse(record_ids[0])
+            file_name = report.get_aeroo_filename(record, out_format)
+        else:
+            file_name = "%s.%s" % (report.name, out_format)
+
+        report_mimetype = MIMETYPES_MAPPING.get(out_format, DEFAULT_MIMETYPE)
         try:
-            reportname = url.split('/report/aeroo/')[1].split('?')[0]
-            docids = None
-            if '/' in reportname:
-                reportname, docids = reportname.split('/')
-            # on aeroo we support docids + data
-            data = url_decode(url.split('?')[1]).items()
-            # TODO deberiamos ver si podemos mejorar esto que va de la mano con algo
-            # que comentamos en js y no parece ser lo que hacen otros. Basicamente
-            # estamos obteniendo lo que mandamos en context al imprimir
-            # el reporte, desde la URl
-            context = dict(data).get('context', context)
-            response = self.report_routes(reportname, docids=docids, converter='aeroo',
-                                          context=context)
-            # if docids:
-            #     # Generic report:
-            #     response = self.report_routes(
-            #         reportname, docids=docids, converter='aeroo')
-            # else:
-            #     # Particular report:
-            #     # decoding the args represented in JSON
-            #     data = url_decode(url.split('?')[1]).items()
-            #     response = self.report_routes(
-            #         reportname, converter='aeroo', **dict(data))
+            response = request.make_response(
+                content,
+                headers=[
+                    ("Content-Disposition", content_disposition(file_name)),
+                    ("Content-Type", report_mimetype),
+                    ("Content-Length", len(content)),
+                ],
+                cookies={"fileToken": token},
+            )
+
             return response
         except Exception as e:
             se = http.serialize_exception(e)
-            error = {
-                'code': 200,
-                'message': "Odoo Server Error",
-                'data': se
-            }
+            error = {'code': 200, 'message': "Odoo Server Error", 'data': se}
             return request.make_response(html_escape(json.dumps(error)))
+
+    @staticmethod
+    def _get_aeroo_report_from_name(report_name):
+        """Get an aeroo report template from the given report name."""
+        report = request.env["ir.actions.report"].search(
+            [
+                ("report_name", "=", report_name),
+            ]
+        )
+        if not report:
+            raise ValidationError(
+                _("No aeroo report found with the name {report_name}."),
+                report_name=report_name,
+            )
+
+        if len(report) > 1:
+            report_display_names = "\n".join(report.mapped("display_name"))
+            raise ValidationError(
+                _(
+                    "Multiple aeroo reports found with the same name ({report_name}):\n\n"
+                    "{report_display_names}"
+                ).format(
+                    report_name=report_name, report_display_names=report_display_names
+                )
+            )
+
+        return report

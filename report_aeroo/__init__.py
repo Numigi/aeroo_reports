@@ -1,25 +1,8 @@
-################################################################################
-#
-#  This file is part of Aeroo Reports software - for license refer LICENSE file
-#
-################################################################################
-
-# check_list = [
-#     'import aeroolib',
-#     'import genshi',
-#     'from genshi.template import NewTextTemplate',
-#     'from xml.dom import minidom',
-#     'from pyPdf import PdfFileWriter, PdfFileReader',
-# ]
-
-# from . import check_deps
-# check_deps(check_list)
+# Copyright 2008-2014 Alistek
+# Copyright 2016-2018 Savoir-faire Linux
+# Copyright 2018 Numigi (tm) and all its contributors (https://bit.ly/numigiens)
+# License GPL-3.0 or later (http://www.gnu.org/licenses/gpl).
 
 from . import controllers
 from . import models
-from . import report_parser
-
-from . import report
-from . import demo
-
-from . import wizard
+from . import tests

@@ -70,7 +70,7 @@ class TestAerooReport(TransactionCase):
 
         :param partners: a res.partner recordset
         """
-        self.report.sudo(self.user.id)._render(partners.ids, {})
+        self.report._render_aeroo(partners.ids, {})
 
     def _create_report_line(self, lang, company=None):
         self.report.write(

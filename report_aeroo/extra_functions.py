@@ -122,8 +122,7 @@ def format_datetime(report, value: datetime, datetime_format: str):
     format_datetime = babel.dates.format_datetime(
         datetime_in_timezone, datetime_format, locale=lang
     )
-    format_datetime = format_datetime.replace("a.m.", "AM").replace(
-        "p.m.", "PM")
+    format_datetime = format_datetime.replace("a.m.", "AM").replace("p.m.", "PM")
     return format_datetime
 
 
@@ -133,10 +132,12 @@ def format_datetime_now(report, datetime_format: str = None, delta: timedelta = 
 
     if delta is not None:
         timestamp += delta
-    formatted_datetime_now = format_datetime(report, value=timestamp,
-        datetime_format=datetime_format)
-    formatted_datetime_now = formatted_datetime_now.replace("a.m.", "AM"
-    ).replace("p.m.", "PM")
+    formatted_datetime_now = format_datetime(
+        report, value=timestamp, datetime_format=datetime_format
+    )
+    formatted_datetime_now = formatted_datetime_now.replace("a.m.", "AM").replace(
+        "p.m.", "PM"
+    )
 
     return formatted_datetime_now
 
@@ -151,7 +152,7 @@ def format_decimal(report, amount: float, amount_format="#,##0.00"):
     """
     lang = report._context.get("lang") or "en_US"
     res = babel.numbers.format_decimal(amount, format=amount_format, locale=lang)
-    res = res.replace('\u202f', '\xa0')
+    res = res.replace("\u202f", "\xa0")
     return res
 
 
@@ -194,7 +195,7 @@ def format_currency(
     res = babel.numbers.format_currency(
         amount, currency.name, format=amount_format, locale=locale
     )
-    res =  res.replace('\u202f', '\xa0')
+    res = res.replace("\u202f", "\xa0")
     return res
 
 

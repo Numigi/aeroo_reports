@@ -15,8 +15,8 @@ class TestAerooReportAccess(TransactionCase):
         cls.user.groups_id |= cls.env.ref("report_aeroo.group_aeroo_manager")
 
     def test_report_create(self):
-        assert self.report.sudo(self.user).copy({})
+        assert self.report.with_user(self.user.id).copy({})
 
     def test_report_unlink(self):
-        self.report.sudo(self.user).unlink()
+        self.report.with_user(self.user.id).unlink()
         assert not self.report.exists()

@@ -23,6 +23,7 @@ from odoo.tools import file_open
 
 from ..namespace import AerooNamespace
 from ..extra_functions import aeroo_function_registry
+
 _logger = logging.getLogger(__name__)
 
 try:
@@ -338,8 +339,7 @@ class IrActionsReport(models.Model):
         """
         output_format = force_output_format or self.aeroo_out_format_id.code
 
-        if data is None:
-            data = {}
+        data = data or {}
 
         if len(doc_ids) > 1:
             return self._render_aeroo_multi(doc_ids, data, output_format)
@@ -467,7 +467,7 @@ class IrActionsReport(models.Model):
                 limit=1,
             )
             if attachment:
-                return base64.decodestring(attachment.datas)
+                return base64.decodebytes(attachment.datas)
         return None
 
     def _create_aeroo_attachment(self, record, file_data, output_format):
@@ -481,7 +481,7 @@ class IrActionsReport(models.Model):
         return self.env["ir.attachment"].create(
             {
                 "name": filename,
-                "datas": base64.encodestring(file_data),
+                "datas": base64.encodebytes(file_data),
                 "res_model": record._name,
                 "res_id": record.id,
             }
@@ -631,12 +631,17 @@ class AerooReportsGeneratedFromListViews(models.Model):
     _inherit = "ir.actions.report"
 
     def _render_aeroo(self, doc_ids, data=None, force_output_format=None):
+        data = data or {}
         if self.multi:
             return self._render_aeroo_from_list_of_records(
                 doc_ids, data, force_output_format
             )
         else:
-            return super()._render_aeroo(doc_ids, data, force_output_format)
+            return super()._render_aeroo(
+                doc_ids=doc_ids,
+                data=data,
+                force_output_format=force_output_format,
+            )
 
     def _render_aeroo_from_list_of_records(
         self, doc_ids, data=None, force_output_format=None

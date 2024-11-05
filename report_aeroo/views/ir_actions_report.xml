@@ -195,10 +195,10 @@
     <menuitem name="Aeroo Reports"
         action="action_aeroo_report_xml_tree"
         id="menu_ir_action_aeroo_report_manager"
-        parent="base.menu_reporting_config" sequence="0"
+        parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_configuration" sequence="261"
         groups="group_aeroo_manager" />
 
-    <record id="base.menu_reporting_config" model="ir.ui.menu">
+    <record id="spreadsheet_dashboard.spreadsheet_dashboard_menu_configuration" model="ir.ui.menu">
         <field name="groups_id" eval="[(4, ref('group_aeroo_manager'))]" />
     </record>
 

@@ -11,7 +11,7 @@
     "author": "Alistek",
     "maintainer": "Numigi",
     "website": "https://bit.ly/numigi-com",
-    "depends": ["mail"],
+    "depends": ["mail", "spreadsheet_dashboard"],
     "external_dependencies": {
         "python": ["aeroolib", "babel", "genshi"],
     },

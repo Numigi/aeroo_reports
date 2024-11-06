@@ -29,20 +29,21 @@ class AerooReportController(http.Controller):
         If the aeroo report is generated for multiple records, the
         file name is simply {report.name}.pdf.
         """
-        report_id = int(report_id)
-        record_ids = json.loads(record_ids)
-
-        report = request.env["ir.actions.report"].browse(report_id)
-        content, out_format = report._render_aeroo(record_ids, {})
-
-        if len(record_ids) == 1:
-            record = request.env[report.model].browse(record_ids[0])
-            file_name = report.get_aeroo_filename(record, out_format)
-        else:
-            file_name = "%s.%s" % (report.name, out_format)
-
-        report_mimetype = MIMETYPES_MAPPING.get(out_format, DEFAULT_MIMETYPE)
         try:
+            report_id = int(report_id)
+            record_ids = json.loads(record_ids)
+
+            report = request.env["ir.actions.report"].browse(report_id)
+            content, out_format = report._render_aeroo(record_ids, {})
+
+            if len(record_ids) == 1:
+                record = request.env[report.model].browse(record_ids[0])
+                file_name = report.get_aeroo_filename(record, out_format)
+            else:
+                file_name = "%s.%s" % (report.name, out_format)
+
+            report_mimetype = MIMETYPES_MAPPING.get(out_format, DEFAULT_MIMETYPE)
+
             response = request.make_response(
                 content,
                 headers=[

@@ -17,6 +17,7 @@ RUN pip3 install -r ./requirements.txt && rm ./requirements.txt
 
 USER odoo
 
+COPY ./account_check_printing_aeroo /mnt/extra-addons/account_check_printing_aeroo
 COPY ./report_aeroo /mnt/extra-addons/report_aeroo
 COPY ./report_aeroo_replace_qweb /mnt/extra-addons/report_aeroo_replace_qweb
 

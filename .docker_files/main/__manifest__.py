@@ -12,6 +12,7 @@
     "summary": "Install all addons required for testing.",
     "depends": [
         "report_aeroo",
+        "account_check_printing_aeroo"
     ],
     "installable": True,
 }

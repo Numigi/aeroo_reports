@@ -5,6 +5,7 @@ This module allows printing a customer invoice using Aeroo reports.
 
 It defines an aeroo template as the main template for printing invoices.
 
+
 Print Button On Invoice Form
 ----------------------------
 The `Print` button on the customer invoice form allows to print the qweb invoice.

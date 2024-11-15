@@ -1,18 +1,22 @@
-/** @odoo-module **/
+odoo.define('report_aeroo_invoice.AccountPortalSidebar', function (require) {
+    'use strict';
 
-import { Component, useRef } from '@odoo/owl';
-import { registerPublicWidget } from 'web.public.widget';
-import { PortalSidebar } from 'portal.PortalSidebar';
+    /**
+        Override all methods of AccountPortalSidebar.
+    
+        These methods are tightly coupled with the qweb invoice report.
+    
+        Without overriding these methods, an error is raised because the content of
+        the iframe is a pdf and not an html document.
+    
+        The solution was to rewrite the whole file, because there is not much code left.
+    **/
 
-class AccountPortalSidebar extends PortalSidebar {
-    setup() {
-        super.setup();
-        this.sidebarRef = useRef("sidebar");
-    }
-}
+    require('account.AccountPortalSidebar')
+    var publicWidget = require('web.public.widget');
+    var PortalSidebar = require('portal.PortalSidebar');
 
-
-registerPublicWidget({
-    selector: '.o_portal_invoice_sidebar',
-    Component: AccountPortalSidebar,
+    publicWidget.registry.AccountPortalSidebar = PortalSidebar.extend({
+        selector: '.o_portal_invoice_sidebar',
+    });
 });

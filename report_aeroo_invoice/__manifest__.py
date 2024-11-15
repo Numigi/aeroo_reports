@@ -17,9 +17,11 @@
         "views/res_config_settings.xml",
         "views/portal.xml",
     ],
-    'web.assets_frontend': [
-        'report_aeroo_invoice/static/src/js/portal.js',
-    ],
+    "assets": {
+        "web.assets_frontend": [
+            "report_aeroo_invoice/static/src/js/portal.js",
+        ],
+    },
     "demo": [
         "demo/invoice.xml",
     ],

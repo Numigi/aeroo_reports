@@ -13,6 +13,7 @@
     "depends": [
         "account_check_printing_aeroo",
         "report_aeroo",
+        "report_aeroo_invoice",
         "report_aeroo_replace_qweb",
     ],
     "installable": True,

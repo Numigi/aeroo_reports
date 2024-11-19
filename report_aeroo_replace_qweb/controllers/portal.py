@@ -6,7 +6,6 @@ from odoo.http import request
 
 
 class PortalAccountWithAerooInvoiceReport(CustomerPortal):
-
     def _show_report(self, model, report_type, report_ref, download=False):
         """Dowload a replacement aeroo report instead of a qweb report.
 

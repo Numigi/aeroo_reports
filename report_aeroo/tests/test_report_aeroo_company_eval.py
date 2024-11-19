@@ -5,7 +5,6 @@ from odoo.tests.common import TransactionCase
 
 
 class TestAerooReportCompanyEval(TransactionCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

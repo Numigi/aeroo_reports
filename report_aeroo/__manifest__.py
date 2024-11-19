@@ -24,9 +24,7 @@
     ],
     "demo": ["demo/report_sample.xml"],
     "assets": {
-        "web.assets_backend": [
-            "report_aeroo/static/src/js/action_manager.js"
-        ],
+        "web.assets_backend": ["report_aeroo/static/src/js/action_manager.js"],
     },
     "license": "GPL-3 or any later version",
     "installable": True,

@@ -5,7 +5,6 @@ from odoo.tests.common import TransactionCase
 
 
 class TestCheckPrinting(TransactionCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

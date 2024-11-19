@@ -10,7 +10,6 @@ AEROO_INVOICE_REPORT_REF = "report_aeroo_invoice.aeroo_invoice_report"
 
 
 class PortalAccountWithAerooInvoiceReport(PortalAccount):
-
     @http.route(
         ["/my/invoices/<int:invoice_id>"], type="http", auth="public", website=True
     )

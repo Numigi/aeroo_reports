@@ -5,7 +5,6 @@ from odoo.tests.common import TransactionCase
 
 
 class TestAerooReportLangEval(TransactionCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

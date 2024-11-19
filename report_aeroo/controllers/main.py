@@ -20,7 +20,6 @@ DEFAULT_MIMETYPE = "octet-stream"
 
 
 class AerooReportController(http.Controller):
-
     @http.route("/web/report_aeroo", type="http", auth="user")
     def generate_aeroo_report(self, report_id, record_ids, token, debug=False):
         """Generate an aeroo report.
@@ -57,7 +56,7 @@ class AerooReportController(http.Controller):
             return response
         except Exception as e:
             se = http.serialize_exception(e)
-            error = {'code': 200, 'message': "Odoo Server Error", 'data': se}
+            error = {"code": 200, "message": "Odoo Server Error", "data": se}
             return request.make_response(html_escape(json.dumps(error)))
 
     @staticmethod

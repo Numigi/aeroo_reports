@@ -34,7 +34,9 @@ class TestAerooReportMulti(TransactionCase):
 
         :param partners: a res.partner recordset
         """
-        self.report.with_user(self.env.ref("base.user_demo").id)._render_aeroo(partners.ids, {})
+        self.report.with_user(self.env.ref("base.user_demo").id)._render_aeroo(
+            partners.ids, {}
+        )
 
     def test_generate_report_with_pdf_format_and_multiple_records(self):
         self.report.aeroo_out_format_id = self.env.ref(

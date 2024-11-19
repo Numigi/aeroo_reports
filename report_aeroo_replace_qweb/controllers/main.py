@@ -9,7 +9,6 @@ from typing import List
 
 
 class ReportControllerWithAerooReplacement(ReportController):
-
     @http.route(["/report/download"], type="http", auth="user")
     def report_download(self, data, token):
         """Dowload a replacement aeroo report instead of a qweb report.

@@ -10,7 +10,7 @@ from typing import List
 
 class ReportControllerWithAerooReplacement(ReportController):
     @http.route(["/report/download"], type="http", auth="user")
-    def report_download(self, data, token):
+    def report_download(self, data, context=None, token=None):
         """Dowload a replacement aeroo report instead of a qweb report.
 
         If the report is qweb-pdf and it has a replacement aeroo report,
@@ -37,7 +37,7 @@ class ReportControllerWithAerooReplacement(ReportController):
                     },
                 )
 
-        return super().report_download(data, token)
+        return super().report_download(data=data, context=context, token=token)
 
 
 def _get_report_from_qweb_download_url(url_: str) -> models.Model:

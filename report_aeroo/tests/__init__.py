@@ -10,3 +10,4 @@ from . import test_report_aeroo_access
 from . import test_report_aeroo_company_eval
 from . import test_report_aeroo_lang_eval
 from . import test_report_aeroo_multi
+from . import test_watermark

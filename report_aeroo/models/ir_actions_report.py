@@ -21,10 +21,26 @@ from odoo.exceptions import ValidationError
 from odoo.tools.safe_eval import safe_eval
 from odoo.tools import file_open
 
+
 from ..namespace import AerooNamespace
 from ..extra_functions import aeroo_function_registry
 
 _logger = logging.getLogger(__name__)
+
+
+try:
+    from PyPDF2 import PdfFileWriter, PdfFileReader
+    from reportlab.pdfgen import canvas
+    from reportlab.lib.pagesizes import letter
+    from reportlab.lib.colors import red
+
+    PYPDF_AVAILABLE = True
+except ImportError:
+    PYPDF_AVAILABLE = False
+    _logger.warning(
+        "PyPDF2 and/or reportlab not available, watermark feature will not work!"
+    )
+
 
 try:
     # We use a jinja2 sandboxed environment to render mako templates.
@@ -399,6 +415,10 @@ class IrActionsReport(models.Model):
         if self.aeroo_in_format != output_format:
             output = self._convert_aeroo_report(output, output_format)
 
+        # Add TEST watermark if parameter is enabled
+        if output_format == "pdf" and self._should_add_test_watermark():
+            output = self._add_test_watermark_to_pdf(output)
+
         return output
 
     def _get_aeroo_extra_functions(self):
@@ -606,6 +626,66 @@ class IrActionsReport(models.Model):
 
         return output
 
+    def _should_add_test_watermark(self):
+        """Check if TEST watermark should be added."""
+        param_value = (
+            self.env["ir.config_parameter"]
+            .sudo()
+            .get_param("AEROO_REPORTS_TESTS", "False")
+        )
+        return param_value.lower() == "true"
+
+    def _add_test_watermark_to_pdf(self, pdf_data):
+        """Add TEST watermark to PDF."""
+        if not PYPDF_AVAILABLE:
+            _logger.warning("PyPDF2 and reportlab not available, cannot add watermark")
+            return pdf_data
+
+        try:
+            # Create watermark
+            watermark_buffer = BytesIO()
+            watermark_pdf = canvas.Canvas(watermark_buffer, pagesize=letter)
+
+            # Watermark configuration
+            watermark_pdf.setFillColor(red, alpha=0.3)  # Red with transparency
+            watermark_pdf.setFont("Helvetica-Bold", 72)  # Large size
+
+            # Center text on page
+            page_width, page_height = letter
+            text_width = watermark_pdf.stringWidth("TEST", "Helvetica-Bold", 72)
+            x = (page_width - text_width) / 2
+            y = page_height / 2
+
+            # Rotation for diagonal
+            watermark_pdf.saveState()
+            watermark_pdf.translate(x, y)
+            watermark_pdf.rotate(45)
+            watermark_pdf.drawString(-text_width / 2, 0, "TEST")
+            watermark_pdf.restoreState()
+
+            watermark_pdf.save()
+            watermark_buffer.seek(0)
+
+            original_pdf = PdfFileReader(BytesIO(pdf_data))
+            watermark_pdf_reader = PdfFileReader(watermark_buffer)
+            watermark_page = watermark_pdf_reader.pages[0]
+
+            output_pdf = PdfFileWriter()
+
+            for page in original_pdf.pages:
+                page.mergePage(watermark_page)
+                output_pdf.addPage(page)
+
+            output_buffer = BytesIO()
+            output_pdf.write(output_buffer)
+            output_buffer.seek(0)
+
+            return output_buffer.read()
+
+        except Exception as e:
+            _logger.error("Error adding watermark: %s", str(e))
+            return pdf_data
+
 
 class IrActionsReportWithSudo(models.Model):
 
@@ -680,6 +760,10 @@ class AerooReportsGeneratedFromListViews(models.Model):
         output = self.with_context(**report_context)._render_aeroo_content(
             template, report_data, output_format
         )
+
+        # Add TEST watermark if parameter is enabled
+        if output_format == "pdf" and self._should_add_test_watermark():
+            output = self._add_test_watermark_to_pdf(output)
 
         return output, output_format
 

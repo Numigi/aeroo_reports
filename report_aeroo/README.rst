@@ -674,6 +674,34 @@ The difference between this feature and a report attachment from `Advanced Setti
 2. You do not need to redefine the name of the attachment in the email template.
    The attachment name will be the one defined on the report.
 
+Watermark Feature
+=================
+The module includes a TEST watermark feature for development and testing environments.
+
+Configuration
+-------------
+To enable the TEST watermark on PDF reports, set the following configuration parameter:
+
+.. code-block:: bash
+
+    # Enable TEST watermark
+    ir.config_parameter: AEROO_REPORTS_TESTS = True
+
+    # Disable TEST watermark (default)
+    ir.config_parameter: AEROO_REPORTS_TESTS = False
+
+The watermark parameter can be set via the Odoo interface under Settings > Technical > Parameters > System Parameters.
+
+.. image:: static/description/watermark_config_parameter.png
+
+When enabled, all PDF reports generated through Aeroo will display a diagonal "TEST" watermark in red with transparency.
+
+Example Result
+--------------
+When the watermark is enabled, PDF reports will show the TEST watermark overlaid on each page:
+
+.. image:: static/description/watermark_example.png
+
 Contributors
 ============
 * Alistek

@@ -43,5 +43,11 @@
             <field name="code">csv</field>
             <field name="compatible_types">ods</field>
         </record>
+
+        <!-- Paramètre système pour les filigranes de test -->
+        <record model="ir.config_parameter" id="aeroo_reports_tests_param">
+            <field name="key">AEROO_REPORTS_TESTS</field>
+            <field name="value">False</field>
+        </record>
     </data>
 </odoo>

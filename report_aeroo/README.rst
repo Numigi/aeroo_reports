@@ -675,7 +675,8 @@ The difference between this feature and a report attachment from `Advanced Setti
    The attachment name will be the one defined on the report.
 
 Contributors
-============
+------------
+
 * Alistek
 * Savoir-faire Linux
-* Numigi (tm) and all its contributors (https://bit.ly/numigiens)
+* The `Numigi <https://numigi.com/r/home>`_ team is the contributor to this project. We help Quebec companies implement Odoo and Konvergo ERP.

@@ -1,6 +1,6 @@
 # Copyright 2008-2014 Alistek
 # Copyright 2016-2018 Savoir-faire Linux
-# Copyright 2018 Numigi (tm) and all its contributors (https://bit.ly/numigiens)
+# © Numigi (tm) and all its contributors (https://numigi.com/r/home)
 # License GPL-3.0 or later (http://www.gnu.org/licenses/gpl).
 
 {
@@ -10,7 +10,7 @@
     "summary": "Enterprise grade reporting solution",
     "author": "Alistek",
     "maintainer": "Numigi",
-    "website": "https://bit.ly/numigi-com",
+    "website": "https://numigi.com/r/home",
     "depends": ["mail"],
     "external_dependencies": {
         "python": ["aeroolib", "babel", "genshi"],

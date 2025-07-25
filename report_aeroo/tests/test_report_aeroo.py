@@ -1,5 +1,5 @@
 # Copyright 2016-2018 Savoir-faire Linux
-# Copyright 2018 Numigi (tm) and all its contributors (https://bit.ly/numigiens)
+# © Numigi (tm) and all its contributors (https://numigi.com/r/home)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 import base64

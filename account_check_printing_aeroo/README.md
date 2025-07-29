@@ -17,9 +17,8 @@ To define an aeroo as check report:
 
 Contributors
 ------------
-* Savoir-faire Linux
-* Numigi (tm) and all its contributors (https://bit.ly/numigiens)
 
-More information
-----------------
-* Meet us at https://bit.ly/numigi-com
+* Savoir-Faire Linux
+* The [Numigi](https://numigi.com/r/home) team is the contributor to this project. We help Quebec companies implement Odoo and Konvergo ERP.
+
+

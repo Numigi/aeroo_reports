@@ -1,4 +1,4 @@
-# Copyright 2019 Numigi (tm) and all its contributors (https://bit.ly/numigiens)
+# © Numigi (tm) and all its contributors (https://numigi.com/r/home)
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 
 {
@@ -8,7 +8,7 @@
     "summary": "Replace an aeroo report with a Qweb report",
     "author": "Numigi",
     "maintainer": "Numigi",
-    "website": "https://bit.ly/numigi-com",
+    "website": "https://numigi.com/r/home",
     "depends": ["report_aeroo"],
     "data": [
         "views/ir_actions_report.xml",

@@ -38,6 +38,4 @@ Do not forget to add your aeroo report to the related email templates.
 
 .. image:: static/description/sale_order_email_template_2.png
 
-More information
-----------------
-* Meet us at https://bit.ly/numigi-com
+

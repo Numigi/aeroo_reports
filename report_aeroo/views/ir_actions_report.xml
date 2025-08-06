@@ -112,9 +112,6 @@
                 <field name="name"
                     filter_domain="['|', '|', '|', '|', ('name', 'ilike', self), ('model', 'ilike', self), ('type', 'ilike', self), ('report_name', 'ilike', self), ('report_type', 'ilike', self)]"
                     string="Report"/>
-                <filter name="active"
-                        string="Inactive"
-                        domain="[('active', '=', False)]"/>
                 <group expand="0" string="Group By" colspan="4">
                     <filter name="group_by_in_format"
                             string="Template Mime-type"

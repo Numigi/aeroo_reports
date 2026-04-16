@@ -13,7 +13,7 @@
     "website": "https://bit.ly/numigi-com",
     "depends": ["mail", "spreadsheet_dashboard"],
     "external_dependencies": {
-        "python": ["aeroolib", "babel", "genshi", "PyPDF2", "reportlab"],
+        "python": ["aeroolib", "babel", "genshi", "reportlab"],
     },
     "data": [
         "security/security.xml",

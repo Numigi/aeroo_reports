@@ -8,7 +8,6 @@ from odoo import fields, models
 
 
 class MailTemplate(models.Model):
-
     _inherit = "mail.template"
 
     aeroo_report_ids = fields.Many2many(
@@ -20,7 +19,7 @@ class MailTemplate(models.Model):
         domain="[('model', '=', model), ('report_type', '=', 'aeroo'), ('multi', '=', False)]",
     )
 
-    def generate_email(self, res_ids, fields):
+    def generate_email(self, res_ids, fields=None):
         """Add aeroo reports to the generated emails."""
         results = super().generate_email(res_ids, fields=fields)
 
@@ -39,7 +38,8 @@ class MailTemplate(models.Model):
 
             for aeroo_report in self.aeroo_report_ids:
                 content, content_type = aeroo_report._render_aeroo([res_id], {})
-                content = base64.b64encode(content)
+                # En Odoo 18, on sécurise le base64 en le décodant en string (utf-8)
+                content = base64.b64encode(content).decode('utf-8')
 
                 record = self.env[self.model].browse(res_id)
                 output_format = aeroo_report.aeroo_out_format_id.code
@@ -50,4 +50,4 @@ class MailTemplate(models.Model):
 
                 values["attachments"].append((file_name, content))
 
-        return multi_mode and results or results[res_ids[0]]
+        return results if multi_mode else results[res_ids[0]]

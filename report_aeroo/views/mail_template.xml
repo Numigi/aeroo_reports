@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
-    <record id="email_template_form" model="ir.ui.view">
-        <field name="name">mail.template.aeroo.form</field>
+    <record id="email_template_view_form_aeroo" model="ir.ui.view">
+        <field name="name">mail.template.form.aeroo</field>
         <field name="model">mail.template</field>
-        <field name="inherit_id" ref="mail.email_template_form" />
+        <field name="inherit_id" ref="mail.email_template_view_form" />
         <field name="arch" type="xml">
-        	<field name="attachment_ids" position="after">
-        		<group>
-        			<field name="aeroo_report_ids" widget="many2many_tags" />
-        		</group>
-        	</field>
+            <xpath expr="//field[@name='report_template_ids']" position="after">
+                <field name="aeroo_report_id"
+                       invisible="report_type != 'aeroo'"
+                       placeholder="Select Aeroo Report" />
+            </xpath>
         </field>
     </record>
 </odoo>

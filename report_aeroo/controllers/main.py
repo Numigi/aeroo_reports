@@ -8,6 +8,13 @@ from odoo.http import request, content_disposition
 from odoo.tools import html_escape
 from odoo.exceptions import ValidationError
 
+try:
+    from odoo.http import serialize_exception
+except ImportError:
+    # Fallback in case of framework restructure
+    def serialize_exception(e):
+        return str(e)
+
 MIMETYPES_MAPPING = {
     "doc": "application/vnd.ms-word",
     "ods": "application/vnd.oasis.opendocument.spreadsheet",
@@ -49,13 +56,15 @@ class AerooReportController(http.Controller):
                     ("Content-Disposition", content_disposition(file_name)),
                     ("Content-Type", report_mimetype),
                     ("Content-Length", len(content)),
-                ],
-                cookies={"fileToken": token},
+                ]
             )
+            # Odoo 18 / Werkzeug 3.x way to set cookies
+            response.set_cookie("fileToken", token)
 
             return response
+
         except Exception as e:
-            se = http.serialize_exception(e)
+            se = serialize_exception(e)
             error = {"code": 200, "message": "Odoo Server Error", "data": se}
             return request.make_response(html_escape(json.dumps(error)))
 
@@ -63,14 +72,14 @@ class AerooReportController(http.Controller):
     def _get_aeroo_report_from_name(report_name):
         """Get an aeroo report template from the given report name."""
         report = request.env["ir.actions.report"].search(
-            [
-                ("report_name", "=", report_name),
-            ]
+            [("report_name", "=", report_name)]
         )
+
         if not report:
             raise ValidationError(
-                _("No aeroo report found with the name {report_name}."),
-                report_name=report_name,
+                _("No aeroo report found with the name {report_name}.").format(
+                    report_name=report_name
+                )
             )
 
         if len(report) > 1:

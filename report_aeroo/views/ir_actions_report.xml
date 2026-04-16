@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="base.act_report_xml_view" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='report_type']" position="after">
-                <field name="aeroo_mimetype_id"
+                <field name="aeroo_in_format"
                        invisible="report_type != 'aeroo'"
                        required="report_type == 'aeroo'" />
             </xpath>
@@ -15,15 +15,10 @@
                     <group>
                         <group string="Template Options">
                             <field name="aeroo_out_format_id" />
-                            <field name="aeroo_multi_lang" />
                             <field name="aeroo_template_source" required="report_type == 'aeroo'" />
                             <field name="aeroo_template_path"
                                    invisible="aeroo_template_source != 'file'"
                                    required="aeroo_template_source == 'file'" />
-                        </group>
-                        <group string="Output Options">
-                            <field name="aeroo_deferred" />
-                            <field name="aeroo_tz_method" />
                         </group>
                     </group>
                     <group string="Templates" invisible="aeroo_template_source != 'database'">

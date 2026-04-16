@@ -19,26 +19,19 @@ class MailTemplate(models.Model):
         domain="[('model', '=', model), ('report_type', '=', 'aeroo'), ('multi', '=', False)]",
     )
 
-    def generate_email(self, res_ids, fields=None):
+    def _generate_template(self, res_ids, render_fields):
         """Add aeroo reports to the generated emails."""
-        results = super().generate_email(res_ids, fields=fields)
-
-        multi_mode = True
+        results = super()._generate_template(res_ids, render_fields)
         if isinstance(res_ids, int):
             res_ids = [res_ids]
-            multi_mode = False
-
-        # When the super method receives a single record,
-        # it returns a single dictionnary of values.
-        if not multi_mode:
-            results = {res_ids[0]: results}
 
         for res_id in res_ids:
-            values = results[res_id]
+            values = results.get(res_id)
+            if not values:
+                continue
 
             for aeroo_report in self.aeroo_report_ids:
                 content, content_type = aeroo_report._render_aeroo([res_id], {})
-                # En Odoo 18, on sécurise le base64 en le décodant en string (utf-8)
                 content = base64.b64encode(content).decode('utf-8')
 
                 record = self.env[self.model].browse(res_id)
@@ -50,4 +43,4 @@ class MailTemplate(models.Model):
 
                 values["attachments"].append((file_name, content))
 
-        return results if multi_mode else results[res_ids[0]]
+        return results

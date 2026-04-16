@@ -202,7 +202,7 @@ def format_currency(
 @aeroo_util("asimage")
 def asimage(
     report,
-    field_value: str,
+    field_value,
     rotate: bool = None,
     size_x: int = None,
     size_y: int = None,
@@ -220,6 +220,9 @@ def asimage(
 
     if not field_value:
         return BytesIO(), "image/png"
+
+    if isinstance(field_value, str):
+        field_value = field_value.encode('ascii')
 
     field_value = base64.decodebytes(field_value)
     tf = BytesIO(field_value)

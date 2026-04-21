@@ -19,9 +19,11 @@ class MailTemplate(models.Model):
         domain="[('model', '=', model), ('report_type', '=', 'aeroo'), ('multi', '=', False)]",
     )
 
-    def _generate_template(self, res_ids, render_fields):
+    def _generate_template(self, res_ids, render_fields, **kwargs):
         """Add aeroo reports to the generated emails."""
-        results = super()._generate_template(res_ids, render_fields)
+        # On passe correctement les kwargs au super()
+        results = super()._generate_template(res_ids, render_fields, **kwargs)
+
         if isinstance(res_ids, int):
             res_ids = [res_ids]
 

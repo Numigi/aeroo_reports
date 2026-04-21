@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
     <record id="aeroo_report_view_form" model="ir.ui.view">
         <field name="name">ir.actions.report.form.aeroo</field>
         <field name="model">ir.actions.report</field>
@@ -16,12 +17,25 @@
                         <group string="Template Options">
                             <field name="aeroo_out_format_id" />
                             <field name="aeroo_template_source" required="report_type == 'aeroo'" />
+
+                             <field name="aeroo_template_data"
+                                string="Template Content"
+                                invisible ="aeroo_template_source != 'database'"
+                                required = "aeroo_template_source == 'database'" />
+
                             <field name="aeroo_template_path"
                                    invisible="aeroo_template_source != 'file'"
                                    required="aeroo_template_source == 'file'" />
                         </group>
+                        <group string="Report Context">
+                            <field name="aeroo_lang_eval" />
+                            <field name="aeroo_tz_eval" />
+                            <field name="aeroo_company_eval" />
+                            <field name="aeroo_country_eval" />
+                            <field name="aeroo_currency_eval" />
+                        </group>
                     </group>
-                    <group string="Templates" invisible="aeroo_template_source != 'database'">
+                    <group string="Templates" invisible="aeroo_template_source != 'lines'">
                         <field name="aeroo_template_line_ids" nolabel="1">
                             <list string="Templates" editable="bottom">
                                 <field name="sequence" widget="handle" />
@@ -46,4 +60,86 @@
             </xpath>
         </field>
     </record>
+
+    <record id="act_aeroo_report_xml_view_tree" model="ir.ui.view">
+        <field name="name">ir.actions.report.list.aeroo</field>
+        <field name="model">ir.actions.report</field>
+        <field name="arch" type="xml">
+            <list string="Aeroo Reports">
+                <field name="name" />
+                <field name="model" />
+                <field name="report_name" />
+                <field name="aeroo_in_format" />
+                <field name="aeroo_out_format_id" />
+                <field name="aeroo_template_source" />
+            </list>
+        </field>
+    </record>
+
+    <record id="act_aeroo_report_xml_search_view" model="ir.ui.view">
+        <field name="name">ir.actions.report.search.aeroo</field>
+        <field name="model">ir.actions.report</field>
+        <field name="arch" type="xml">
+            <search string="Aeroo Reports">
+                <field name="name"
+                    filter_domain="['|', '|', '|', '|', ('name', 'ilike', self), ('model', 'ilike', self), ('type', 'ilike', self), ('report_name', 'ilike', self), ('report_type', 'ilike', self)]"
+                    string="Report" />
+                <group expand="0" string="Group By" colspan="4">
+                    <filter name="group_by_in_format"
+                            string="Template Mime-type"
+                            domain="[]"
+                            context="{'group_by': 'aeroo_in_format'}" />
+                    <filter name="group_by_out_format"
+                            string="Output Mime-type"
+                            domain="[]"
+                            context="{'group_by': 'aeroo_out_format_id'}" />
+                    <separator orientation="vertical" />
+                    <filter name="group_by_aeroo_template_source"
+                            string="Template Source"
+                            domain="[]"
+                            context="{'group_by': 'aeroo_template_source'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_aeroo_report_xml_tree" model="ir.actions.act_window">
+        <field name="name">Aeroo Reports</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ir.actions.report</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('report_type', '=', 'aeroo')]</field>
+        <field name="context">{'default_report_type': 'aeroo'}</field>
+        <field name="search_view_id" ref="act_aeroo_report_xml_search_view" />
+    </record>
+
+    <record model="ir.actions.act_window.view" id="act_aeroo_report_xml_tree_view">
+        <field name="sequence" eval="1" />
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="act_aeroo_report_xml_view_tree" />
+        <field name="act_window_id" ref="action_aeroo_report_xml_tree" />
+    </record>
+
+    <record model="ir.actions.act_window.view" id="act_aeroo_report_xml_form_view">
+        <field name="sequence" eval="2" />
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="base.act_report_xml_view" />
+        <field name="act_window_id" ref="action_aeroo_report_xml_tree" />
+    </record>
+
+
+    <menuitem name="Aeroo Reports"
+        action="action_aeroo_report_xml_tree"
+        id="menu_ir_action_aeroo_report_admin"
+        parent="base.next_id_6"
+        sequence="11"
+        groups="group_aeroo_manager" />
+
+        <menuitem name="Aeroo Reports"
+        action="action_aeroo_report_xml_tree"
+        id="menu_ir_action_aeroo_report_manager"
+        parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_configuration"
+        sequence="1"
+        groups="group_aeroo_manager" />
+
 </odoo>

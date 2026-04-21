@@ -149,11 +149,12 @@ class IrActionsReport(models.Model):
         res["id"] = self.id
         return res
 
-    def read(self, fields=None):
-        """ The 'load' argument has been removed from read() in recent Odoo versions. """
+    def read(self, fields=None, **kwargs):
+        """ The 'load' argument has been removed from read() in recent Odoo versions,
+            but we accept **kwargs to maintain compatibility with web client calls. """
         if not fields:
             fields = [k for k, v in self._fields.items() if v.type != "binary"]
-        return super().read(fields)
+        return super().read(fields, **kwargs)
 
     def _get_aeroo_template(self, record):
         if self.aeroo_template_source == "file":

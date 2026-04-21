@@ -6,6 +6,9 @@
         <field name="model">ir.actions.report</field>
         <field name="inherit_id" ref="base.act_report_xml_view" />
         <field name="arch" type="xml">
+             <xpath expr="//field[@name='report_type']" position="attributes">
+                <attribute name="readonly">True</attribute>
+            </xpath>
             <xpath expr="//field[@name='report_type']" position="after">
                 <field name="aeroo_in_format"
                        invisible="report_type != 'aeroo'"
@@ -13,7 +16,6 @@
             </xpath>
             <xpath expr="//notebook" position="inside">
                 <page string="Aeroo" invisible="report_type != 'aeroo'">
-                    <group>
                         <group string="Template Options">
                             <field name="aeroo_out_format_id" />
                             <field name="aeroo_template_source" required="report_type == 'aeroo'" />
@@ -26,7 +28,20 @@
                             <field name="aeroo_template_path"
                                    invisible="aeroo_template_source != 'file'"
                                    required="aeroo_template_source == 'file'" />
+                            <field name="aeroo_template_line_ids"
+                                   invisible="aeroo_template_source != 'lines'"
+                                   colspan="2" nolabel="1">
+
+                                <list string="Templates" editable="bottom">
+                                    <field name="sequence" widget="handle" />
+                                    <field name="company_id" groups="base.group_multi_company" />
+                                    <field name="lang_id" />
+                                    <field name="template_data" filename="template_filename" />
+                                    <field name="template_filename" column_invisible="True" />
+                                </list>
+                            </field>
                         </group>
+
                         <group string="Report Context">
                             <field name="aeroo_lang_eval" />
                             <field name="aeroo_tz_eval" />
@@ -34,20 +49,15 @@
                             <field name="aeroo_country_eval" />
                             <field name="aeroo_currency_eval" />
                         </group>
+
+
+                    <group string="List Views">
+                            <field name="multi" string="Generate Report From Record List" />
                     </group>
-                    <group string="Templates" invisible="aeroo_template_source != 'lines'">
-                        <field name="aeroo_template_line_ids" nolabel="1">
-                            <list string="Templates" editable="bottom">
-                                <field name="sequence" widget="handle" />
-                                <field name="company_id" groups="base.group_multi_company" />
-                                <field name="lang_id" />
-                                <field name="template_data" filename="template_filename" />
-                                <field name="template_filename" column_invisible="True" />
-                            </list>
-                        </field>
-                    </group>
-                    <group string="Generated Filenames">
-                        <field name="aeroo_filename_line_ids" nolabel="1">
+                    <group string="Attachments" invisible="multi ==True">
+                         <field name="aeroo_filename_per_lang" />
+                        <field name="aeroo_filename_line_ids" nolabel="1"
+                               invisible="aeroo_filename_per_lang ==False">
                             <list string="Filenames" editable="bottom">
                                 <field name="sequence" widget="handle" />
                                 <field name="company_id" groups="base.group_multi_company" />
@@ -55,7 +65,9 @@
                                 <field name="filename" />
                             </list>
                         </field>
-                    </group>
+                             <field name="attachment" invisible="aeroo_filename_per_lang ==True"/>
+                            <field name="attachment_use" />
+                      </group>
                 </page>
             </xpath>
         </field>

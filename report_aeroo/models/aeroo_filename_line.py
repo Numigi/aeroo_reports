@@ -17,3 +17,8 @@ class AerooFilenameLine(models.Model):
     company_id = fields.Many2one("res.company", "Company")
     lang_id = fields.Many2one("res.lang", "Language")
     filename = fields.Char(required=True)
+
+    def _compute_display_name(self):
+        for record in self:
+            record.display_name = record.filename or f"Filename Line {record.id}"
+

@@ -1,7 +1,6 @@
 # -*- coding: utf8 -*-
 
 from optparse import OptionParser
-from string import join
 
 shortname = "lorem"
 program = "Lorem Ipsum Generator (%s)" % shortname
@@ -1926,15 +1925,12 @@ License:  Copyright (C) 2007 Per Erik Strandberg
 
 
 def do_lorem(n=0, line=0, c=0, q=0):
-
     lorem = get_lorem(q)
-
     res = ""
+
     if line != 0:
-        # Do lines
         lorem = lorem.replace("\n\n", "\n")
         lines = lorem.split("\n")
-
         while line:
             if line > len(lines):
                 l1 = len(lines)
@@ -1942,18 +1938,12 @@ def do_lorem(n=0, line=0, c=0, q=0):
             else:
                 l1 = line
                 line = 0
-
             for i in range(l1):
                 res += lines[i].strip() + "\n"
 
     elif c != 0:
-        # Do chars
-        chars = lorem
-        chars = chars.replace("\n", " ")
-        chars = chars.replace("  ", " ")
-
+        chars = lorem.replace("\n", " ").replace("  ", " ")
         outchars = []
-
         while c:
             if c > len(chars):
                 c1 = len(chars)
@@ -1964,15 +1954,11 @@ def do_lorem(n=0, line=0, c=0, q=0):
                 c = 0
                 outchars.append(chars[0:c1])
 
-        res += join(outchars, "") + "\n"
+        # CORRECTION PYTHON 3 ICI :
+        res += "".join(outchars) + "\n"
 
     else:
-        # Do words
-        words = lorem.replace("\n\n", "\n")
-        words = words.replace("\n", " ")
-        words = words.replace("  ", " ")
-        words = words.split(" ")
-
+        words = lorem.replace("\n\n", "\n").replace("\n", " ").replace("  ", " ").split(" ")
         while n:
             if n > len(words):
                 n1 = len(words)
@@ -1980,8 +1966,8 @@ def do_lorem(n=0, line=0, c=0, q=0):
             else:
                 n1 = n
                 n = 0
-
             for i in range(n1):
                 res += words[i] + " "
 
     return res
+

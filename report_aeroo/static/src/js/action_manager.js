@@ -1,47 +1,38 @@
 /** @odoo-module **/
 
-import {download} from "@web/core/network/download"
-import {registry} from "@web/core/registry"
+import { download } from "@web/core/network/download";
+import { registry } from "@web/core/registry";
 
-async function aerooReportHandler (action, options, env){
-    let cloned_action = _.clone(action);
-    if (action.report_type === "aeroo"){
-        const type = "aeroo";
-        let url_ = `/report/${type}/${action.report_name}`;
-        const actionContext = action.context || {};
-        if (cloned_action.context.active_ids) {
-            url_ += "/" + cloned_action.context.active_ids.join(',');
-            // odoo does not send context if no data, but I find it quite useful to send it regardless data or no data
-            url_ += "?context=" + encodeURIComponent(JSON.stringify(cloned_action.context));
-        } else {
-            url_ += "?options=" + encodeURIComponent(JSON.stringify(cloned_action.data));
-            url_ += "&context=" + encodeURIComponent(JSON.stringify(cloned_action.context));
-        }
+async function aerooReportHandler(action, options, env) {
+    if (action.report_type === "aeroo") {
+        let cloned_action = { ...action };
+        cloned_action.context = cloned_action.context || {};
+
         env.services.ui.block();
         try {
             await download({
                 url: "/web/report_aeroo",
                 data: {
-                    report_id : cloned_action.id,
-                    record_ids: JSON.stringify(cloned_action.context.active_ids),
-                    context: JSON.stringify(env.services.user.context),
+                    report_id: cloned_action.id,
+                    record_ids: JSON.stringify(cloned_action.context.active_ids || []),
+                    // On retire la ligne "context: ..." qui faisait crasher le JS et le Python
                 },
             });
         } finally {
             env.services.ui.unblock();
         }
-        const onClose = options.onClose;
-        if (action.close_on_report_download) {
+
+        // Sécurisation avec options?.onClose pour éviter un autre undefined
+        const onClose = options?.onClose;
+        if (cloned_action.close_on_report_download) {
             return env.services.action.doAction(
-                {type: "ir.actions.act_window_close"},
-                {onClose}
+                { type: "ir.actions.act_window_close" },
+                { onClose }
             );
         } else if (onClose) {
             onClose();
         }
-        // DIFF: need to inform success to the original method. Otherwise it
-        // will think our hook function did nothing and run the original
-        // method.
+
         return Promise.resolve(true);
     }
 }

@@ -8,7 +8,6 @@ from odoo import fields, models
 
 
 class MailTemplate(models.Model):
-
     _inherit = "mail.template"
 
     aeroo_report_ids = fields.Many2many(
@@ -20,26 +19,22 @@ class MailTemplate(models.Model):
         domain="[('model', '=', model), ('report_type', '=', 'aeroo'), ('multi', '=', False)]",
     )
 
-    def generate_email(self, res_ids, fields):
+    def _generate_template(self, res_ids, render_fields, **kwargs):
         """Add aeroo reports to the generated emails."""
-        results = super().generate_email(res_ids, fields=fields)
+        # On passe correctement les kwargs au super()
+        results = super()._generate_template(res_ids, render_fields, **kwargs)
 
-        multi_mode = True
         if isinstance(res_ids, int):
             res_ids = [res_ids]
-            multi_mode = False
-
-        # When the super method receives a single record,
-        # it returns a single dictionnary of values.
-        if not multi_mode:
-            results = {res_ids[0]: results}
 
         for res_id in res_ids:
-            values = results[res_id]
+            values = results.get(res_id)
+            if not values:
+                continue
 
             for aeroo_report in self.aeroo_report_ids:
                 content, content_type = aeroo_report._render_aeroo([res_id], {})
-                content = base64.b64encode(content)
+                content = base64.b64encode(content).decode('utf-8')
 
                 record = self.env[self.model].browse(res_id)
                 output_format = aeroo_report.aeroo_out_format_id.code
@@ -50,4 +45,4 @@ class MailTemplate(models.Model):
 
                 values["attachments"].append((file_name, content))
 
-        return multi_mode and results or results[res_ids[0]]
+        return results

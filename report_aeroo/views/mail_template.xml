@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
-    <record id="email_template_form" model="ir.ui.view">
-        <field name="name">mail.template.aeroo.form</field>
+    <record id="email_template_view_form_aeroo" model="ir.ui.view">
+        <field name="name">mail.template.form.aeroo</field>
         <field name="model">mail.template</field>
         <field name="inherit_id" ref="mail.email_template_form" />
         <field name="arch" type="xml">

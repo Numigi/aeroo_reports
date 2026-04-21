@@ -21,5 +21,9 @@ class AerooTemplateLine(models.Model):
     template_data = fields.Binary("Template", required=True)
     template_filename = fields.Char("File Name")
 
+    def _compute_display_name(self):
+        for record in self:
+            record.display_name = record.template_filename or f"Template Line {record.id}"
+
     def get_aeroo_template(self, record):
         return base64.b64decode(self.template_data)

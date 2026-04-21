@@ -201,13 +201,13 @@ def format_currency(
 
 @aeroo_util("asimage")
 def asimage(
-    report,
-    field_value,
-    rotate: bool = None,
-    size_x: int = None,
-    size_y: int = None,
-    uom: str = "px",
-    hold_ratio: bool = False,
+        report,
+        field_value,
+        rotate: bool = None,
+        size_x: int = None,
+        size_y: int = None,
+        uom: str = "px",
+        hold_ratio: bool = False,
 ):
     def size_by_uom(val, uom, dpi):
         if uom == "px":
@@ -221,42 +221,59 @@ def asimage(
     if not field_value:
         return BytesIO(), "image/png"
 
-    if isinstance(field_value, str):
-        field_value = field_value.encode('ascii')
+    try:
+        if isinstance(field_value, str):
+            field_value = field_value.encode('ascii')
 
-    field_value = base64.decodebytes(field_value)
-    tf = BytesIO(field_value)
-    tf.seek(0)
-    im = Image.open(tf)
-    format = im.format.lower()
-    dpi_x, dpi_y = map(float, im.info.get("dpi", (96, 96)))
+        decoded_value = base64.b64decode(field_value)
 
-    if rotate is not None:
-        im = im.rotate(int(rotate))
+        # Odoo 18 : Détecter si l'image est un SVG (non supporté par PIL)
+        if b'<svg' in decoded_value[:100]:
+            raise ValueError("Les images SVG ne sont pas supportées par PIL.")
+
+        tf = BytesIO(decoded_value)
         tf.seek(0)
-        im.save(tf, format)
+        im = Image.open(tf)
+        format = im.format.lower()
+        dpi_x, dpi_y = map(float, im.info.get("dpi", (96, 96)))
 
-    if hold_ratio:
-        img_ratio = im.size[0] / float(im.size[1])  # width / height
-        if size_x and not size_y:
-            size_y = size_x / img_ratio
-        elif not size_x and size_y:
-            size_x = size_y * img_ratio
-        elif size_x and size_y:
-            size_y2 = size_x / img_ratio
-            size_x2 = size_y * img_ratio
-            if size_y2 > size_y:
-                size_x = size_x2
-            elif size_x2 > size_x:
-                size_y = size_y2
+        if rotate is not None:
+            im = im.rotate(int(rotate))
+            tf = BytesIO()
+            im.save(tf, format)
 
-    size_x = (
-        size_x and size_by_uom(size_x, uom, dpi_x) or str(im.size[0] / dpi_x) + "in"
-    )
-    size_y = (
-        size_y and size_by_uom(size_y, uom, dpi_y) or str(im.size[1] / dpi_y) + "in"
-    )
-    return tf, "image/%s" % format, size_x, size_y
+        if hold_ratio:
+            img_ratio = im.size[0] / float(im.size[1])  # width / height
+            if size_x and not size_y:
+                size_y = size_x / img_ratio
+            elif not size_x and size_y:
+                size_x = size_y * img_ratio
+            elif size_x and size_y:
+                size_y2 = size_x / img_ratio
+                size_x2 = size_y * img_ratio
+                if size_y2 > size_y:
+                    size_x = size_x2
+                elif size_x2 > size_x:
+                    size_y = size_y2
+
+        size_x = (
+                size_x and size_by_uom(size_x, uom, dpi_x) or str(im.size[0] / dpi_x) + "in"
+        )
+        size_y = (
+                size_y and size_by_uom(size_y, uom, dpi_y) or str(im.size[1] / dpi_y) + "in"
+        )
+        return tf, "image/%s" % format, size_x, size_y
+
+    except Exception as e:
+        # Si PIL crashe (image SVG, corrompue, etc.), on renvoie une image vide/transparente
+        import logging
+        logging.getLogger(__name__).warning("Aeroo asimage a ignoré une image non supportée: %s", e)
+
+        tf = BytesIO()
+        im = Image.new("RGBA", (1, 1), (255, 255, 255, 0))
+        im.save(tf, "png")
+        tf.seek(0)
+        return tf, "image/png", "0.1in", "0.1in"
 
 
 @aeroo_util("barcode")

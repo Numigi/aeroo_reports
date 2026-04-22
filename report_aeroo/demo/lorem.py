@@ -1958,7 +1958,9 @@ def do_lorem(n=0, line=0, c=0, q=0):
         res += "".join(outchars) + "\n"
 
     else:
-        words = lorem.replace("\n\n", "\n").replace("\n", " ").replace("  ", " ").split(" ")
+        words = (
+            lorem.replace("\n\n", "\n").replace("\n", " ").replace("  ", " ").split(" ")
+        )
         while n:
             if n > len(words):
                 n1 = len(words)
@@ -1970,4 +1972,3 @@ def do_lorem(n=0, line=0, c=0, q=0):
                 res += words[i] + " "
 
     return res
-

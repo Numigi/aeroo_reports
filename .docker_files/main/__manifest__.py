@@ -12,6 +12,7 @@
     "summary": "Install all addons required for testing.",
     "depends": [
         "report_aeroo",
+        "report_aeroo_replace_qweb",
     ],
     "installable": True,
 }

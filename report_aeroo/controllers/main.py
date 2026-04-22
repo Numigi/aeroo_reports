@@ -15,6 +15,7 @@ except ImportError:
     def serialize_exception(e):
         return str(e)
 
+
 MIMETYPES_MAPPING = {
     "doc": "application/vnd.ms-word",
     "ods": "application/vnd.oasis.opendocument.spreadsheet",
@@ -56,7 +57,7 @@ class AerooReportController(http.Controller):
                     ("Content-Disposition", content_disposition(file_name)),
                     ("Content-Type", report_mimetype),
                     ("Content-Length", len(content)),
-                ]
+                ],
             )
             # Odoo 18 / Werkzeug 3.x way to set cookies
             response.set_cookie("fileToken", token)

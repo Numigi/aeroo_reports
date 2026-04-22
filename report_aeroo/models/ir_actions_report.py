@@ -11,7 +11,8 @@ import subprocess
 import traceback
 import urllib
 import urllib.parse
-if not hasattr(urllib, 'unquote'):
+
+if not hasattr(urllib, "unquote"):
     urllib.unquote = urllib.parse.unquote
 from aeroolib.plugins.opendocument import Template, OOSerializer
 from dateutil.relativedelta import relativedelta
@@ -36,10 +37,13 @@ try:
     from reportlab.pdfgen import canvas
     from reportlab.lib.pagesizes import letter
     from reportlab.lib.colors import red
+
     PYPDF_AVAILABLE = True
 except ImportError:
     PYPDF_AVAILABLE = False
-    _logger.warning("pypdf and/or reportlab not available, watermark feature will not work!")
+    _logger.warning(
+        "pypdf and/or reportlab not available, watermark feature will not work!"
+    )
 
 try:
     from jinja2.sandbox import SandboxedEnvironment
@@ -148,14 +152,14 @@ class IrActionsReport(models.Model):
     )
 
     def report_action(self, docids, data=None, **kwargs):
-        """ Passing **kwargs ensures compatibility with future Odoo framework signatures. """
+        """Passing **kwargs ensures compatibility with future Odoo framework signatures."""
         res = super().report_action(docids, data=data, **kwargs)
         res["id"] = self.id
         return res
 
     def read(self, fields=None, **kwargs):
-        """ The 'load' argument has been removed from read() in recent Odoo versions,
-            but we accept **kwargs to maintain compatibility with web client calls. """
+        """The 'load' argument has been removed from read() in recent Odoo versions,
+        but we accept **kwargs to maintain compatibility with web client calls."""
         if not fields:
             fields = [k for k, v in self._fields.items() if v.type != "binary"]
         return super().read(fields, **kwargs)
@@ -190,7 +194,8 @@ class IrActionsReport(models.Model):
 
         line = next(
             (
-                line for line in self.aeroo_template_line_ids
+                line
+                for line in self.aeroo_template_line_ids
                 if line_matches_lang(line) and line_matches_company(line)
             ),
             None,
@@ -214,33 +219,46 @@ class IrActionsReport(models.Model):
 
     def _get_aeroo_lang(self, record):
         lang = (
-            safe_eval(self.aeroo_lang_eval, self._get_aeroo_variable_eval_context(record))
-            if self.aeroo_lang_eval else None
+            safe_eval(
+                self.aeroo_lang_eval, self._get_aeroo_variable_eval_context(record)
+            )
+            if self.aeroo_lang_eval
+            else None
         )
         return lang or "en_US"
 
     def _get_aeroo_timezone(self, record):
         return (
             safe_eval(self.aeroo_tz_eval, self._get_aeroo_variable_eval_context(record))
-            if self.aeroo_tz_eval else None
+            if self.aeroo_tz_eval
+            else None
         )
 
     def _get_aeroo_company(self, record):
         return (
-            safe_eval(self.aeroo_company_eval, self._get_aeroo_variable_eval_context(record))
-            if self.aeroo_company_eval else self.env.user.company_id
+            safe_eval(
+                self.aeroo_company_eval, self._get_aeroo_variable_eval_context(record)
+            )
+            if self.aeroo_company_eval
+            else self.env.user.company_id
         )
 
     def _get_aeroo_country(self, record):
         return (
-            safe_eval(self.aeroo_country_eval, self._get_aeroo_variable_eval_context(record))
-            if self.aeroo_country_eval else None
+            safe_eval(
+                self.aeroo_country_eval, self._get_aeroo_variable_eval_context(record)
+            )
+            if self.aeroo_country_eval
+            else None
         )
 
     def _get_aeroo_currency(self, record):
         return (
-            safe_eval(self.aeroo_currency_eval, self._get_aeroo_variable_eval_context(record))
-            if self.aeroo_currency_eval else None
+            safe_eval(
+                self.aeroo_currency_eval, self._get_aeroo_variable_eval_context(record)
+            )
+            if self.aeroo_currency_eval
+            else None
         )
 
     def _get_aeroo_context(self, record):
@@ -276,9 +294,11 @@ class IrActionsReport(models.Model):
             data,
             o=record.with_context(**report_context),
             company=self._get_aeroo_company(record),
-            **report_context
+            **report_context,
         )
-        output = self._render_aeroo_content(template, current_report_data, output_format)
+        output = self._render_aeroo_content(
+            template, current_report_data, output_format
+        )
 
         if self.attachment_use:
             self._create_aeroo_attachment(record, output, output_format)
@@ -319,6 +339,7 @@ class IrActionsReport(models.Model):
         @wraps(func)
         def wrapper(*args, **kwargs):
             return func(self, *args, **kwargs)
+
         return wrapper
 
     def get_aeroo_filename(self, record, output_format):
@@ -377,29 +398,34 @@ class IrActionsReport(models.Model):
         timeout = self._get_aeroo_libreoffice_timeout()
 
         try:
-            result = subprocess.run(cmd, timeout=timeout, capture_output=True, text=True)
+            result = subprocess.run(
+                cmd, timeout=timeout, capture_output=True, text=True
+            )
             if result.returncode != 0:
                 raise Exception(f"LibreOffice Error: {result.stderr or result.stdout}")
         except Exception as exc:
             os.remove(temp_file.name)
             raise ValidationError(
                 _(
-                    "Could not generate the report %(report)s using the format %(output_format)s. %(error)s"
-                ) % {
+                    "Could not generate the report %(report)s using the format"
+                    " %(output_format)s. %(error)s"
+                )
+                % {
                     "report": self.name,
                     "output_format": output_format,
                     "error": exc,
                 }
             )
 
-        output_file = temp_file.name[:-len(in_format)] + output_format
+        output_file = temp_file.name[: -len(in_format)] + output_format
         try:
             with open(output_file, "rb") as f:
                 output = f.read()
         except FileNotFoundError:
             os.remove(temp_file.name)
             raise ValidationError(
-                _("The expected output file %(file)s was not generated by LibreOffice.") % {"file": output_file}
+                _("The expected output file %(file)s was not generated by LibreOffice.")
+                % {"file": output_file}
             )
 
         os.remove(temp_file.name)
@@ -409,7 +435,10 @@ class IrActionsReport(models.Model):
     def _render_aeroo_multi(self, doc_ids, data, output_format):
         if output_format != "pdf":
             raise ValidationError(
-                _("Aeroo Reports do not support generating non-pdf reports in batch. You must select one record at a time.")
+                _(
+                    "Aeroo Reports do not support generating non-pdf reports in batch."
+                    " You must select one record at a time."
+                )
             )
 
         input_files = []
@@ -423,7 +452,10 @@ class IrActionsReport(models.Model):
         except Exception as exc:
             traceback.print_exc()
             raise ValidationError(
-                _("Could not merge the pdf outputs of the report %(report)s.\n\n%(error)s") % {
+                _(
+                    "Could not merge the pdf outputs of the report %(report)s.\n\n%(error)s"
+                )
+                % {
                     "report": self.name,
                     "error": exc,
                 }
@@ -450,7 +482,11 @@ class IrActionsReport(models.Model):
         return output
 
     def _should_add_test_watermark(self):
-        param_value = self.env["ir.config_parameter"].sudo().get_param("AEROO_REPORTS_TESTS", "False")
+        param_value = (
+            self.env["ir.config_parameter"]
+            .sudo()
+            .get_param("AEROO_REPORTS_TESTS", "False")
+        )
         return param_value.lower() == "true"
 
     def _add_test_watermark_to_pdf(self, pdf_data):
@@ -486,8 +522,8 @@ class IrActionsReport(models.Model):
             output_pdf = OdooPdfFileWriter()
 
             for page in original_pdf.pages:
-                page.merge_page(watermark_page) # Uses snake_case merge_page
-                output_pdf.add_page(page) # Uses snake_case add_page
+                page.merge_page(watermark_page)  # Uses snake_case merge_page
+                output_pdf.add_page(page)  # Uses snake_case add_page
 
             output_buffer = BytesIO()
             output_pdf.write(output_buffer)
@@ -515,14 +551,22 @@ class AerooReportsGeneratedFromListViews(models.Model):
     def _render_aeroo(self, doc_ids, data=None, force_output_format=None):
         data = data or {}
         if self.multi:
-            return self._render_aeroo_from_list_of_records(doc_ids, data, force_output_format)
+            return self._render_aeroo_from_list_of_records(
+                doc_ids, data, force_output_format
+            )
         else:
-            return super()._render_aeroo(doc_ids=doc_ids, data=data, force_output_format=force_output_format)
+            return super()._render_aeroo(
+                doc_ids=doc_ids, data=data, force_output_format=force_output_format
+            )
 
-    def _render_aeroo_from_list_of_records(self, doc_ids, data=None, force_output_format=None):
+    def _render_aeroo_from_list_of_records(
+        self, doc_ids, data=None, force_output_format=None
+    ):
         if len(doc_ids) == 0:
             raise ValidationError(
-                _("At least one record must be selected to generate the report {report}.").format(report=self.name)
+                _(
+                    "At least one record must be selected to generate the report {report}."
+                ).format(report=self.name)
             )
 
         output_format = force_output_format or self.aeroo_out_format_id.code
@@ -535,10 +579,12 @@ class AerooReportsGeneratedFromListViews(models.Model):
             data,
             objects=records,
             company=self._get_aeroo_company(records[0]),
-            **report_context
+            **report_context,
         )
 
-        output = self.with_context(**report_context)._render_aeroo_content(template, report_data, output_format)
+        output = self.with_context(**report_context)._render_aeroo_content(
+            template, report_data, output_format
+        )
 
         if output_format == "pdf" and self._should_add_test_watermark():
             output = self._add_test_watermark_to_pdf(output)
@@ -553,8 +599,12 @@ class AerooReportsGeneratedFromListViews(models.Model):
 class AerooReportsWithAttachmentFilenamePerLang(models.Model):
     _inherit = "ir.actions.report"
 
-    aeroo_filename_per_lang = fields.Boolean("Different Filename per Language", prefetch=False)
-    aeroo_filename_line_ids = fields.One2many("aeroo.filename.line", "report_id", "Filenames by Language")
+    aeroo_filename_per_lang = fields.Boolean(
+        "Different Filename per Language", prefetch=False
+    )
+    aeroo_filename_line_ids = fields.One2many(
+        "aeroo.filename.line", "report_id", "Filenames by Language"
+    )
 
     def get_aeroo_filename(self, record, output_format):
         if not self.aeroo_filename_per_lang:
@@ -570,13 +620,17 @@ class AerooReportsWithAttachmentFilenamePerLang(models.Model):
         def line_matches_lang(line):
             return line.lang_id.code == lang
 
-        line = next((line for line in self.aeroo_filename_line_ids if line_matches_lang(line)), None)
+        line = next(
+            (line for line in self.aeroo_filename_line_ids if line_matches_lang(line)),
+            None,
+        )
 
         if line is None:
             raise ValidationError(
-                _("Could not render the attachment filename for the report {report} in the language {lang}.").format(
-                    report=self.name, lang=lang
-                )
+                _(
+                    "Could not render the attachment filename for the report"
+                    " {report} in the language {lang}."
+                ).format(report=self.name, lang=lang)
             )
         return line.filename
 

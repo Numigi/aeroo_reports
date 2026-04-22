@@ -34,7 +34,7 @@ class MailTemplate(models.Model):
 
             for aeroo_report in self.aeroo_report_ids:
                 content, content_type = aeroo_report._render_aeroo([res_id], {})
-                content = base64.b64encode(content).decode('utf-8')
+                content = base64.b64encode(content).decode("utf-8")
 
                 record = self.env[self.model].browse(res_id)
                 output_format = aeroo_report.aeroo_out_format_id.code

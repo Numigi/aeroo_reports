@@ -23,7 +23,9 @@ class AerooTemplateLine(models.Model):
 
     def _compute_display_name(self):
         for record in self:
-            record.display_name = record.template_filename or f"Template Line {record.id}"
+            record.display_name = (
+                record.template_filename or f"Template Line {record.id}"
+            )
 
     def get_aeroo_template(self, record):
         return base64.b64decode(self.template_data)

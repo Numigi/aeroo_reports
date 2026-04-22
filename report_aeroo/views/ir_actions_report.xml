@@ -14,7 +14,10 @@
                        invisible="report_type != 'aeroo'"
                        required="report_type == 'aeroo'" />
             </xpath>
-            <xpath expr="//notebook" position="inside">
+            <xpath expr="//page[@name='advanced']" position="attributes">
+                    <attribute name="invisible">report_type == 'aeroo'</attribute>
+            </xpath>
+           <xpath expr="//notebook/page[1]" position="before">
                 <page string="Aeroo" invisible="report_type != 'aeroo'">
                         <group string="Template Options">
                             <field name="aeroo_out_format_id" />

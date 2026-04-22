@@ -201,13 +201,13 @@ def format_currency(
 
 @aeroo_util("asimage")
 def asimage(
-        report,
-        field_value,
-        rotate: bool = None,
-        size_x: int = None,
-        size_y: int = None,
-        uom: str = "px",
-        hold_ratio: bool = False,
+    report,
+    field_value,
+    rotate: bool = None,
+    size_x: int = None,
+    size_y: int = None,
+    uom: str = "px",
+    hold_ratio: bool = False,
 ):
     def size_by_uom(val, uom, dpi):
         if uom == "px":
@@ -223,12 +223,12 @@ def asimage(
 
     try:
         if isinstance(field_value, str):
-            field_value = field_value.encode('ascii')
+            field_value = field_value.encode("ascii")
 
         decoded_value = base64.b64decode(field_value)
 
         # Odoo 18 : Détecter si l'image est un SVG (non supporté par PIL)
-        if b'<svg' in decoded_value[:100]:
+        if b"<svg" in decoded_value[:100]:
             raise ValueError("Les images SVG ne sont pas supportées par PIL.")
 
         tf = BytesIO(decoded_value)
@@ -257,17 +257,20 @@ def asimage(
                     size_y = size_y2
 
         size_x = (
-                size_x and size_by_uom(size_x, uom, dpi_x) or str(im.size[0] / dpi_x) + "in"
+            size_x and size_by_uom(size_x, uom, dpi_x) or str(im.size[0] / dpi_x) + "in"
         )
         size_y = (
-                size_y and size_by_uom(size_y, uom, dpi_y) or str(im.size[1] / dpi_y) + "in"
+            size_y and size_by_uom(size_y, uom, dpi_y) or str(im.size[1] / dpi_y) + "in"
         )
         return tf, "image/%s" % format, size_x, size_y
 
     except Exception as e:
         # Si PIL crashe (image SVG, corrompue, etc.), on renvoie une image vide/transparente
         import logging
-        logging.getLogger(__name__).warning("Aeroo asimage a ignoré une image non supportée: %s", e)
+
+        logging.getLogger(__name__).warning(
+            "Aeroo asimage a ignoré une image non supportée: %s", e
+        )
 
         tf = BytesIO()
         im = Image.new("RGBA", (1, 1), (255, 255, 255, 0))

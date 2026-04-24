@@ -3,7 +3,7 @@
 
 {
     'name': 'Report Aeroo Invoice',
-    'version': '1.0.0',
+    'version': '1.1.0',
     'category': 'Generic Modules/Aeroo Reports',
     'summary': 'Allow Printing an Aeroo Invoice',
     'author': 'Numigi',
@@ -11,6 +11,7 @@
     'website': 'https://bit.ly/numigi-com',
     'depends': [
         'account',
+        'sale_timesheet',
         'report_aeroo',
     ],
     'data': [

@@ -20,16 +20,20 @@ class TestCheckPrinting(TransactionCase):
             }
         )
 
-        check_method = cls.env.ref("account_check_printing.account_payment_method_check")
+        check_method = cls.env.ref(
+            "account_check_printing.account_payment_method_check"
+        )
         check_method_line = cls.journal.outbound_payment_method_line_ids.filtered(
             lambda l: l.payment_method_id == check_method
         )
 
         if not check_method_line:
-            check_method_line = cls.env['account.payment.method.line'].create({
-                'payment_method_id': check_method.id,
-                'journal_id': cls.journal.id,
-            })
+            check_method_line = cls.env["account.payment.method.line"].create(
+                {
+                    "payment_method_id": check_method.id,
+                    "journal_id": cls.journal.id,
+                }
+            )
 
         cls.payment = cls.env["account.payment"].create(
             {

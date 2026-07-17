@@ -12,4 +12,16 @@
         </field>
     </record>
 
+    <record id="view_account_journal_form_inherited" model="ir.ui.view">
+        <field name="name">account.journal.form.inherited.check.printing.move</field>
+        <field name="model">account.journal</field>
+        <!-- Inherit from the module that originally defines the group -->
+        <field name="inherit_id" ref="account_check_printing.view_account_journal_form_inherited" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='advanced_settings']" position="inside">
+                <xpath expr="//field[@name='check_manual_sequencing']/.." position="move"/>
+            </xpath>
+        </field>
+    </record>
+
 </odoo>
